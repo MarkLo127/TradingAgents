@@ -84,8 +84,18 @@ class TradingAgentsGraph:
         # 初始化 LLM
         provider = self.config["llm_provider"].lower()
         if provider in ["openai", "ollama", "openrouter"]:
-            self.deep_thinking_llm = ChatOpenAI(model=self.config["deep_think_llm"], base_url=self.config["backend_url"])
-            self.quick_thinking_llm = ChatOpenAI(model=self.config["quick_think_llm"], base_url=self.config["backend_url"])
+            # Get the OpenAI API key from environment variable
+            openai_api_key = os.getenv("OPENAI_API_KEY")
+            self.deep_thinking_llm = ChatOpenAI(
+                model=self.config["deep_think_llm"],
+                base_url=self.config["backend_url"],
+                openai_api_key=openai_api_key
+            )
+            self.quick_thinking_llm = ChatOpenAI(
+                model=self.config["quick_think_llm"],
+                base_url=self.config["backend_url"],
+                openai_api_key=openai_api_key
+            )
         elif provider == "anthropic":
             self.deep_thinking_llm = ChatAnthropic(model=self.config["deep_think_llm"], base_url=self.config["backend_url"])
             self.quick_thinking_llm = ChatAnthropic(model=self.config["quick_think_llm"], base_url=self.config["backend_url"])
@@ -94,7 +104,7 @@ class TradingAgentsGraph:
             self.quick_thinking_llm = ChatGoogleGenerativeAI(model=self.config["quick_think_llm"])
         else:
             raise ValueError(f"不支援的 LLM 供應商: {self.config['llm_provider']}")
-        
+
         # 初始化記憶體
         self.bull_memory = FinancialSituationMemory("bull_memory", self.config)
         self.bear_memory = FinancialSituationMemory("bear_memory", self.config)
