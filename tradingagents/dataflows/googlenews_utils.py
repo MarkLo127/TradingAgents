@@ -14,7 +14,7 @@ from tenacity import (
 
 
 def is_rate_limited(response):
-    """Check if the response indicates rate limiting (status code 429)"""
+    """檢查回應是否表示速率限制 (狀態碼 429)"""
     return response.status_code == 429
 
 
@@ -24,8 +24,8 @@ def is_rate_limited(response):
     stop=stop_after_attempt(5),
 )
 def make_request(url, headers):
-    """Make a request with retry logic for rate limiting"""
-    # Random delay before each request to avoid detection
+    """使用重試邏輯發出請求以處理速率限制"""
+    # 在每個請求前隨機延遲以避免被偵測
     time.sleep(random.uniform(2, 6))
     response = requests.get(url, headers=headers)
     return response
@@ -33,10 +33,10 @@ def make_request(url, headers):
 
 def getNewsData(query, start_date, end_date):
     """
-    Scrape Google News search results for a given query and date range.
-    query: str - search query
-    start_date: str - start date in the format yyyy-mm-dd or mm/dd/yyyy
-    end_date: str - end date in the format yyyy-mm-dd or mm/dd/yyyy
+    抓取給定查詢和日期範圍的 Google 新聞搜索結果。
+    query: str - 搜索查詢
+    start_date: str - 開始日期，格式為 yyyy-mm-dd 或 mm/dd/yyyy
+    end_date: str - 結束日期，格式為 yyyy-mm-dd 或 mm/dd/yyyy
     """
     if "-" in start_date:
         start_date = datetime.strptime(start_date, "%Y-%m-%d")
@@ -69,7 +69,7 @@ def getNewsData(query, start_date, end_date):
             results_on_page = soup.select("div.SoaBEf")
 
             if not results_on_page:
-                break  # No more results found
+                break  # 找不到更多結果
 
             for el in results_on_page:
                 try:
@@ -88,13 +88,13 @@ def getNewsData(query, start_date, end_date):
                         }
                     )
                 except Exception as e:
-                    print(f"Error processing result: {e}")
-                    # If one of the fields is not found, skip this result
+                    print(f"處理結果時出錯：{e}")
+                    # 如果找不到其中一個欄位，則跳過此結果
                     continue
 
-            # Update the progress bar with the current count of results scraped
+            # 使用當前抓取的結果數量更新進度條
 
-            # Check for the "Next" link (pagination)
+            # 檢查「下一頁」連結 (分頁)
             next_link = soup.find("a", id="pnnext")
             if not next_link:
                 break
@@ -102,7 +102,7 @@ def getNewsData(query, start_date, end_date):
             page += 1
 
         except Exception as e:
-            print(f"Failed after multiple retries: {e}")
+            print(f"多次重試後失敗：{e}")
             break
 
     return news_results

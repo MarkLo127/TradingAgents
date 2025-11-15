@@ -51,23 +51,36 @@ ticker_to_company = {
 
 def fetch_top_from_category(
     category: Annotated[
-        str, "Category to fetch top post from. Collection of subreddits."
+        str, "要從中獲取熱門貼文的類別。子版塊的集合。"
     ],
-    date: Annotated[str, "Date to fetch top posts from."],
-    max_limit: Annotated[int, "Maximum number of posts to fetch."],
-    query: Annotated[str, "Optional query to search for in the subreddit."] = None,
+    date: Annotated[str, "要從中獲取熱門貼文的日期。"],
+    max_limit: Annotated[int, "要獲取的最大貼文數。"],
+    query: Annotated[str, "在子版塊中搜索的可選查詢。"] = None,
     data_path: Annotated[
         str,
-        "Path to the data folder. Default is 'reddit_data'.",
+        "數據資料夾的路徑。預設為 'reddit_data'。",
     ] = "reddit_data",
 ):
+    """
+    從指定類別中獲取熱門貼文。
+
+    Args:
+        category (str): 要從中獲取熱門貼文的類別。子版塊的集合。
+        date (str): 要從中獲取熱門貼文的日期。
+        max_limit (int): 要獲取的最大貼文數。
+        query (str, optional): 在子版塊中搜索的可選查詢。預設為 None。
+        data_path (str, optional): 數據資料夾的路徑。預設為 'reddit_data'。
+
+    Returns:
+        list: 包含熱門貼文的列表。
+    """
     base_path = data_path
 
     all_content = []
 
     if max_limit < len(os.listdir(os.path.join(base_path, category))):
         raise ValueError(
-            "REDDIT FETCHING ERROR: max limit is less than the number of files in the category. Will not be able to fetch any posts"
+            "REDDIT 抓取錯誤：最大限制小於類別中的檔案數。將無法獲取任何貼文"
         )
 
     limit_per_subreddit = max_limit // len(
@@ -75,7 +88,7 @@ def fetch_top_from_category(
     )
 
     for data_file in os.listdir(os.path.join(base_path, category)):
-        # check if data_file is a .jsonl file
+        # 檢查 data_file 是否為 .jsonl 檔案
         if not data_file.endswith(".jsonl"):
             continue
 
@@ -83,20 +96,20 @@ def fetch_top_from_category(
 
         with open(os.path.join(base_path, category, data_file), "rb") as f:
             for i, line in enumerate(f):
-                # skip empty lines
+                # 跳過空行
                 if not line.strip():
                     continue
 
                 parsed_line = json.loads(line)
 
-                # select only lines that are from the date
+                # 只選擇來自該日期的行
                 post_date = datetime.utcfromtimestamp(
                     parsed_line["created_utc"]
                 ).strftime("%Y-%m-%d")
                 if post_date != date:
                     continue
 
-                # if is company_news, check that the title or the content has the company's name (query) mentioned
+                # 如果是 company_news，檢查標題或內容是否提及公司名稱 (查詢)
                 if "company" in category and query:
                     search_terms = []
                     if "OR" in ticker_to_company[query]:
@@ -127,7 +140,7 @@ def fetch_top_from_category(
 
                 all_content_curr_subreddit.append(post)
 
-        # sort all_content_curr_subreddit by upvote_ratio in descending order
+        # 按讚數降序排序 all_content_curr_subreddit
         all_content_curr_subreddit.sort(key=lambda x: x["upvotes"], reverse=True)
 
         all_content.extend(all_content_curr_subreddit[:limit_per_subreddit])

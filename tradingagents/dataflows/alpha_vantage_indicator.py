@@ -10,19 +10,19 @@ def get_indicator(
     series_type: str = "close"
 ) -> str:
     """
-    Returns Alpha Vantage technical indicator values over a time window.
+    返回 Alpha Vantage 在一個時間窗口內的技術指標值。
 
     Args:
-        symbol: ticker symbol of the company
-        indicator: technical indicator to get the analysis and report of
-        curr_date: The current trading date you are trading on, YYYY-mm-dd
-        look_back_days: how many days to look back
-        interval: Time interval (daily, weekly, monthly)
-        time_period: Number of data points for calculation
-        series_type: The desired price type (close, open, high, low)
+        symbol: 公司的股票代碼
+        indicator: 要獲取分析和報告的技術指標
+        curr_date: 您正在交易的當前交易日期，格式為 YYYY-mm-dd
+        look_back_days: 回溯天數
+        interval: 時間間隔 (每日、每週、每月)
+        time_period: 用於計算的數據點數量
+        series_type: 所需的價格類型 (收盤價、開盤價、最高價、最低價)
 
     Returns:
-        String containing indicator values and description
+        包含指標值和描述的字串
     """
     from datetime import datetime
     from dateutil.relativedelta import relativedelta
@@ -43,37 +43,37 @@ def get_indicator(
     }
 
     indicator_descriptions = {
-        "close_50_sma": "50 SMA: A medium-term trend indicator. Usage: Identify trend direction and serve as dynamic support/resistance. Tips: It lags price; combine with faster indicators for timely signals.",
-        "close_200_sma": "200 SMA: A long-term trend benchmark. Usage: Confirm overall market trend and identify golden/death cross setups. Tips: It reacts slowly; best for strategic trend confirmation rather than frequent trading entries.",
-        "close_10_ema": "10 EMA: A responsive short-term average. Usage: Capture quick shifts in momentum and potential entry points. Tips: Prone to noise in choppy markets; use alongside longer averages for filtering false signals.",
-        "macd": "MACD: Computes momentum via differences of EMAs. Usage: Look for crossovers and divergence as signals of trend changes. Tips: Confirm with other indicators in low-volatility or sideways markets.",
-        "macds": "MACD Signal: An EMA smoothing of the MACD line. Usage: Use crossovers with the MACD line to trigger trades. Tips: Should be part of a broader strategy to avoid false positives.",
-        "macdh": "MACD Histogram: Shows the gap between the MACD line and its signal. Usage: Visualize momentum strength and spot divergence early. Tips: Can be volatile; complement with additional filters in fast-moving markets.",
-        "rsi": "RSI: Measures momentum to flag overbought/oversold conditions. Usage: Apply 70/30 thresholds and watch for divergence to signal reversals. Tips: In strong trends, RSI may remain extreme; always cross-check with trend analysis.",
-        "boll": "Bollinger Middle: A 20 SMA serving as the basis for Bollinger Bands. Usage: Acts as a dynamic benchmark for price movement. Tips: Combine with the upper and lower bands to effectively spot breakouts or reversals.",
-        "boll_ub": "Bollinger Upper Band: Typically 2 standard deviations above the middle line. Usage: Signals potential overbought conditions and breakout zones. Tips: Confirm signals with other tools; prices may ride the band in strong trends.",
-        "boll_lb": "Bollinger Lower Band: Typically 2 standard deviations below the middle line. Usage: Indicates potential oversold conditions. Tips: Use additional analysis to avoid false reversal signals.",
-        "atr": "ATR: Averages true range to measure volatility. Usage: Set stop-loss levels and adjust position sizes based on current market volatility. Tips: It's a reactive measure, so use it as part of a broader risk management strategy.",
-        "vwma": "VWMA: A moving average weighted by volume. Usage: Confirm trends by integrating price action with volume data. Tips: Watch for skewed results from volume spikes; use in combination with other volume analyses."
+        "close_50_sma": "50 SMA：一個中期趨勢指標。用法：識別趨勢方向並作為動態支撐/阻力。提示：它滯後於價格；與更快的指標結合以獲得及時信號。",
+        "close_200_sma": "200 SMA：一個長期趨勢基準。用法：確認整體市場趨勢並識別黃金/死亡交叉設置。提示：它反應緩慢；最適合戰略趨勢確認，而非頻繁的交易入場。",
+        "close_10_ema": "10 EMA：一個反應靈敏的短期平均線。用法：捕捉動能的快速轉變和潛在的入場點。提示：在震盪市場中容易產生噪音；與較長的平均線一起使用以過濾錯誤信號。",
+        "macd": "MACD：通過 EMA 的差異計算動能。用法：尋找交叉和背離作為趨勢變化的信號。提示：在低波動性或橫盤市場中與其他指標確認。",
+        "macds": "MACD 信號線：MACD 線的 EMA 平滑。用法：使用與 MACD 線的交叉來觸發交易。提示：應作為更廣泛策略的一部分以避免誤報。",
+        "macdh": "MACD 柱狀圖：顯示 MACD 線與其信號線之間的差距。用法：可視化動能強度並及早發現背離。提示：可能不穩定；在快速變動的市場中輔以額外的過濾器。",
+        "rsi": "RSI：衡量動能以標記超買/超賣狀況。用法：應用 70/30 閾值並觀察背離以發出反轉信號。提示：在強勁趨勢中，RSI 可能保持極端；務必與趨勢分析交叉檢查。",
+        "boll": "布林帶中軌：作為布林帶基礎的 20 SMA。用法：作為價格變動的動態基準。提示：與上下軌結合以有效發現突破或反轉。",
+        "boll_ub": "布林帶上軌：通常比中軌高 2 個標準差。用法：發出潛在超買狀況和突破區域的信號。提示：與其他工具確認信號；在強勁趨勢中價格可能會沿著軌道運行。",
+        "boll_lb": "布林帶下軌：通常比中軌低 2 個標準差。用法：指示潛在的超賣狀況。提示：使用額外分析以避免錯誤的反轉信號。",
+        "atr": "ATR：平均真實波幅，用於衡量波動性。用法：根據當前市場波動性設置止損水平和調整頭寸大小。提示：這是一個反應性指標，因此請將其用作更廣泛風險管理策略的一部分。",
+        "vwma": "VWMA：成交量加權移動平均線。用法：通過將價格行為與成交量數據相結合來確認趨勢。提示：注意成交量激增導致的結果偏差；與其他成交量分析結合使用。"
     }
 
     if indicator not in supported_indicators:
         raise ValueError(
-            f"Indicator {indicator} is not supported. Please choose from: {list(supported_indicators.keys())}"
+            f"不支持指標 {indicator}。請從以下選項中選擇：{list(supported_indicators.keys())}"
         )
 
     curr_date_dt = datetime.strptime(curr_date, "%Y-%m-%d")
     before = curr_date_dt - relativedelta(days=look_back_days)
 
-    # Get the full data for the period instead of making individual calls
+    # 獲取整個期間的完整數據，而不是單獨調用
     _, required_series_type = supported_indicators[indicator]
 
-    # Use the provided series_type or fall back to the required one
+    # 使用提供的 series_type 或回退到必需的類型
     if required_series_type:
         series_type = required_series_type
 
     try:
-        # Get indicator data for the period
+        # 獲取期間的指標數據
         if indicator == "close_50_sma":
             data = _make_api_request("SMA", {
                 "symbol": symbol,
@@ -143,25 +143,25 @@ def get_indicator(
                 "datatype": "csv"
             })
         elif indicator == "vwma":
-            # Alpha Vantage doesn't have direct VWMA, so we'll return an informative message
-            # In a real implementation, this would need to be calculated from OHLCV data
-            return f"## VWMA (Volume Weighted Moving Average) for {symbol}:\n\nVWMA calculation requires OHLCV data and is not directly available from Alpha Vantage API.\nThis indicator would need to be calculated from the raw stock data using volume-weighted price averaging.\n\n{indicator_descriptions.get('vwma', 'No description available.')}"
+            # Alpha Vantage 沒有直接的 VWMA，因此我們將返回一條資訊性訊息
+            # 在實際實現中，這需要從 OHLCV 數據中計算
+            return f"## {symbol} 的 VWMA (成交量加權移動平均線)：\n\nVWMA 計算需要 OHLCV 數據，無法直接從 Alpha Vantage API 獲得。\n此指標需要使用成交量加權價格平均從原始股票數據中計算。\n\n{indicator_descriptions.get('vwma', '無可用描述。')}"
         else:
-            return f"Error: Indicator {indicator} not implemented yet."
+            return f"錯誤：指標 {indicator} 尚未實現。"
 
-        # Parse CSV data and extract values for the date range
+        # 解析 CSV 數據並提取日期範圍內的值
         lines = data.strip().split('\n')
         if len(lines) < 2:
-            return f"Error: No data returned for {indicator}"
+            return f"錯誤：{indicator} 沒有返回數據"
 
-        # Parse header and data
+        # 解析標頭和數據
         header = [col.strip() for col in lines[0].split(',')]
         try:
             date_col_idx = header.index('time')
         except ValueError:
-            return f"Error: 'time' column not found in data for {indicator}. Available columns: {header}"
+            return f"錯誤：在 {indicator} 的數據中找不到 'time' 欄位。可用欄位：{header}"
 
-        # Map internal indicator names to expected CSV column names from Alpha Vantage
+        # 將內部指標名稱映射到 Alpha Vantage 預期的 CSV 欄位名稱
         col_name_map = {
             "macd": "MACD", "macds": "MACD_Signal", "macdh": "MACD_Hist",
             "boll": "Real Middle Band", "boll_ub": "Real Upper Band", "boll_lb": "Real Lower Band",
@@ -172,13 +172,13 @@ def get_indicator(
         target_col_name = col_name_map.get(indicator)
 
         if not target_col_name:
-            # Default to the second column if no specific mapping exists
+            # 如果沒有特定的映射，則預設為第二欄
             value_col_idx = 1
         else:
             try:
                 value_col_idx = header.index(target_col_name)
             except ValueError:
-                return f"Error: Column '{target_col_name}' not found for indicator '{indicator}'. Available columns: {header}"
+                return f"錯誤：指標 '{indicator}' 找不到欄位 '{target_col_name}'。可用欄位：{header}"
 
         result_data = []
         for line in lines[1:]:
@@ -188,17 +188,17 @@ def get_indicator(
             if len(values) > value_col_idx:
                 try:
                     date_str = values[date_col_idx].strip()
-                    # Parse the date
+                    # 解析日期
                     date_dt = datetime.strptime(date_str, "%Y-%m-%d")
 
-                    # Check if date is in our range
+                    # 檢查日期是否在我們的範圍內
                     if before <= date_dt <= curr_date_dt:
                         value = values[value_col_idx].strip()
                         result_data.append((date_dt, value))
                 except (ValueError, IndexError):
                     continue
 
-        # Sort by date and format output
+        # 按日期排序並格式化輸出
         result_data.sort(key=lambda x: x[0])
 
         ind_string = ""
@@ -206,17 +206,17 @@ def get_indicator(
             ind_string += f"{date_dt.strftime('%Y-%m-%d')}: {value}\n"
 
         if not ind_string:
-            ind_string = "No data available for the specified date range.\n"
+            ind_string = "指定日期範圍內無可用數據。\n"
 
         result_str = (
-            f"## {indicator.upper()} values from {before.strftime('%Y-%m-%d')} to {curr_date}:\n\n"
+            f"## 從 {before.strftime('%Y-%m-%d')} 到 {curr_date} 的 {indicator.upper()} 值：\n\n"
             + ind_string
             + "\n\n"
-            + indicator_descriptions.get(indicator, "No description available.")
+            + indicator_descriptions.get(indicator, "無可用描述。")
         )
 
         return result_str
 
     except Exception as e:
-        print(f"Error getting Alpha Vantage indicator data for {indicator}: {e}")
-        return f"Error retrieving {indicator} data: {str(e)}"
+        print(f"獲取 {indicator} 的 Alpha Vantage 指標數據時出錯：{e}")
+        return f"檢索 {indicator} 數據時出錯：{str(e)}"

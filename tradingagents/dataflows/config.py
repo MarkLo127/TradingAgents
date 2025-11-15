@@ -1,13 +1,13 @@
 import tradingagents.default_config as default_config
 from typing import Dict, Optional
 
-# Use default config but allow it to be overridden
+# 使用預設設定，但允許被覆寫
 _config: Optional[Dict] = None
 DATA_DIR: Optional[str] = None
 
 
 def initialize_config():
-    """Initialize the configuration with default values."""
+    """使用預設值初始化設定。"""
     global _config, DATA_DIR
     if _config is None:
         _config = default_config.DEFAULT_CONFIG.copy()
@@ -15,7 +15,7 @@ def initialize_config():
 
 
 def set_config(config: Dict):
-    """Update the configuration with custom values."""
+    """使用自訂值更新設定。"""
     global _config, DATA_DIR
     if _config is None:
         _config = default_config.DEFAULT_CONFIG.copy()
@@ -24,11 +24,11 @@ def set_config(config: Dict):
 
 
 def get_config() -> Dict:
-    """Get the current configuration."""
+    """獲取當前設定。"""
     if _config is None:
         initialize_config()
     return _config.copy()
 
 
-# Initialize with default config
+# 使用預設設定進行初始化
 initialize_config()

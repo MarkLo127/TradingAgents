@@ -4,68 +4,68 @@ from tradingagents.dataflows.interface import route_to_vendor
 
 @tool
 def get_news(
-    ticker: Annotated[str, "Ticker symbol"],
-    start_date: Annotated[str, "Start date in yyyy-mm-dd format"],
-    end_date: Annotated[str, "End date in yyyy-mm-dd format"],
+    ticker: Annotated[str, "股票代碼"],
+    start_date: Annotated[str, "開始日期，格式為 yyyy-mm-dd"],
+    end_date: Annotated[str, "結束日期，格式為 yyyy-mm-dd"],
 ) -> str:
     """
-    Retrieve news data for a given ticker symbol.
-    Uses the configured news_data vendor.
+    檢索給定股票代碼的新聞數據。
+    使用設定的新聞數據供應商。
     Args:
-        ticker (str): Ticker symbol
-        start_date (str): Start date in yyyy-mm-dd format
-        end_date (str): End date in yyyy-mm-dd format
+        ticker (str): 股票代碼
+        start_date (str): 開始日期，格式為 yyyy-mm-dd
+        end_date (str): 結束日期，格式為 yyyy-mm-dd
     Returns:
-        str: A formatted string containing news data
+        str: 一個包含新聞數據的格式化字串
     """
     return route_to_vendor("get_news", ticker, start_date, end_date)
 
 @tool
 def get_global_news(
-    curr_date: Annotated[str, "Current date in yyyy-mm-dd format"],
-    look_back_days: Annotated[int, "Number of days to look back"] = 7,
-    limit: Annotated[int, "Maximum number of articles to return"] = 5,
+    curr_date: Annotated[str, "當前日期，格式為 yyyy-mm-dd"],
+    look_back_days: Annotated[int, "回溯天數"] = 7,
+    limit: Annotated[int, "返回的最大文章數"] = 5,
 ) -> str:
     """
-    Retrieve global news data.
-    Uses the configured news_data vendor.
+    檢索全球新聞數據。
+    使用設定的新聞數據供應商。
     Args:
-        curr_date (str): Current date in yyyy-mm-dd format
-        look_back_days (int): Number of days to look back (default 7)
-        limit (int): Maximum number of articles to return (default 5)
+        curr_date (str): 當前日期，格式為 yyyy-mm-dd
+        look_back_days (int): 回溯天數 (預設 7)
+        limit (int): 返回的最大文章數 (預設 5)
     Returns:
-        str: A formatted string containing global news data
+        str: 一個包含全球新聞數據的格式化字串
     """
     return route_to_vendor("get_global_news", curr_date, look_back_days, limit)
 
 @tool
 def get_insider_sentiment(
-    ticker: Annotated[str, "ticker symbol for the company"],
-    curr_date: Annotated[str, "current date you are trading at, yyyy-mm-dd"],
+    ticker: Annotated[str, "公司的股票代碼"],
+    curr_date: Annotated[str, "您正在交易的當前日期，格式為 yyyy-mm-dd"],
 ) -> str:
     """
-    Retrieve insider sentiment information about a company.
-    Uses the configured news_data vendor.
+    檢索有關公司的內部人士情緒資訊。
+    使用設定的新聞數據供應商。
     Args:
-        ticker (str): Ticker symbol of the company
-        curr_date (str): Current date you are trading at, yyyy-mm-dd
+        ticker (str): 公司的股票代碼
+        curr_date (str): 您正在交易的當前日期，格式為 yyyy-mm-dd
     Returns:
-        str: A report of insider sentiment data
+        str: 一份內部人士情緒數據的報告
     """
     return route_to_vendor("get_insider_sentiment", ticker, curr_date)
 
 @tool
 def get_insider_transactions(
-    ticker: Annotated[str, "ticker symbol"],
-    curr_date: Annotated[str, "current date you are trading at, yyyy-mm-dd"],
+    ticker: Annotated[str, "股票代碼"],
+    curr_date: Annotated[str, "您正在交易的當前日期，格式為 yyyy-mm-dd"],
 ) -> str:
     """
-    Retrieve insider transaction information about a company.
-    Uses the configured news_data vendor.
+    檢索有關公司的內部人士交易資訊。
+    使用設定的新聞數據供應商。
     Args:
-        ticker (str): Ticker symbol of the company
-        curr_date (str): Current date you are trading at, yyyy-mm-dd
+        ticker (str): 公司的股票代碼
+        curr_date (str): 您正在交易的當前日期，格式為 yyyy-mm-dd
     Returns:
-        str: A report of insider transaction data
+        str: 一份內部人士交易數據的報告
     """
     return route_to_vendor("get_insider_transactions", ticker, curr_date)

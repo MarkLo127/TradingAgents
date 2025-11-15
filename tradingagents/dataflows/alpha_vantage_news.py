@@ -1,17 +1,18 @@
 from .alpha_vantage_common import _make_api_request, format_datetime_for_api
 
 def get_news(ticker, start_date, end_date) -> dict[str, str] | str:
-    """Returns live and historical market news & sentiment data from premier news outlets worldwide.
+    """
+    返回全球主要新聞機構的即時和歷史市場新聞與情緒數據。
 
-    Covers stocks, cryptocurrencies, forex, and topics like fiscal policy, mergers & acquisitions, IPOs.
+    涵蓋股票、加密貨幣、外匯以及財政政策、併購、IPO 等主題。
 
     Args:
-        ticker: Stock symbol for news articles.
-        start_date: Start date for news search.
-        end_date: End date for news search.
+        ticker: 新聞文章的股票代碼。
+        start_date: 新聞搜索的開始日期。
+        end_date: 新聞搜索的結束日期。
 
     Returns:
-        Dictionary containing news sentiment data or JSON string.
+        包含新聞情緒數據的字典或 JSON 字串。
     """
 
     params = {
@@ -25,15 +26,16 @@ def get_news(ticker, start_date, end_date) -> dict[str, str] | str:
     return _make_api_request("NEWS_SENTIMENT", params)
 
 def get_insider_transactions(symbol: str) -> dict[str, str] | str:
-    """Returns latest and historical insider transactions by key stakeholders.
+    """
+    返回主要利益相關者的最新和歷史內部交易。
 
-    Covers transactions by founders, executives, board members, etc.
+    涵蓋創始人、高階主管、董事會成員等的交易。
 
     Args:
-        symbol: Ticker symbol. Example: "IBM".
+        symbol: 股票代碼。範例："IBM"。
 
     Returns:
-        Dictionary containing insider transaction data or JSON string.
+        包含內部交易數據的字典或 JSON 字串。
     """
 
     params = {

@@ -5,18 +5,18 @@ from tradingagents.dataflows.interface import route_to_vendor
 
 @tool
 def get_stock_data(
-    symbol: Annotated[str, "ticker symbol of the company"],
-    start_date: Annotated[str, "Start date in yyyy-mm-dd format"],
-    end_date: Annotated[str, "End date in yyyy-mm-dd format"],
+    symbol: Annotated[str, "公司的股票代碼"],
+    start_date: Annotated[str, "開始日期，格式為 yyyy-mm-dd"],
+    end_date: Annotated[str, "結束日期，格式為 yyyy-mm-dd"],
 ) -> str:
     """
-    Retrieve stock price data (OHLCV) for a given ticker symbol.
-    Uses the configured core_stock_apis vendor.
+    檢索給定股票代碼的股價數據 (OHLCV)。
+    使用設定的核心股票 API 供應商。
     Args:
-        symbol (str): Ticker symbol of the company, e.g. AAPL, TSM
-        start_date (str): Start date in yyyy-mm-dd format
-        end_date (str): End date in yyyy-mm-dd format
+        symbol (str): 公司的股票代碼，例如 AAPL, TSM
+        start_date (str): 開始日期，格式為 yyyy-mm-dd
+        end_date (str): 結束日期，格式為 yyyy-mm-dd
     Returns:
-        str: A formatted dataframe containing the stock price data for the specified ticker symbol in the specified date range.
+        str: 一個格式化的數據框，包含指定股票代碼在指定日期範圍內的股價數據。
     """
     return route_to_vendor("get_stock_data", symbol, start_date, end_date)

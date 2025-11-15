@@ -3,29 +3,29 @@ from tradingagents.default_config import DEFAULT_CONFIG
 
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
+# 從 .env 檔案載入環境變數
 load_dotenv()
 
-# Create a custom config
+# 建立自訂設定
 config = DEFAULT_CONFIG.copy()
-config["deep_think_llm"] = "gpt-4o-mini"  # Use a different model
-config["quick_think_llm"] = "gpt-4o-mini"  # Use a different model
-config["max_debate_rounds"] = 1  # Increase debate rounds
+config["deep_think_llm"] = "gpt-4o-mini"  # 使用不同的模型
+config["quick_think_llm"] = "gpt-4o-mini"  # 使用不同的模型
+config["max_debate_rounds"] = 1  # 增加辯論回合
 
-# Configure data vendors (default uses yfinance and alpha_vantage)
+# 設定資料供應商 (預設使用 yfinance 和 alpha_vantage)
 config["data_vendors"] = {
-    "core_stock_apis": "yfinance",           # Options: yfinance, alpha_vantage, local
-    "technical_indicators": "yfinance",      # Options: yfinance, alpha_vantage, local
-    "fundamental_data": "alpha_vantage",     # Options: openai, alpha_vantage, local
-    "news_data": "alpha_vantage",            # Options: openai, alpha_vantage, google, local
+    "core_stock_apis": "yfinance",           # 選項: yfinance, alpha_vantage, local
+    "technical_indicators": "yfinance",      # 選項: yfinance, alpha_vantage, local
+    "fundamental_data": "alpha_vantage",     # 選項: openai, alpha_vantage, local
+    "news_data": "alpha_vantage",            # 選項: openai, alpha_vantage, google, local
 }
 
-# Initialize with custom config
+# 使用自訂設定進行初始化
 ta = TradingAgentsGraph(debug=True, config=config)
 
-# forward propagate
+# 正向傳播
 _, decision = ta.propagate("NVDA", "2024-05-10")
 print(decision)
 
-# Memorize mistakes and reflect
-# ta.reflect_and_remember(1000) # parameter is the position returns
+# 記住錯誤並反思
+# ta.reflect_and_remember(1000) # 參數為部位回報

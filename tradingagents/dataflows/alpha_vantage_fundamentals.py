@@ -3,14 +3,14 @@ from .alpha_vantage_common import _make_api_request
 
 def get_fundamentals(ticker: str, curr_date: str = None) -> str:
     """
-    Retrieve comprehensive fundamental data for a given ticker symbol using Alpha Vantage.
+    使用 Alpha Vantage 檢索給定股票代碼的綜合基本面數據。
 
     Args:
-        ticker (str): Ticker symbol of the company
-        curr_date (str): Current date you are trading at, yyyy-mm-dd (not used for Alpha Vantage)
+        ticker (str): 公司的股票代碼
+        curr_date (str): 您正在交易的當前日期，格式為 yyyy-mm-dd (Alpha Vantage 未使用)
 
     Returns:
-        str: Company overview data including financial ratios and key metrics
+        str: 公司概覽數據，包括財務比率和關鍵指標
     """
     params = {
         "symbol": ticker,
@@ -21,15 +21,15 @@ def get_fundamentals(ticker: str, curr_date: str = None) -> str:
 
 def get_balance_sheet(ticker: str, freq: str = "quarterly", curr_date: str = None) -> str:
     """
-    Retrieve balance sheet data for a given ticker symbol using Alpha Vantage.
+    使用 Alpha Vantage 檢索給定股票代碼的資產負債表數據。
 
     Args:
-        ticker (str): Ticker symbol of the company
-        freq (str): Reporting frequency: annual/quarterly (default quarterly) - not used for Alpha Vantage
-        curr_date (str): Current date you are trading at, yyyy-mm-dd (not used for Alpha Vantage)
+        ticker (str): 公司的股票代碼
+        freq (str): 報告頻率：年度/季度 (預設為季度) - Alpha Vantage 未使用
+        curr_date (str): 您正在交易的當前日期，格式為 yyyy-mm-dd (Alpha Vantage 未使用)
 
     Returns:
-        str: Balance sheet data with normalized fields
+        str: 具有標準化欄位的資產負債表數據
     """
     params = {
         "symbol": ticker,
@@ -40,15 +40,15 @@ def get_balance_sheet(ticker: str, freq: str = "quarterly", curr_date: str = Non
 
 def get_cashflow(ticker: str, freq: str = "quarterly", curr_date: str = None) -> str:
     """
-    Retrieve cash flow statement data for a given ticker symbol using Alpha Vantage.
+    使用 Alpha Vantage 檢索給定股票代碼的現金流量表數據。
 
     Args:
-        ticker (str): Ticker symbol of the company
-        freq (str): Reporting frequency: annual/quarterly (default quarterly) - not used for Alpha Vantage
-        curr_date (str): Current date you are trading at, yyyy-mm-dd (not used for Alpha Vantage)
+        ticker (str): 公司的股票代碼
+        freq (str): 報告頻率：年度/季度 (預設為季度) - Alpha Vantage 未使用
+        curr_date (str): 您正在交易的當前日期，格式為 yyyy-mm-dd (Alpha Vantage 未使用)
 
     Returns:
-        str: Cash flow statement data with normalized fields
+        str: 具有標準化欄位的現金流量表數據
     """
     params = {
         "symbol": ticker,
@@ -59,19 +59,18 @@ def get_cashflow(ticker: str, freq: str = "quarterly", curr_date: str = None) ->
 
 def get_income_statement(ticker: str, freq: str = "quarterly", curr_date: str = None) -> str:
     """
-    Retrieve income statement data for a given ticker symbol using Alpha Vantage.
+    使用 Alpha Vantage 檢索給定股票代碼的損益表數據。
 
     Args:
-        ticker (str): Ticker symbol of the company
-        freq (str): Reporting frequency: annual/quarterly (default quarterly) - not used for Alpha Vantage
-        curr_date (str): Current date you are trading at, yyyy-mm-dd (not used for Alpha Vantage)
+        ticker (str): 公司的股票代碼
+        freq (str): 報告頻率：年度/季度 (預設為季度) - Alpha Vantage 未使用
+        curr_date (str): 您正在交易的當前日期，格式為 yyyy-mm-dd (Alpha Vantage 未使用)
 
     Returns:
-        str: Income statement data with normalized fields
+        str: 具有標準化欄位的損益表數據
     """
     params = {
         "symbol": ticker,
     }
 
     return _make_api_request("INCOME_STATEMENT", params)
-

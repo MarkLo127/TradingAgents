@@ -6,7 +6,25 @@ from tradingagents.dataflows.config import get_config
 
 
 def create_fundamentals_analyst(llm):
+    """
+    建立一個基本面分析師節點。
+
+    Args:
+        llm: 用於分析的語言模型。
+
+    Returns:
+        一個處理基本面分析的節點函式。
+    """
     def fundamentals_analyst_node(state):
+        """
+        分析公司的基本面資訊。
+
+        Args:
+            state: 當前的代理狀態。
+
+        Returns:
+            更新後的代理狀態，包含分析報告和訊息。
+        """
         current_date = state["trade_date"]
         ticker = state["company_of_interest"]
         company_name = state["company_of_interest"]
@@ -19,23 +37,22 @@ def create_fundamentals_analyst(llm):
         ]
 
         system_message = (
-            "You are a researcher tasked with analyzing fundamental information over the past week about a company. Please write a comprehensive report of the company's fundamental information such as financial documents, company profile, basic company financials, and company financial history to gain a full view of the company's fundamental information to inform traders. Make sure to include as much detail as possible. Do not simply state the trends are mixed, provide detailed and finegrained analysis and insights that may help traders make decisions."
-            + " Make sure to append a Markdown table at the end of the report to organize key points in the report, organized and easy to read."
-            + " Use the available tools: `get_fundamentals` for comprehensive company analysis, `get_balance_sheet`, `get_cashflow`, and `get_income_statement` for specific financial statements.",
+            "您是一位研究員，負責分析一家公司過去一週的基本面資訊。請撰寫一份關於該公司基本面資訊的綜合報告，例如財務文件、公司簡介、基本財務狀況和公司財務歷史，以全面了解公司的基本面資訊，為交易員提供參考。請務必包含盡可能多的細節。不要只說趨勢好壞參半，請提供詳細且精細的分析和見解，以幫助交易員做出決策。"
+            + " 請務必在報告結尾附加一個 Markdown 表格，以整理報告中的要點，使其井然有序且易於閱讀。"
+            + " 使用可用的工具：`get_fundamentals` 用於全面的公司分析，`get_balance_sheet`、`get_cashflow` 和 `get_income_statement` 用於特定的財務報表。"
         )
 
         prompt = ChatPromptTemplate.from_messages(
             [
                 (
                     "system",
-                    "You are a helpful AI assistant, collaborating with other assistants."
-                    " Use the provided tools to progress towards answering the question."
-                    " If you are unable to fully answer, that's OK; another assistant with different tools"
-                    " will help where you left off. Execute what you can to make progress."
-                    " If you or any other assistant has the FINAL TRANSACTION PROPOSAL: **BUY/HOLD/SELL** or deliverable,"
-                    " prefix your response with FINAL TRANSACTION PROPOSAL: **BUY/HOLD/SELL** so the team knows to stop."
-                    " You have access to the following tools: {tool_names}.\n{system_message}"
-                    "For your reference, the current date is {current_date}. The company we want to look at is {ticker}",
+                    "您是一個樂於助人的人工智慧助理，與其他助理協同工作。"
+                    " 使用提供的工具來逐步回答問題。"
+                    " 如果您無法完全回答，沒關係；另一個擁有不同工具的助理會在您中斷的地方提供幫助。盡您所能取得進展。"
+                    " 如果您或任何其他助理有最終交易提案：**買入/持有/賣出** 或可交付成果，"
+                    " 請在您的回覆前加上「最終交易提案：**買入/持有/賣出**」，以便團隊知道停止。"
+                    " 您可以使用以下工具：{tool_names}。\n{system_message}"
+                    "供您參考，目前日期是 {current_date}。我們想關注的公司是 {ticker}",
                 ),
                 MessagesPlaceholder(variable_name="messages"),
             ]

@@ -7,17 +7,31 @@ from .config import get_config, DATA_DIR
 
 
 class StockstatsUtils:
+    """
+    一個提供股票統計功能的工具類別。
+    """
     @staticmethod
     def get_stock_stats(
-        symbol: Annotated[str, "ticker symbol for the company"],
+        symbol: Annotated[str, "公司的股票代碼"],
         indicator: Annotated[
-            str, "quantitative indicators based off of the stock data for the company"
+            str, "基於公司股票數據的量化指標"
         ],
         curr_date: Annotated[
-            str, "curr date for retrieving stock price data, YYYY-mm-dd"
+            str, "用於檢索股價數據的當前日期，格式為 YYYY-mm-dd"
         ],
     ):
-        # Get config and set up data directory path
+        """
+        獲取指定股票和指標的統計數據。
+
+        Args:
+            symbol (str): 公司的股票代碼。
+            indicator (str): 要計算的量化指標。
+            curr_date (str): 當前日期。
+
+        Returns:
+            float or str: 指標值或錯誤訊息。
+        """
+        # 獲取設定並設定數據目錄路徑
         config = get_config()
         online = config["data_vendors"]["technical_indicators"] != "local"
 
@@ -34,9 +48,9 @@ class StockstatsUtils:
                 )
                 df = wrap(data)
             except FileNotFoundError:
-                raise Exception("Stockstats fail: Yahoo Finance data not fetched yet!")
+                raise Exception("Stockstats 失敗：尚未獲取 Yahoo Finance 數據！")
         else:
-            # Get today's date as YYYY-mm-dd to add to cache
+            # 獲取今天的日期 (YYYY-mm-dd) 以添加到快取
             today_date = pd.Timestamp.today()
             curr_date = pd.to_datetime(curr_date)
 
@@ -45,7 +59,7 @@ class StockstatsUtils:
             start_date = start_date.strftime("%Y-%m-%d")
             end_date = end_date.strftime("%Y-%m-%d")
 
-            # Get config and ensure cache directory exists
+            # 獲取設定並確保快取目錄存在
             os.makedirs(config["data_cache_dir"], exist_ok=True)
 
             data_file = os.path.join(
@@ -72,11 +86,11 @@ class StockstatsUtils:
             df["Date"] = df["Date"].dt.strftime("%Y-%m-%d")
             curr_date = curr_date.strftime("%Y-%m-%d")
 
-        df[indicator]  # trigger stockstats to calculate the indicator
+        df[indicator]  # 觸發 stockstats 計算指標
         matching_rows = df[df["Date"].str.startswith(curr_date)]
 
         if not matching_rows.empty:
             indicator_value = matching_rows[indicator].values[0]
             return indicator_value
         else:
-            return "N/A: Not a trading day (weekend or holiday)"
+            return "N/A：非交易日 (週末或假日)"

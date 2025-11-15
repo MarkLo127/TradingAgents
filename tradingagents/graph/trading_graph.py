@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # TradingAgents/graph/trading_graph.py
 
 import os
@@ -6,12 +7,15 @@ import json
 from datetime import date
 from typing import Dict, Any, Tuple, List, Optional
 
+# 匯入各種 LLM 的聊天模型
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
 
+# 從 langgraph 匯入 ToolNode，用於將工具轉換為圖中的節點
 from langgraph.prebuilt import ToolNode
 
+# 匯入專案內部的代理、設定和狀態管理模組
 from tradingagents.agents import *
 from tradingagents.default_config import DEFAULT_CONFIG
 from tradingagents.agents.utils.memory import FinancialSituationMemory
@@ -22,7 +26,7 @@ from tradingagents.agents.utils.agent_states import (
 )
 from tradingagents.dataflows.config import set_config
 
-# Import the new abstract tool methods from agent_utils
+# 從 agent_utils 匯入新的抽象工具方法
 from tradingagents.agents.utils.agent_utils import (
     get_stock_data,
     get_indicators,
@@ -36,6 +40,7 @@ from tradingagents.agents.utils.agent_utils import (
     get_global_news
 )
 
+# 匯入圖的其他組件
 from .conditional_logic import ConditionalLogic
 from .setup import GraphSetup
 from .propagation import Propagator
@@ -44,7 +49,11 @@ from .signal_processing import SignalProcessor
 
 
 class TradingAgentsGraph:
-    """Main class that orchestrates the trading agents framework."""
+    """
+    協調交易代理框架的主要類別。
+    這個類別整合了所有組件，包括 LLM、記憶體、工具和圖的邏輯，
+    以執行一個完整的金融分析和交易決策流程。
+    """
 
     def __init__(
         self,
@@ -52,49 +61,51 @@ class TradingAgentsGraph:
         debug=False,
         config: Dict[str, Any] = None,
     ):
-        """Initialize the trading agents graph and components.
+        """
+        初始化交易代理圖和組件。
 
         Args:
-            selected_analysts: List of analyst types to include
-            debug: Whether to run in debug mode
-            config: Configuration dictionary. If None, uses default config
+            selected_analysts (list): 要包含的分析師類型列表。
+            debug (bool): 是否以除錯模式執行。
+            config (Dict[str, Any]): 設定字典。如果為 None，則使用預設設定。
         """
         self.debug = debug
         self.config = config or DEFAULT_CONFIG
 
-        # Update the interface's config
+        # 更新介面的設定
         set_config(self.config)
 
-        # Create necessary directories
+        # 建立必要的目錄
         os.makedirs(
             os.path.join(self.config["project_dir"], "dataflows/data_cache"),
             exist_ok=True,
         )
 
-        # Initialize LLMs
-        if self.config["llm_provider"].lower() == "openai" or self.config["llm_provider"] == "ollama" or self.config["llm_provider"] == "openrouter":
+        # 初始化 LLM
+        provider = self.config["llm_provider"].lower()
+        if provider in ["openai", "ollama", "openrouter"]:
             self.deep_thinking_llm = ChatOpenAI(model=self.config["deep_think_llm"], base_url=self.config["backend_url"])
             self.quick_thinking_llm = ChatOpenAI(model=self.config["quick_think_llm"], base_url=self.config["backend_url"])
-        elif self.config["llm_provider"].lower() == "anthropic":
+        elif provider == "anthropic":
             self.deep_thinking_llm = ChatAnthropic(model=self.config["deep_think_llm"], base_url=self.config["backend_url"])
             self.quick_thinking_llm = ChatAnthropic(model=self.config["quick_think_llm"], base_url=self.config["backend_url"])
-        elif self.config["llm_provider"].lower() == "google":
+        elif provider == "google":
             self.deep_thinking_llm = ChatGoogleGenerativeAI(model=self.config["deep_think_llm"])
             self.quick_thinking_llm = ChatGoogleGenerativeAI(model=self.config["quick_think_llm"])
         else:
-            raise ValueError(f"Unsupported LLM provider: {self.config['llm_provider']}")
+            raise ValueError(f"不支援的 LLM 供應商: {self.config['llm_provider']}")
         
-        # Initialize memories
+        # 初始化記憶體
         self.bull_memory = FinancialSituationMemory("bull_memory", self.config)
         self.bear_memory = FinancialSituationMemory("bear_memory", self.config)
         self.trader_memory = FinancialSituationMemory("trader_memory", self.config)
         self.invest_judge_memory = FinancialSituationMemory("invest_judge_memory", self.config)
         self.risk_manager_memory = FinancialSituationMemory("risk_manager_memory", self.config)
 
-        # Create tool nodes
+        # 建立工具節點
         self.tool_nodes = self._create_tool_nodes()
 
-        # Initialize components
+        # 初始化組件
         self.conditional_logic = ConditionalLogic()
         self.graph_setup = GraphSetup(
             self.quick_thinking_llm,
@@ -112,34 +123,34 @@ class TradingAgentsGraph:
         self.reflector = Reflector(self.quick_thinking_llm)
         self.signal_processor = SignalProcessor(self.quick_thinking_llm)
 
-        # State tracking
+        # 狀態追蹤
         self.curr_state = None
         self.ticker = None
-        self.log_states_dict = {}  # date to full state dict
+        self.log_states_dict = {}  # 日期到完整狀態字典的映射
 
-        # Set up the graph
+        # 設定圖
         self.graph = self.graph_setup.setup_graph(selected_analysts)
 
     def _create_tool_nodes(self) -> Dict[str, ToolNode]:
-        """Create tool nodes for different data sources using abstract methods."""
+        """使用抽象方法為不同的資料來源建立工具節點。"""
         return {
             "market": ToolNode(
                 [
-                    # Core stock data tools
+                    # 核心股票數據工具
                     get_stock_data,
-                    # Technical indicators
+                    # 技術指標
                     get_indicators,
                 ]
             ),
             "social": ToolNode(
                 [
-                    # News tools for social media analysis
+                    # 用於社群媒體分析的新聞工具
                     get_news,
                 ]
             ),
             "news": ToolNode(
                 [
-                    # News and insider information
+                    # 新聞和內部資訊
                     get_news,
                     get_global_news,
                     get_insider_sentiment,
@@ -148,7 +159,7 @@ class TradingAgentsGraph:
             ),
             "fundamentals": ToolNode(
                 [
-                    # Fundamental analysis tools
+                    # 基本面分析工具
                     get_fundamentals,
                     get_balance_sheet,
                     get_cashflow,
@@ -158,18 +169,27 @@ class TradingAgentsGraph:
         }
 
     def propagate(self, company_name, trade_date):
-        """Run the trading agents graph for a company on a specific date."""
+        """
+        在特定日期為某家公司執行交易代理圖。
+
+        Args:
+            company_name (str): 公司名稱或股票代碼。
+            trade_date (str): 交易日期。
+
+        Returns:
+            tuple: 包含最終狀態和處理後信號的元組。
+        """
 
         self.ticker = company_name
 
-        # Initialize state
+        # 初始化狀態
         init_agent_state = self.propagator.create_initial_state(
             company_name, trade_date
         )
         args = self.propagator.get_graph_args()
 
         if self.debug:
-            # Debug mode with tracing
+            # 帶有追蹤的除錯模式
             trace = []
             for chunk in self.graph.stream(init_agent_state, **args):
                 if len(chunk["messages"]) == 0:
@@ -180,20 +200,20 @@ class TradingAgentsGraph:
 
             final_state = trace[-1]
         else:
-            # Standard mode without tracing
+            # 不帶追蹤的標準模式
             final_state = self.graph.invoke(init_agent_state, **args)
 
-        # Store current state for reflection
+        # 儲存當前狀態以供反思
         self.curr_state = final_state
 
-        # Log state
+        # 記錄狀態
         self._log_state(trade_date, final_state)
 
-        # Return decision and processed signal
+        # 返回決策和處理後的信號
         return final_state, self.process_signal(final_state["final_trade_decision"])
 
     def _log_state(self, trade_date, final_state):
-        """Log the final state to a JSON file."""
+        """將最終狀態記錄到 JSON 檔案中。"""
         self.log_states_dict[str(trade_date)] = {
             "company_of_interest": final_state["company_of_interest"],
             "trade_date": final_state["trade_date"],
@@ -224,7 +244,7 @@ class TradingAgentsGraph:
             "final_trade_decision": final_state["final_trade_decision"],
         }
 
-        # Save to file
+        # 儲存到檔案
         directory = Path(f"eval_results/{self.ticker}/TradingAgentsStrategy_logs/")
         directory.mkdir(parents=True, exist_ok=True)
 
@@ -235,7 +255,10 @@ class TradingAgentsGraph:
             json.dump(self.log_states_dict, f, indent=4)
 
     def reflect_and_remember(self, returns_losses):
-        """Reflect on decisions and update memory based on returns."""
+        """
+        根據回報反思決策並更新記憶。
+        這個方法會觸發對每個相關代理的決策進行反思的過程。
+        """
         self.reflector.reflect_bull_researcher(
             self.curr_state, returns_losses, self.bull_memory
         )
@@ -253,5 +276,8 @@ class TradingAgentsGraph:
         )
 
     def process_signal(self, full_signal):
-        """Process a signal to extract the core decision."""
+        """
+        處理信號以提取核心決策。
+        將原始的 LLM 輸出轉換為標準化的交易信號（例如，BUY, SELL, HOLD）。
+        """
         return self.signal_processor.process_signal(full_signal)

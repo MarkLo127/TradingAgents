@@ -8,26 +8,26 @@ DEFAULT_CONFIG = {
         os.path.abspath(os.path.join(os.path.dirname(__file__), ".")),
         "dataflows/data_cache",
     ),
-    # LLM settings
+    # LLM 設定
     "llm_provider": "openai",
     "deep_think_llm": "o4-mini",
     "quick_think_llm": "gpt-4o-mini",
     "backend_url": "https://api.openai.com/v1",
-    # Debate and discussion settings
+    # 辯論與討論設定
     "max_debate_rounds": 1,
     "max_risk_discuss_rounds": 1,
     "max_recur_limit": 100,
-    # Data vendor configuration
-    # Category-level configuration (default for all tools in category)
+    # 資料供應商設定
+    # 類別層級設定 (該類別所有工具的預設值)
     "data_vendors": {
-        "core_stock_apis": "yfinance",       # Options: yfinance, alpha_vantage, local
-        "technical_indicators": "yfinance",  # Options: yfinance, alpha_vantage, local
-        "fundamental_data": "alpha_vantage", # Options: openai, alpha_vantage, local
-        "news_data": "alpha_vantage",        # Options: openai, alpha_vantage, google, local
+        "core_stock_apis": "yfinance",       # 選項: yfinance, alpha_vantage, local
+        "technical_indicators": "yfinance",  # 選項: yfinance, alpha_vantage, local
+        "fundamental_data": "alpha_vantage", # 選項: openai, alpha_vantage, local
+        "news_data": "alpha_vantage",        # 選項: openai, alpha_vantage, google, local
     },
-    # Tool-level configuration (takes precedence over category-level)
+    # 工具層級設定 (優先於類別層級設定)
     "tool_vendors": {
-        # Example: "get_stock_data": "alpha_vantage",  # Override category default
-        # Example: "get_news": "openai",               # Override category default
+        # 範例: "get_stock_data": "alpha_vantage",  # 覆寫類別預設值
+        # 範例: "get_news": "openai",               # 覆寫類別預設值
     },
 }

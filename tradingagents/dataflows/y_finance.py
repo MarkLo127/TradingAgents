@@ -6,165 +6,188 @@ import os
 from .stockstats_utils import StockstatsUtils
 
 def get_YFin_data_online(
-    symbol: Annotated[str, "ticker symbol of the company"],
-    start_date: Annotated[str, "Start date in yyyy-mm-dd format"],
-    end_date: Annotated[str, "End date in yyyy-mm-dd format"],
+    symbol: Annotated[str, "公司的股票代碼"],
+    start_date: Annotated[str, "開始日期，格式為 yyyy-mm-dd"],
+    end_date: Annotated[str, "結束日期，格式為 yyyy-mm-dd"],
 ):
+    """
+    從 Yahoo Finance 線上獲取股票數據。
+
+    Args:
+        symbol (str): 公司的股票代碼。
+        start_date (str): 開始日期。
+        end_date (str): 結束日期。
+
+    Returns:
+        str: 包含股票數據的 CSV 格式字串。
+    """
 
     datetime.strptime(start_date, "%Y-%m-%d")
     datetime.strptime(end_date, "%Y-%m-%d")
 
-    # Create ticker object
+    # 建立股票代碼物件
     ticker = yf.Ticker(symbol.upper())
 
-    # Fetch historical data for the specified date range
+    # 獲取指定日期範圍的歷史數據
     data = ticker.history(start=start_date, end=end_date)
 
-    # Check if data is empty
+    # 檢查數據是否為空
     if data.empty:
         return (
-            f"No data found for symbol '{symbol}' between {start_date} and {end_date}"
+            f"找不到 '{symbol}' 在 {start_date} 和 {end_date} 之間的數據"
         )
 
-    # Remove timezone info from index for cleaner output
+    # 從索引中移除時區資訊以獲得更清晰的輸出
     if data.index.tz is not None:
         data.index = data.index.tz_localize(None)
 
-    # Round numerical values to 2 decimal places for cleaner display
+    # 將數值四捨五入到小數點後兩位以便更清晰地顯示
     numeric_columns = ["Open", "High", "Low", "Close", "Adj Close"]
     for col in numeric_columns:
         if col in data.columns:
             data[col] = data[col].round(2)
 
-    # Convert DataFrame to CSV string
+    # 將 DataFrame 轉換為 CSV 字串
     csv_string = data.to_csv()
 
-    # Add header information
-    header = f"# Stock data for {symbol.upper()} from {start_date} to {end_date}\n"
-    header += f"# Total records: {len(data)}\n"
-    header += f"# Data retrieved on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+    # 新增標頭資訊
+    header = f"# {symbol.upper()} 從 {start_date} 到 {end_date} 的股票數據\n"
+    header += f"# 總記錄數：{len(data)}\n"
+    header += f"# 數據檢索時間：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
 
     return header + csv_string
 
 def get_stock_stats_indicators_window(
-    symbol: Annotated[str, "ticker symbol of the company"],
-    indicator: Annotated[str, "technical indicator to get the analysis and report of"],
+    symbol: Annotated[str, "公司的股票代碼"],
+    indicator: Annotated[str, "要獲取分析和報告的技術指標"],
     curr_date: Annotated[
-        str, "The current trading date you are trading on, YYYY-mm-dd"
+        str, "您正在交易的當前交易日期，格式為 YYYY-mm-dd"
     ],
-    look_back_days: Annotated[int, "how many days to look back"],
+    look_back_days: Annotated[int, "回溯天數"],
 ) -> str:
+    """
+    獲取給定股票在一個時間窗口內的技術指標。
+
+    Args:
+        symbol (str): 公司的股票代碼。
+        indicator (str): 技術指標。
+        curr_date (str): 當前日期。
+        look_back_days (int): 回溯天數。
+
+    Returns:
+        str: 包含指標值的格式化字串。
+    """
 
     best_ind_params = {
-        # Moving Averages
+        # 移動平均線
         "close_50_sma": (
-            "50 SMA: A medium-term trend indicator. "
-            "Usage: Identify trend direction and serve as dynamic support/resistance. "
-            "Tips: It lags price; combine with faster indicators for timely signals."
+            "50 SMA：一個中期趨勢指標。"
+            "用法：識別趨勢方向並作為動態支撐/阻力。"
+            "提示：它滯後於價格；與更快的指標結合以獲得及時信號。"
         ),
         "close_200_sma": (
-            "200 SMA: A long-term trend benchmark. "
-            "Usage: Confirm overall market trend and identify golden/death cross setups. "
-            "Tips: It reacts slowly; best for strategic trend confirmation rather than frequent trading entries."
+            "200 SMA：一個長期趨勢基準。"
+            "用法：確認整體市場趨勢並識別黃金/死亡交叉設置。"
+            "提示：它反應緩慢；最適合戰略趨勢確認，而非頻繁的交易入場。"
         ),
         "close_10_ema": (
-            "10 EMA: A responsive short-term average. "
-            "Usage: Capture quick shifts in momentum and potential entry points. "
-            "Tips: Prone to noise in choppy markets; use alongside longer averages for filtering false signals."
+            "10 EMA：一個反應靈敏的短期平均線。"
+            "用法：捕捉動能的快速轉變和潛在的入場點。"
+            "提示：在震盪市場中容易產生噪音；與較長的平均線一起使用以過濾錯誤信號。"
         ),
-        # MACD Related
+        # MACD 相關
         "macd": (
-            "MACD: Computes momentum via differences of EMAs. "
-            "Usage: Look for crossovers and divergence as signals of trend changes. "
-            "Tips: Confirm with other indicators in low-volatility or sideways markets."
+            "MACD：通過 EMA 的差異計算動能。"
+            "用法：尋找交叉和背離作為趨勢變化的信號。"
+            "提示：在低波動性或橫盤市場中與其他指標確認。"
         ),
         "macds": (
-            "MACD Signal: An EMA smoothing of the MACD line. "
-            "Usage: Use crossovers with the MACD line to trigger trades. "
-            "Tips: Should be part of a broader strategy to avoid false positives."
+            "MACD 信號線：MACD 線的 EMA 平滑。"
+            "用法：使用與 MACD 線的交叉來觸發交易。"
+            "提示：應作為更廣泛策略的一部分以避免誤報。"
         ),
         "macdh": (
-            "MACD Histogram: Shows the gap between the MACD line and its signal. "
-            "Usage: Visualize momentum strength and spot divergence early. "
-            "Tips: Can be volatile; complement with additional filters in fast-moving markets."
+            "MACD 柱狀圖：顯示 MACD 線與其信號線之間的差距。"
+            "用法：可視化動能強度並及早發現背離。"
+            "提示：可能不穩定；在快速變動的市場中輔以額外的過濾器。"
         ),
-        # Momentum Indicators
+        # 動能指標
         "rsi": (
-            "RSI: Measures momentum to flag overbought/oversold conditions. "
-            "Usage: Apply 70/30 thresholds and watch for divergence to signal reversals. "
-            "Tips: In strong trends, RSI may remain extreme; always cross-check with trend analysis."
+            "RSI：衡量動能以標記超買/超賣狀況。"
+            "用法：應用 70/30 閾值並觀察背離以發出反轉信號。"
+            "提示：在強勁趨勢中，RSI 可能保持極端；務必與趨勢分析交叉檢查。"
         ),
-        # Volatility Indicators
+        # 波動性指標
         "boll": (
-            "Bollinger Middle: A 20 SMA serving as the basis for Bollinger Bands. "
-            "Usage: Acts as a dynamic benchmark for price movement. "
-            "Tips: Combine with the upper and lower bands to effectively spot breakouts or reversals."
+            "布林帶中軌：作為布林帶基礎的 20 SMA。"
+            "用法：作為價格變動的動態基準。"
+            "提示：與上下軌結合以有效發現突破或反轉。"
         ),
         "boll_ub": (
-            "Bollinger Upper Band: Typically 2 standard deviations above the middle line. "
-            "Usage: Signals potential overbought conditions and breakout zones. "
-            "Tips: Confirm signals with other tools; prices may ride the band in strong trends."
+            "布林帶上軌：通常比中軌高 2 個標準差。"
+            "用法：發出潛在超買狀況和突破區域的信號。"
+            "提示：與其他工具確認信號；在強勁趨勢中價格可能會沿著軌道運行。"
         ),
         "boll_lb": (
-            "Bollinger Lower Band: Typically 2 standard deviations below the middle line. "
-            "Usage: Indicates potential oversold conditions. "
-            "Tips: Use additional analysis to avoid false reversal signals."
+            "布林帶下軌：通常比中軌低 2 個標準差。"
+            "用法：指示潛在的超賣狀況。"
+            "提示：使用額外分析以避免錯誤的反轉信號。"
         ),
         "atr": (
-            "ATR: Averages true range to measure volatility. "
-            "Usage: Set stop-loss levels and adjust position sizes based on current market volatility. "
-            "Tips: It's a reactive measure, so use it as part of a broader risk management strategy."
+            "ATR：平均真實波幅，用於衡量波動性。"
+            "用法：根據當前市場波動性設置止損水平和調整頭寸大小。"
+            "提示：這是一個反應性指標，因此請將其用作更廣泛風險管理策略的一部分。"
         ),
-        # Volume-Based Indicators
+        # 成交量指標
         "vwma": (
-            "VWMA: A moving average weighted by volume. "
-            "Usage: Confirm trends by integrating price action with volume data. "
-            "Tips: Watch for skewed results from volume spikes; use in combination with other volume analyses."
+            "VWMA：成交量加權移動平均線。"
+            "用法：通過將價格行為與成交量數據相結合來確認趨勢。"
+            "提示：注意成交量激增導致的結果偏差；與其他成交量分析結合使用。"
         ),
         "mfi": (
-            "MFI: The Money Flow Index is a momentum indicator that uses both price and volume to measure buying and selling pressure. "
-            "Usage: Identify overbought (>80) or oversold (<20) conditions and confirm the strength of trends or reversals. "
-            "Tips: Use alongside RSI or MACD to confirm signals; divergence between price and MFI can indicate potential reversals."
+            "MFI：資金流動指數是一種動能指標，使用價格和成交量來衡量買賣壓力。"
+            "用法：識別超買 (>80) 或超賣 (<20) 狀況，並確認趨勢或反轉的強度。"
+            "提示：與 RSI 或 MACD 一起使用以確認信號；價格與 MFI 之間的背離可能表示潛在的反轉。"
         ),
     }
 
     if indicator not in best_ind_params:
         raise ValueError(
-            f"Indicator {indicator} is not supported. Please choose from: {list(best_ind_params.keys())}"
+            f"不支持指標 {indicator}。請從以下選項中選擇：{list(best_ind_params.keys())}"
         )
 
     end_date = curr_date
     curr_date_dt = datetime.strptime(curr_date, "%Y-%m-%d")
     before = curr_date_dt - relativedelta(days=look_back_days)
 
-    # Optimized: Get stock data once and calculate indicators for all dates
+    # 優化：一次性獲取股票數據並計算所有日期的指標
     try:
         indicator_data = _get_stock_stats_bulk(symbol, indicator, curr_date)
         
-        # Generate the date range we need
+        # 生成我們需要的日期範圍
         current_dt = curr_date_dt
         date_values = []
         
         while current_dt >= before:
             date_str = current_dt.strftime('%Y-%m-%d')
             
-            # Look up the indicator value for this date
+            # 查找此日期的指標值
             if date_str in indicator_data:
                 indicator_value = indicator_data[date_str]
             else:
-                indicator_value = "N/A: Not a trading day (weekend or holiday)"
+                indicator_value = "N/A：非交易日 (週末或假日)"
             
             date_values.append((date_str, indicator_value))
             current_dt = current_dt - relativedelta(days=1)
         
-        # Build the result string
+        # 建立結果字串
         ind_string = ""
         for date_str, value in date_values:
             ind_string += f"{date_str}: {value}\n"
         
     except Exception as e:
-        print(f"Error getting bulk stockstats data: {e}")
-        # Fallback to original implementation if bulk method fails
+        print(f"獲取批量 stockstats 數據時出錯：{e}")
+        # 如果批量方法失敗，則回退到原始實現
         ind_string = ""
         curr_date_dt = datetime.strptime(curr_date, "%Y-%m-%d")
         while curr_date_dt >= before:
@@ -175,24 +198,24 @@ def get_stock_stats_indicators_window(
             curr_date_dt = curr_date_dt - relativedelta(days=1)
 
     result_str = (
-        f"## {indicator} values from {before.strftime('%Y-%m-%d')} to {end_date}:\n\n"
+        f"## 從 {before.strftime('%Y-%m-%d')} 到 {end_date} 的 {indicator} 值：\n\n"
         + ind_string
         + "\n\n"
-        + best_ind_params.get(indicator, "No description available.")
+        + best_ind_params.get(indicator, "無可用描述。")
     )
 
     return result_str
 
 
 def _get_stock_stats_bulk(
-    symbol: Annotated[str, "ticker symbol of the company"],
-    indicator: Annotated[str, "technical indicator to calculate"],
-    curr_date: Annotated[str, "current date for reference"]
+    symbol: Annotated[str, "公司的股票代碼"],
+    indicator: Annotated[str, "要計算的技術指標"],
+    curr_date: Annotated[str, "供參考的當前日期"]
 ) -> dict:
     """
-    Optimized bulk calculation of stock stats indicators.
-    Fetches data once and calculates indicator for all available dates.
-    Returns dict mapping date strings to indicator values.
+    優化的股票統計指標批量計算。
+    一次性獲取數據並計算所有可用日期的指標。
+    返回將日期字串映射到指標值的字典。
     """
     from .config import get_config
     import pandas as pd
@@ -203,7 +226,7 @@ def _get_stock_stats_bulk(
     online = config["data_vendors"]["technical_indicators"] != "local"
     
     if not online:
-        # Local data path
+        # 本地數據路徑
         try:
             data = pd.read_csv(
                 os.path.join(
@@ -213,9 +236,9 @@ def _get_stock_stats_bulk(
             )
             df = wrap(data)
         except FileNotFoundError:
-            raise Exception("Stockstats fail: Yahoo Finance data not fetched yet!")
+            raise Exception("Stockstats 失敗：尚未獲取 Yahoo Finance 數據！")
     else:
-        # Online data fetching with caching
+        # 帶有快取的線上數據獲取
         today_date = pd.Timestamp.today()
         curr_date_dt = pd.to_datetime(curr_date)
         
@@ -249,16 +272,16 @@ def _get_stock_stats_bulk(
         df = wrap(data)
         df["Date"] = df["Date"].dt.strftime("%Y-%m-%d")
     
-    # Calculate the indicator for all rows at once
-    df[indicator]  # This triggers stockstats to calculate the indicator
+    # 一次性計算所有行的指標
+    df[indicator]  # 這會觸發 stockstats 計算指標
     
-    # Create a dictionary mapping date strings to indicator values
+    # 建立一個將日期字串映射到指標值的字典
     result_dict = {}
     for _, row in df.iterrows():
         date_str = row["Date"]
         indicator_value = row[indicator]
         
-        # Handle NaN/None values
+        # 處理 NaN/None 值
         if pd.isna(indicator_value):
             result_dict[date_str] = "N/A"
         else:
@@ -268,12 +291,23 @@ def _get_stock_stats_bulk(
 
 
 def get_stockstats_indicator(
-    symbol: Annotated[str, "ticker symbol of the company"],
-    indicator: Annotated[str, "technical indicator to get the analysis and report of"],
+    symbol: Annotated[str, "公司的股票代碼"],
+    indicator: Annotated[str, "要獲取分析和報告的技術指標"],
     curr_date: Annotated[
-        str, "The current trading date you are trading on, YYYY-mm-dd"
+        str, "您正在交易的當前交易日期，格式為 YYYY-mm-dd"
     ],
 ) -> str:
+    """
+    獲取單個日期的 stockstats 指標。
+
+    Args:
+        symbol (str): 股票代碼。
+        indicator (str): 指標名稱。
+        curr_date (str): 日期。
+
+    Returns:
+        str: 指標值。
+    """
 
     curr_date_dt = datetime.strptime(curr_date, "%Y-%m-%d")
     curr_date = curr_date_dt.strftime("%Y-%m-%d")
@@ -286,7 +320,7 @@ def get_stockstats_indicator(
         )
     except Exception as e:
         print(
-            f"Error getting stockstats indicator data for indicator {indicator} on {curr_date}: {e}"
+            f"獲取指標 {indicator} 在 {curr_date} 的 stockstats 指標數據時出錯：{e}"
         )
         return ""
 
@@ -294,11 +328,11 @@ def get_stockstats_indicator(
 
 
 def get_balance_sheet(
-    ticker: Annotated[str, "ticker symbol of the company"],
-    freq: Annotated[str, "frequency of data: 'annual' or 'quarterly'"] = "quarterly",
-    curr_date: Annotated[str, "current date (not used for yfinance)"] = None
+    ticker: Annotated[str, "公司的股票代碼"],
+    freq: Annotated[str, "數據頻率：'annual' 或 'quarterly'"] = "quarterly",
+    curr_date: Annotated[str, "當前日期 (yfinance 未使用)"] = None
 ):
-    """Get balance sheet data from yfinance."""
+    """從 yfinance 獲取資產負債表數據。"""
     try:
         ticker_obj = yf.Ticker(ticker.upper())
         
@@ -308,27 +342,27 @@ def get_balance_sheet(
             data = ticker_obj.balance_sheet
             
         if data.empty:
-            return f"No balance sheet data found for symbol '{ticker}'"
+            return f"找不到 '{ticker}' 的資產負債表數據"
             
-        # Convert to CSV string for consistency with other functions
+        # 為與其他函式保持一致，轉換為 CSV 字串
         csv_string = data.to_csv()
         
-        # Add header information
-        header = f"# Balance Sheet data for {ticker.upper()} ({freq})\n"
-        header += f"# Data retrieved on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+        # 新增標頭資訊
+        header = f"# {ticker.upper()} 的資產負債表數據 ({freq})\n"
+        header += f"# 數據檢索時間：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
         
         return header + csv_string
         
     except Exception as e:
-        return f"Error retrieving balance sheet for {ticker}: {str(e)}"
+        return f"檢索 {ticker} 的資產負債表時出錯：{str(e)}"
 
 
 def get_cashflow(
-    ticker: Annotated[str, "ticker symbol of the company"],
-    freq: Annotated[str, "frequency of data: 'annual' or 'quarterly'"] = "quarterly",
-    curr_date: Annotated[str, "current date (not used for yfinance)"] = None
+    ticker: Annotated[str, "公司的股票代碼"],
+    freq: Annotated[str, "數據頻率：'annual' 或 'quarterly'"] = "quarterly",
+    curr_date: Annotated[str, "當前日期 (yfinance 未使用)"] = None
 ):
-    """Get cash flow data from yfinance."""
+    """從 yfinance 獲取現金流量數據。"""
     try:
         ticker_obj = yf.Ticker(ticker.upper())
         
@@ -338,27 +372,27 @@ def get_cashflow(
             data = ticker_obj.cashflow
             
         if data.empty:
-            return f"No cash flow data found for symbol '{ticker}'"
+            return f"找不到 '{ticker}' 的現金流量數據"
             
-        # Convert to CSV string for consistency with other functions
+        # 為與其他函式保持一致，轉換為 CSV 字串
         csv_string = data.to_csv()
         
-        # Add header information
-        header = f"# Cash Flow data for {ticker.upper()} ({freq})\n"
-        header += f"# Data retrieved on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+        # 新增標頭資訊
+        header = f"# {ticker.upper()} 的現金流量數據 ({freq})\n"
+        header += f"# 數據檢索時間：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
         
         return header + csv_string
         
     except Exception as e:
-        return f"Error retrieving cash flow for {ticker}: {str(e)}"
+        return f"檢索 {ticker} 的現金流量時出錯：{str(e)}"
 
 
 def get_income_statement(
-    ticker: Annotated[str, "ticker symbol of the company"],
-    freq: Annotated[str, "frequency of data: 'annual' or 'quarterly'"] = "quarterly",
-    curr_date: Annotated[str, "current date (not used for yfinance)"] = None
+    ticker: Annotated[str, "公司的股票代碼"],
+    freq: Annotated[str, "數據頻率：'annual' 或 'quarterly'"] = "quarterly",
+    curr_date: Annotated[str, "當前日期 (yfinance 未使用)"] = None
 ):
-    """Get income statement data from yfinance."""
+    """從 yfinance 獲取損益表數據。"""
     try:
         ticker_obj = yf.Ticker(ticker.upper())
         
@@ -368,40 +402,40 @@ def get_income_statement(
             data = ticker_obj.income_stmt
             
         if data.empty:
-            return f"No income statement data found for symbol '{ticker}'"
+            return f"找不到 '{ticker}' 的損益表數據"
             
-        # Convert to CSV string for consistency with other functions
+        # 為與其他函式保持一致，轉換為 CSV 字串
         csv_string = data.to_csv()
         
-        # Add header information
-        header = f"# Income Statement data for {ticker.upper()} ({freq})\n"
-        header += f"# Data retrieved on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+        # 新增標頭資訊
+        header = f"# {ticker.upper()} 的損益表數據 ({freq})\n"
+        header += f"# 數據檢索時間：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
         
         return header + csv_string
         
     except Exception as e:
-        return f"Error retrieving income statement for {ticker}: {str(e)}"
+        return f"檢索 {ticker} 的損益表時出錯：{str(e)}"
 
 
 def get_insider_transactions(
-    ticker: Annotated[str, "ticker symbol of the company"]
+    ticker: Annotated[str, "公司的股票代碼"]
 ):
-    """Get insider transactions data from yfinance."""
+    """從 yfinance 獲取內部人士交易數據。"""
     try:
         ticker_obj = yf.Ticker(ticker.upper())
         data = ticker_obj.insider_transactions
         
         if data is None or data.empty:
-            return f"No insider transactions data found for symbol '{ticker}'"
+            return f"找不到 '{ticker}' 的內部人士交易數據"
             
-        # Convert to CSV string for consistency with other functions
+        # 為與其他函式保持一致，轉換為 CSV 字串
         csv_string = data.to_csv()
         
-        # Add header information
-        header = f"# Insider Transactions data for {ticker.upper()}\n"
-        header += f"# Data retrieved on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+        # 新增標頭資訊
+        header = f"# {ticker.upper()} 的內部人士交易數據\n"
+        header += f"# 數據檢索時間：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
         
         return header + csv_string
         
     except Exception as e:
-        return f"Error retrieving insider transactions for {ticker}: {str(e)}"
+        return f"檢索 {ticker} 的內部人士交易時出錯：{str(e)}"
