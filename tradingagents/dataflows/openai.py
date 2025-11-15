@@ -1,3 +1,4 @@
+import os
 from openai import OpenAI
 from .config import get_config
 
@@ -15,7 +16,9 @@ def get_stock_news_openai(query, start_date, end_date):
         str: 模型的文字回應。
     """
     config = get_config()
-    client = OpenAI(base_url=config["backend_url"])
+    # Get the OpenAI API key from environment variable
+    openai_api_key = os.getenv("OPENAI_API_KEY")
+    client = OpenAI(base_url=config["backend_url"], api_key=openai_api_key)
 
     response = client.responses.create(
         model=config["quick_think_llm"],
@@ -61,7 +64,9 @@ def get_global_news_openai(curr_date, look_back_days=7, limit=5):
         str: 模型的文字回應。
     """
     config = get_config()
-    client = OpenAI(base_url=config["backend_url"])
+    # Get the OpenAI API key from environment variable
+    openai_api_key = os.getenv("OPENAI_API_KEY")
+    client = OpenAI(base_url=config["backend_url"], api_key=openai_api_key)
 
     response = client.responses.create(
         model=config["quick_think_llm"],
@@ -106,7 +111,9 @@ def get_fundamentals_openai(ticker, curr_date):
         str: 模型的文字回應。
     """
     config = get_config()
-    client = OpenAI(base_url=config["backend_url"])
+    # Get the OpenAI API key from environment variable
+    openai_api_key = os.getenv("OPENAI_API_KEY")
+    client = OpenAI(base_url=config["backend_url"], api_key=openai_api_key)
 
     response = client.responses.create(
         model=config["quick_think_llm"],
