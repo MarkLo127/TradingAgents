@@ -3,8 +3,8 @@ from tradingagents.default_config import DEFAULT_CONFIG
 
 from dotenv import load_dotenv
 
-# 從 .env 檔案載入環境變數
-load_dotenv()
+# 從 .env 檔案載入環境變數（強制覆蓋系統環境變數）
+load_dotenv(override=True)
 
 # 建立自訂設定
 config = DEFAULT_CONFIG.copy()

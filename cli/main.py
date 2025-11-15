@@ -7,8 +7,8 @@ from functools import wraps
 from rich.console import Console
 from dotenv import load_dotenv
 
-# 從 .env 檔案載入環境變數
-load_dotenv()
+# 從 .env 檔案載入環境變數（強制覆蓋系統環境變數）
+load_dotenv(override=True)
 from rich.panel import Panel
 from rich.spinner import Spinner
 from rich.live import Live
