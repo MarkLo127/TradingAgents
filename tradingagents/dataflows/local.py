@@ -418,6 +418,18 @@ def get_reddit_global_news(
     Returns:
         str: 包含 Reddit 上最新新聞文章貼文的格式化字串。
     """
+    
+    # 檢查數據目錄是否存在
+    reddit_data_path = os.path.join(DATA_DIR, "reddit_data")
+    global_news_path = os.path.join(reddit_data_path, "global_news")
+    
+    if not os.path.exists(reddit_data_path):
+        print(f"警告：Reddit 數據目錄不存在: {reddit_data_path}。請確保數據目錄已正確設置。")
+        return ""
+    
+    if not os.path.exists(global_news_path):
+        print(f"警告：全球新聞數據目錄不存在: {global_news_path}。請確保已下載 Reddit 全球新聞數據。")
+        return ""
 
     curr_date_dt = datetime.strptime(curr_date, "%Y-%m-%d")
     before = curr_date_dt - relativedelta(days=look_back_days)
@@ -432,13 +444,17 @@ def get_reddit_global_news(
 
     while curr_iter_date <= curr_date_dt:
         curr_date_str = curr_iter_date.strftime("%Y-%m-%d")
-        fetch_result = fetch_top_from_category(
-            "global_news",
-            curr_date_str,
-            limit,
-            data_path=os.path.join(DATA_DIR, "reddit_data"),
-        )
-        posts.extend(fetch_result)
+        try:
+            fetch_result = fetch_top_from_category(
+                "global_news",
+                curr_date_str,
+                limit,
+                data_path=reddit_data_path,
+            )
+            posts.extend(fetch_result)
+        except (FileNotFoundError, ValueError) as e:
+            # 如果特定日期的數據不存在，繼續下一天
+            print(f"警告：無法獲取 {curr_date_str} 的數據: {e}")
         curr_iter_date += relativedelta(days=1)
         pbar.update(1)
 
@@ -471,6 +487,18 @@ def get_reddit_company_news(
     Returns:
         str: 包含 Reddit 上新聞文章貼文的格式化字串。
     """
+    
+    # 檢查數據目錄是否存在
+    reddit_data_path = os.path.join(DATA_DIR, "reddit_data")
+    company_news_path = os.path.join(reddit_data_path, "company_news")
+    
+    if not os.path.exists(reddit_data_path):
+        print(f"警告：Reddit 數據目錄不存在: {reddit_data_path}。請確保數據目錄已正確設置。")
+        return ""
+    
+    if not os.path.exists(company_news_path):
+        print(f"警告：公司新聞數據目錄不存在: {company_news_path}。請確保已下載 Reddit 公司新聞數據。")
+        return ""
 
     start_date_dt = datetime.strptime(start_date, "%Y-%m-%d")
     end_date_dt = datetime.strptime(end_date, "%Y-%m-%d")
@@ -490,14 +518,18 @@ def get_reddit_company_news(
 
     while curr_date <= end_date_dt:
         curr_date_str = curr_date.strftime("%Y-%m-%d")
-        fetch_result = fetch_top_from_category(
-            "company_news",
-            curr_date_str,
-            max_per_day,
-            query,
-            data_path=os.path.join(DATA_DIR, "reddit_data"),
-        )
-        posts.extend(fetch_result)
+        try:
+            fetch_result = fetch_top_from_category(
+                "company_news",
+                curr_date_str,
+                max_per_day,
+                query,
+                data_path=reddit_data_path,
+            )
+            posts.extend(fetch_result)
+        except (FileNotFoundError, ValueError) as e:
+            # 如果特定日期的數據不存在，繼續下一天
+            print(f"警告：無法獲取 {curr_date_str} 的數據: {e}")
         curr_date += relativedelta(days=1)
 
         pbar.update(1)
