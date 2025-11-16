@@ -47,6 +47,24 @@ def create_safe_debator(llm):
         # 獲取交易員的決策
         trader_decision = state["trader_investment_plan"]
 
+        # 定義文本截斷函數以避免超過 token 限制
+        def truncate_text(text, max_chars):
+            """截斷文本到指定字符數"""
+            if len(text) <= max_chars:
+                return text
+            return text[:max_chars] + "\n...(內容已截斷)"
+        
+        # 截斷各類輸入以控制 token 使用量
+        # 模型限制: 8192 tokens，目標: < 3500 字符
+        market_research_report = truncate_text(market_research_report, 500)
+        sentiment_report = truncate_text(sentiment_report, 500)
+        news_report = truncate_text(news_report, 600)
+        fundamentals_report = truncate_text(fundamentals_report, 600)
+        trader_decision = truncate_text(trader_decision, 800)
+        history = truncate_text(history, 400)
+        current_risky_response = truncate_text(current_risky_response, 300)
+        current_neutral_response = truncate_text(current_neutral_response, 300)
+
         # 建立提示 (prompt)
         prompt = f"""作為安全/保守風險分析師，您的主要目標是保護資產、最小化波動性並確保穩定可靠的增長。您優先考慮穩定性、安全性和風險緩解，仔細評估潛在損失、經濟衰退和市場波動。在評估交易員的決策或計畫時，請批判性地審查高風險元素，指出決策可能使公司面臨過度風險的地方，以及更謹慎的替代方案可以在何處確保長期收益。這是交易員的決策：
 

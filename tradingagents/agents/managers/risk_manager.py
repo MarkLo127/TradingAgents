@@ -41,16 +41,41 @@ def create_risk_manager(llm, memory):
         sentiment_report = state["sentiment_report"]
         trader_plan = state["investment_plan"]
 
+        # 定義文本截斷函數以避免超過 token 限制
+        def truncate_text(text, max_chars):
+            """截斷文本到指定字符數"""
+            if len(text) <= max_chars:
+                return text
+            return text[:max_chars] + "\n...(內容已截斷)"
+        
+        # 為每個報告設置合理的字符限制
+        # 模型 gpt-4o-mini 的限制是 8192 tokens
+        # 混合中英文估算: 1 字符 ≈ 1.5-2 tokens (取保守值)
+        # 目標: 總字符數 < 3500 字符 (約 5250-7000 tokens，留足夠 tokens 給 completion)
+        market_research_report = truncate_text(market_research_report, 500)
+        sentiment_report = truncate_text(sentiment_report, 500)
+        news_report = truncate_text(news_report, 600)
+        fundamentals_report = truncate_text(fundamentals_report, 600)
+        trader_plan = truncate_text(trader_plan, 800)
+        
         # 整合當前情況
         curr_situation = f"{market_research_report}\n\n{sentiment_report}\n\n{news_report}\n\n{fundamentals_report}"
         
         # 從記憶體中獲取過去相似情況的經驗
         past_memories = memory.get_memories(curr_situation, n_matches=2)
 
-        # 將過去的經驗格式化為字串
+        # 將過去的經驗格式化為字串（限制長度）
         past_memory_str = ""
         for i, rec in enumerate(past_memories, 1):
-            past_memory_str += rec["recommendation"] + "\n\n"
+            recommendation = rec["recommendation"]
+            # 限制每條記憶的長度
+            if len(recommendation) > 200:
+                recommendation = recommendation[:200] + "...(已截斷)"
+            past_memory_str += recommendation + "\n\n"
+        
+        # 截斷辯論歷史 - 這是最容易超過限制的部分
+        # 限制辯論歷史在 1000 字符以內（風險辯論通常有3方，比投資辯論更長）
+        history = truncate_text(history, 1000)
 
         # 建立提示 (prompt)
         prompt = f"""作為風險管理裁判和辯論主持人，您的目標是評估三位風險分析師——激進、中立和安全/保守——之間的辯論，並為交易員確定最佳行動方案。您的決策必須產生一個明確的建議：買入、賣出或持有。僅在有特定論點強烈支持時才選擇持有，而不是在各方看起來都合理時作為後備選項。力求清晰和果斷。

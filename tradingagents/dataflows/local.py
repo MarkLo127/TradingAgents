@@ -127,14 +127,31 @@ def get_finnhub_news(
         return ""
 
     combined_result = ""
+    total_articles = 0
+    max_articles = 15  # 限制總文章數量
+    
     for day, data in result.items():
         if len(data) == 0:
             continue
         for entry in data:
+            if total_articles >= max_articles:
+                break
+                
+            headline = entry.get("headline", "")
+            summary = entry.get("summary", "")
+            
+            # 限制摘要長度
+            if summary and len(summary) > 300:
+                summary = summary[:300] + "..."
+            
             current_news = (
-                "### " + entry["headline"] + f" ({day})" + "\n" + entry["summary"]
+                "### " + headline + f" ({day})" + "\n" + summary
             )
             combined_result += current_news + "\n\n"
+            total_articles += 1
+        
+        if total_articles >= max_articles:
+            break
 
     return f"## {query} 新聞，從 {start_date} 到 {end_date}：\n" + str(combined_result)
 
@@ -468,12 +485,15 @@ def get_reddit_company_news(
         total=total_iterations,
     )
 
+    # 限制每天的文章數量以避免 token 過多
+    max_per_day = 5  # 從 10 降低到 5
+
     while curr_date <= end_date_dt:
         curr_date_str = curr_date.strftime("%Y-%m-%d")
         fetch_result = fetch_top_from_category(
             "company_news",
             curr_date_str,
-            10,  # 每天最大限制
+            max_per_day,
             query,
             data_path=os.path.join(DATA_DIR, "reddit_data"),
         )
@@ -487,11 +507,22 @@ def get_reddit_company_news(
     if len(posts) == 0:
         return ""
 
+    # 限制總文章數量和內容長度
+    max_total_posts = 20  # 最多 20 篇文章
+    posts = posts[:max_total_posts]
+    
     news_str = ""
     for post in posts:
-        if post["content"] == "":
-            news_str += f"### {post['title']}\n\n"
+        title = post['title']
+        content = post['content']
+        
+        # 限制每篇文章的內容長度
+        if content and len(content) > 300:
+            content = content[:300] + "..."
+        
+        if content == "":
+            news_str += f"### {title}\n\n"
         else:
-            news_str += f"### {post['title']}\n\n{post['content']}\n\n"
+            news_str += f"### {title}\n\n{content}\n\n"
 
     return f"##{query} 新聞 Reddit，從 {start_date} 到 {end_date}：\n\n{news_str}"

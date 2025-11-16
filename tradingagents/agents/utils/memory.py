@@ -18,6 +18,13 @@ class FinancialSituationMemory:
 
     def get_embedding(self, text):
         """Get OpenAI embedding for a text"""
+        # Truncate text to avoid exceeding embedding model's token limit
+        # text-embedding-3-small has 8192 token limit
+        # For mixed Chinese/English text, estimate ~1.5-2 tokens per character
+        # Target: ~4000 characters to stay well under 8192 tokens
+        max_chars = 4000
+        if len(text) > max_chars:
+            text = text[:max_chars]
         
         response = self.client.embeddings.create(
             model=self.embedding, input=text

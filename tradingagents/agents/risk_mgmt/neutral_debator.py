@@ -46,6 +46,24 @@ def create_neutral_debator(llm):
         # 獲取交易員的決策
         trader_decision = state["trader_investment_plan"]
 
+        # 定義文本截斷函數以避免超過 token 限制
+        def truncate_text(text, max_chars):
+            """截斷文本到指定字符數"""
+            if len(text) <= max_chars:
+                return text
+            return text[:max_chars] + "\n...(內容已截斷)"
+        
+        # 截斷各類輸入以控制 token 使用量
+        # 模型限制: 8192 tokens，目標: < 3500 字符
+        market_research_report = truncate_text(market_research_report, 500)
+        sentiment_report = truncate_text(sentiment_report, 500)
+        news_report = truncate_text(news_report, 600)
+        fundamentals_report = truncate_text(fundamentals_report, 600)
+        trader_decision = truncate_text(trader_decision, 800)
+        history = truncate_text(history, 400)
+        current_risky_response = truncate_text(current_risky_response, 300)
+        current_safe_response = truncate_text(current_safe_response, 300)
+
         # 建立提示 (prompt)
         prompt = f"""作為中立風險分析師，您的角色是提供一個平衡的視角，權衡交易員決策或計畫的潛在利益和風險。您優先考慮一個全面的方法，評估其優缺點，同時考慮更廣泛的市場趨勢、潛在的經濟轉變和多元化策略。這是交易員的決策：
 

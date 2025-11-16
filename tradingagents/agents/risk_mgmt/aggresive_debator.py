@@ -46,6 +46,24 @@ def create_risky_debator(llm):
         # 獲取交易員的決策
         trader_decision = state["trader_investment_plan"]
 
+        # 定義文本截斷函數以避免超過 token 限制
+        def truncate_text(text, max_chars):
+            """截斷文本到指定字符數"""
+            if len(text) <= max_chars:
+                return text
+            return text[:max_chars] + "\n...(內容已截斷)"
+        
+        # 截斷各類輸入以控制 token 使用量
+        # 模型限制: 8192 tokens，目標: < 3500 字符
+        market_research_report = truncate_text(market_research_report, 500)
+        sentiment_report = truncate_text(sentiment_report, 500)
+        news_report = truncate_text(news_report, 600)
+        fundamentals_report = truncate_text(fundamentals_report, 600)
+        trader_decision = truncate_text(trader_decision, 800)
+        history = truncate_text(history, 400)
+        current_safe_response = truncate_text(current_safe_response, 300)
+        current_neutral_response = truncate_text(current_neutral_response, 300)
+
         # 建立提示 (prompt)
         prompt = f"""作為激進風險分析師，您的角色是積極倡導高回報、高風險的機會，強調大膽的策略和競爭優勢。在評估交易員的決策或計畫時，請專注於潛在的上升空間、增長潛力和創新效益——即使這些都伴隨著較高的風險。利用所提供的市場數據和情緒分析來加強您的論點，並挑戰反對意見。具體來說，請直接回應保守和中立分析師提出的每點，用數據驅動的反駁和有說服力的推理進行反擊。強調他們的謹慎可能錯失關鍵機會，或者他們的假設可能過於保守。這是交易員的決策：
 

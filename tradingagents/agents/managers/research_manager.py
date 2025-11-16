@@ -39,16 +39,40 @@ def create_research_manager(llm, memory):
         news_report = state["news_report"]
         fundamentals_report = state["fundamentals_report"]
 
+        # 定義文本截斷函數以避免超過 token 限制
+        def truncate_text(text, max_chars):
+            """截斷文本到指定字符數"""
+            if len(text) <= max_chars:
+                return text
+            return text[:max_chars] + "\n...(內容已截斷)"
+        
+        # 為每個報告設置合理的字符限制
+        # 模型 gpt-4o-mini 的限制是 8192 tokens
+        # 混合中英文估算: 1 字符 ≈ 1.5-2 tokens (取保守值)
+        # 目標: 總字符數 < 3500 字符 (約 5250-7000 tokens，留足夠 tokens 給 completion)
+        market_research_report = truncate_text(market_research_report, 500)
+        sentiment_report = truncate_text(sentiment_report, 500)
+        news_report = truncate_text(news_report, 600)
+        fundamentals_report = truncate_text(fundamentals_report, 600)
+        
         # 整合當前情況
         curr_situation = f"{market_research_report}\n\n{sentiment_report}\n\n{news_report}\n\n{fundamentals_report}"
         
         # 從記憶體中獲取過去相似情況的經驗
         past_memories = memory.get_memories(curr_situation, n_matches=2)
 
-        # 將過去的經驗格式化為字串
+        # 將過去的經驗格式化為字串（限制長度）
         past_memory_str = ""
         for i, rec in enumerate(past_memories, 1):
-            past_memory_str += rec["recommendation"] + "\n\n"
+            recommendation = rec["recommendation"]
+            # 限制每條記憶的長度
+            if len(recommendation) > 200:
+                recommendation = recommendation[:200] + "...(已截斷)"
+            past_memory_str += recommendation + "\n\n"
+        
+        # 截斷辯論歷史 - 這是最容易超過限制的部分
+        # 限制辯論歷史在 1200 字符以內
+        history = truncate_text(history, 1200)
 
         # 建立提示 (prompt)
         prompt = f"""作為投資組合經理和辯論主持人，您的角色是批判性地評估這一輪辯論，並做出明確的決定：與看跌分析師保持一致、與看漲分析師保持一致，或者僅在有充分理由支持的情況下選擇持有。

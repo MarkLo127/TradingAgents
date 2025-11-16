@@ -182,26 +182,29 @@ def select_shallow_thinking_agent(provider) -> str:
     # 定義不同供應商的淺層思維 LLM 引擎選項
     SHALLOW_AGENT_OPTIONS = {
         "openai": [
-            ("GPT-4o-mini - 快速高效，適用於快速任務", "gpt-4o-mini"),
-            ("GPT-4.1-nano - 超輕量級模型，適用於基本操作", "gpt-4.1-nano"),
-            ("GPT-4.1-mini - 性能良好的緊湊型模型", "gpt-4.1-mini"),
-            ("GPT-4o - 功能齊全的標準模型", "gpt-4o"),
+            ("GPT-5.1", "gpt-5.1-2025-11-13"),
+            ("GPT-5-mini","gpt-5-mini-2025-08-07"),
+            ("GPT-5-nano","gpt-5-nano-2025-08-07"),
+            ("GPT-4.1-mini", "gpt-4.1-mini"),
+            ("GPT-4.1-nano", "gpt-4.1-nano"),
+            ("GPT-4o", "gpt-4o"),
+            ("GPT-4o-mini", "gpt-4o-mini")
         ],
         "anthropic": [
-            ("Claude Haiku 3.5 - 推理速度快，具備標準能力", "claude-3-5-haiku-latest"),
-            ("Claude Sonnet 3.5 - 功能強大的標準模型", "claude-3-5-sonnet-latest"),
-            ("Claude Sonnet 3.7 - 卓越的混合推理和代理能力", "claude-3-7-sonnet-latest"),
-            ("Claude Sonnet 4 - 高性能和出色的推理能力", "claude-sonnet-4-0"),
+            ("Claude Haiku 3.5", "claude-3-5-haiku-latest"),
+            ("Claude Sonnet 3.5", "claude-3-5-sonnet-latest"),
+            ("Claude Sonnet 3.7", "claude-3-7-sonnet-latest"),
+            ("Claude Sonnet 4", "claude-sonnet-4-0"),
         ],
         "google": [
-            ("Gemini 2.0 Flash-Lite - 成本效益高，延遲低", "gemini-2.0-flash-lite"),
-            ("Gemini 2.0 Flash - 新一代功能、速度和思維", "gemini-2.0-flash"),
-            ("Gemini 2.5 Flash - 適應性思維，成本效益高", "gemini-2.5-flash-preview-05-20"),
+            ("Gemini 2.0 Flash-Lite", "gemini-2.0-flash-lite"),
+            ("Gemini 2.0 Flash", "gemini-2.0-flash"),
+            ("Gemini 2.5 Flash", "gemini-2.5-flash-preview-05-20"),
         ],
         "openrouter": [
             ("Meta: Llama 4 Scout", "meta-llama/llama-4-scout:free"),
-            ("Meta: Llama 3.3 8B Instruct - Llama 3.3 70B 的輕量級超快版本", "meta-llama/llama-3.3-8b-instruct:free"),
-            ("google/gemini-2.0-flash-exp:free - Gemini Flash 2.0 提供更快的首個 token 生成時間", "google/gemini-2.0-flash-exp:free"),
+            ("Meta: Llama 3.3 8B Instruct - Llama 3.3 70B", "meta-llama/llama-3.3-8b-instruct:free"),
+            ("google/gemini-2.0-flash-exp:free - Gemini Flash 2.0", "google/gemini-2.0-flash-exp:free"),
         ],
         "ollama": [
             ("llama3.1 本機版", "llama3.1"),
@@ -253,25 +256,25 @@ def select_deep_thinking_agent(provider) -> str:
     # 定義不同供應商的深層思維 LLM 引擎選項
     DEEP_AGENT_OPTIONS = {
         "openai": [
-            ("GPT-4.1-nano - 超輕量級模型，適用於基本操作", "gpt-4.1-nano"),
-            ("GPT-4.1-mini - 性能良好的緊湊型模型", "gpt-4.1-mini"),
-            ("GPT-4o - 功能齊全的標準模型", "gpt-4o"),
-            ("o4-mini - 專業推理模型 (緊湊型)", "o4-mini"),
-            ("o3-mini - 進階推理模型 (輕量級)", "o3-mini"),
-            ("o3 - 完整進階推理模型", "o3"),
-            ("o1 - 頂級推理和問題解決模型", "o1"),
+            ("GPT-5.1", "gpt-5.1-2025-11-13"),
+            ("GPT-5-mini","gpt-5-mini-2025-08-07"),
+            ("GPT-5-nano","gpt-5-nano-2025-08-07"),
+            ("GPT-4.1-mini", "gpt-4.1-mini"),
+            ("GPT-4.1-nano", "gpt-4.1-nano"),
+            ("GPT-4o", "gpt-4o"),
+            ("GPT-4o-mini", "gpt-4o-mini")
         ],
         "anthropic": [
-            ("Claude Haiku 3.5 - 推理速度快，具備標準能力", "claude-3-5-haiku-latest"),
-            ("Claude Sonnet 3.5 - 功能強大的標準模型", "claude-3-5-sonnet-latest"),
-            ("Claude Sonnet 3.7 - 卓越的混合推理和代理能力", "claude-3-7-sonnet-latest"),
-            ("Claude Sonnet 4 - 高性能和出色的推理能力", "claude-sonnet-4-0"),
-            ("Claude Opus 4 - Anthropic 最強大的模型", "	claude-opus-4-0"),
+            ("Claude Haiku 3.5", "claude-3-5-haiku-latest"),
+            ("Claude Sonnet 3.5", "claude-3-5-sonnet-latest"),
+            ("Claude Sonnet 3.7", "claude-3-7-sonnet-latest"),
+            ("Claude Sonnet 4", "claude-sonnet-4-0"),
+            ("Claude Opus 4", "claude-opus-4-0"),
         ],
         "google": [
-            ("Gemini 2.0 Flash-Lite - 成本效益高，延遲低", "gemini-2.0-flash-lite"),
-            ("Gemini 2.0 Flash - 新一代功能、速度和思維", "gemini-2.0-flash"),
-            ("Gemini 2.5 Flash - 適應性思維，成本效益高", "gemini-2.5-flash-preview-05-20"),
+            ("Gemini 2.0 Flash-Lite", "gemini-2.0-flash-lite"),
+            ("Gemini 2.0 Flash", "gemini-2.0-flash"),
+            ("Gemini 2.5 Flash", "gemini-2.5-flash-preview-05-20"),
             ("Gemini 2.5 Pro", "gemini-2.5-pro-preview-06-05"),
         ],
         "openrouter": [

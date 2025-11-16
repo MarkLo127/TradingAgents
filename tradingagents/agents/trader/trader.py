@@ -39,24 +39,43 @@ def create_trader(llm, memory):
         news_report = state["news_report"]
         fundamentals_report = state["fundamentals_report"]
 
-        # 整合當前情況
-        curr_situation = f"{market_research_report}\n\n{sentiment_report}\n\n{news_report}\n\n{fundamentals_report}"
+        # 定義文本截斷函數以避免超過 token 限制
+        def truncate_text(text, max_chars):
+            """截斷文本到指定字符數"""
+            if len(text) <= max_chars:
+                return text
+            return text[:max_chars] + "\n...(內容已截斷)"
+        
+        # 截斷各類報告以控制 token 使用量
+        # 這些報告將用於記憶檢索（embedding）和 LLM prompt
+        market_research_report_truncated = truncate_text(market_research_report, 500)
+        sentiment_report_truncated = truncate_text(sentiment_report, 500)
+        news_report_truncated = truncate_text(news_report, 600)
+        fundamentals_report_truncated = truncate_text(fundamentals_report, 600)
+        investment_plan_truncated = truncate_text(investment_plan, 800)
+
+        # 整合當前情況（用於記憶檢索）
+        curr_situation = f"{market_research_report_truncated}\n\n{sentiment_report_truncated}\n\n{news_report_truncated}\n\n{fundamentals_report_truncated}"
         
         # 從記憶體中獲取過去相似情況的經驗
         past_memories = memory.get_memories(curr_situation, n_matches=2)
 
-        # 將過去的經驗格式化為字串
+        # 將過去的經驗格式化為字串（限制長度）
         past_memory_str = ""
         if past_memories:
             for i, rec in enumerate(past_memories, 1):
-                past_memory_str += rec["recommendation"] + "\n\n"
+                recommendation = rec["recommendation"]
+                # 限制每條記憶的長度
+                if len(recommendation) > 200:
+                    recommendation = recommendation[:200] + "...(已截斷)"
+                past_memory_str += recommendation + "\n\n"
         else:
             past_memory_str = "找不到過去的記憶。"
 
         # 建立上下文，包含給交易員的指示和投資計畫
         context = {
             "role": "user",
-            "content": f"根據分析師團隊的綜合分析，這是一份為 {company_name} 量身定制的投資計畫。該計畫結合了當前技術市場趨勢、宏觀經濟指標和社群媒體情緒的見解。請以此計畫為基礎，評估您的下一個交易決策。\n\n建議的投資計畫：{investment_plan}\n\n利用這些見解，做出明智且具策略性的決策。",
+            "content": f"根據分析師團隊的綜合分析，這是一份為 {company_name} 量身定制的投資計畫。該計畫結合了當前技術市場趨勢、宏觀經濟指標和社群媒體情緒的見解。請以此計畫為基礎，評估您的下一個交易決策。\n\n建議的投資計畫：{investment_plan_truncated}\n\n利用這些見解，做出明智且具策略性的決策。",
         }
 
         # 建立傳送給 LLM 的訊息列表
