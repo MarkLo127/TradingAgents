@@ -42,18 +42,43 @@ def create_bull_researcher(llm, memory):
         news_report = state["news_report"]
         fundamentals_report = state["fundamentals_report"]
 
-        # 整合當前情況
+        # 整合當前情況並智能截斷以避免超過 token 限制
+        # 估算：1 個中文字符 ≈ 2.5 tokens，1 個英文字符 ≈ 0.25 tokens
+        # 目標：將每個報告限制在合理的字符數內，總共不超過約 15000 字符（約 20000-30000 tokens）
+        
+        def truncate_text(text, max_chars):
+            """截斷文本到指定字符數"""
+            if len(text) <= max_chars:
+                return text
+            return text[:max_chars] + "\n...(內容已截斷)"
+        
+        # 為每個報告設置合理的字符限制
+        # 模型 gpt-4.1-mini 的限制是 8192 tokens
+        # 混合中英文估算: 1 字符 ≈ 1.5-2 tokens (取保守值)
+        # 目標: 總字符數 < 3000 字符 (約 4500-6000 tokens，留 2000+ tokens 給 completion)
+        market_research_report = truncate_text(market_research_report, 500)
+        sentiment_report = truncate_text(sentiment_report, 500)
+        news_report = truncate_text(news_report, 800)  # 新聞通常較長但也需要控制
+        fundamentals_report = truncate_text(fundamentals_report, 600)
+        
         curr_situation = f"{market_research_report}\n\n{sentiment_report}\n\n{news_report}\n\n{fundamentals_report}"
         
         # 從記憶體中獲取過去相似情況的經驗
         past_memories = memory.get_memories(curr_situation, n_matches=2)
 
-        # 將過去的經驗格式化為字串
+        # 將過去的經驗格式化為字串（限制長度）
         past_memory_str = ""
         for i, rec in enumerate(past_memories, 1):
-            past_memory_str += rec["recommendation"] + "\n\n"
+            recommendation = rec["recommendation"]
+            # 限制每條記憶的長度
+            if len(recommendation) > 200:
+                recommendation = recommendation[:200] + "...(已截斷)"
+            past_memory_str += recommendation + "\n\n"
 
-        # 建立提示 (prompt)
+        # 建立提示 (prompt) - 限制歷史長度以控制總 token 數
+        history = truncate_text(history, 300)
+        current_response = truncate_text(current_response, 200)
+        
         prompt = f"""您是一位主張投資該股票的看漲分析師。您的任務是建立一個強而有力、以證據為基礎的案例，強調其增長潛力、競爭優勢和積極的市場指標。利用所提供的研究和數據，有效解決疑慮並反駁看跌論點。
 
 需要關注的要點：
