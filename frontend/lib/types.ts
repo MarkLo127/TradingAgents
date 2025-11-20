@@ -7,8 +7,8 @@ export interface AnalysisRequest {
   analysis_date: string;
   analysts?: string[];
   research_depth?: number;
-  deep_think_llm?: string;
-  quick_think_llm?: string;
+  shallow_thinking_agent?: string;
+  deep_thinking_agent?: string;
   
   // API Configuration
   openai_api_key: string;
