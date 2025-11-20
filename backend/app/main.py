@@ -7,9 +7,9 @@ import logging
 import sys
 from pathlib import Path
 
-from app.core.config import settings
-from app.core.cors import setup_cors
-from app.api.routes import router
+from backend.app.core.config import settings
+from backend.app.core.cors import setup_cors
+from backend.app.api.routes import router
 
 # Configure logging
 logging.basicConfig(

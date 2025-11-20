@@ -5,15 +5,16 @@ from fastapi import APIRouter, Depends, HTTPException
 from datetime import datetime
 import logging
 
-from app.models.schemas import (
+from backend.app.models.schemas import (
     AnalysisRequest,
     AnalysisResponse,
     ConfigResponse,
     HealthResponse,
+    Ticker,
 )
-from app.services.trading_service import TradingService
-from app.api.dependencies import get_trading_service
-from app.core.config import settings
+from backend.app.services.trading_service import TradingService
+from backend.app.api.dependencies import get_trading_service
+from backend.app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +55,7 @@ async def run_analysis(
     logger.info(f"Received analysis request for {request.ticker} on {request.analysis_date}")
     
     # Run analysis with all provided parameters including API keys
-    result = await trading_service.run_analysis(
+    result = await service.run_analysis(
         ticker=request.ticker,
         analysis_date=request.analysis_date,
         openai_api_key=request.openai_api_key,
