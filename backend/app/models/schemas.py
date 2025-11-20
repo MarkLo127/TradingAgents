@@ -43,7 +43,7 @@ class AnalysisResponse(BaseModel):
 class ConfigResponse(BaseModel):
     """Response model for configuration options"""
     available_analysts: List[str] = Field(..., description="Available analyst types")
-    available_llms: Dict[str, List[str]] = Field(..., description="Available LLM models by provider")
+    available_llms: List[str] = Field(..., description="Available LLM models")
     default_config: Dict[str, Any] = Field(..., description="Default configuration values")
 
 
@@ -59,3 +59,9 @@ class ErrorResponse(BaseModel):
     error: str = Field(..., description="Error message")
     detail: Optional[str] = Field(None, description="Detailed error information")
     status_code: int = Field(..., description="HTTP status code")
+
+
+class Ticker(BaseModel):
+    """Ticker information model"""
+    symbol: str = Field(..., description="Stock ticker symbol")
+    name: str = Field(..., description="Company name")
