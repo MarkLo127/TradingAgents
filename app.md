@@ -211,3 +211,37 @@ docker-compose down -v
 - **記憶系統**: ChromaDB 向量存儲歷史決策
 - **Markdown 報告**: 格式化的分析輸出
 - **實時數據**: yfinance 股票數據整合
+
+## 應用截圖
+
+### 首頁
+
+![首頁](web_screenshot/1.png)
+
+### 分析配置頁面
+
+![分析配置](web_screenshot/2.png)
+
+### 股價走勢與交易量（折線圖）
+
+![股價走勢與交易量（折線圖）](web_screenshot/3.png)
+
+### 股價走勢與交易量（K線圖）
+
+![股價走勢與交易量（K線圖）](web_screenshot/4.png)
+
+### 市場分析師報告
+
+![市場分析師報告](web_screenshot/5.png)
+
+### 社群分析師報告
+
+![社群分析師報告](web_screenshot/6.png)
+
+### 新聞分析師報告
+
+![新聞分析師報告](web_screenshot/7.png)
+
+### 基本面 分析師報告
+
+![基本面分析師報告](web_screenshot/8.png)
