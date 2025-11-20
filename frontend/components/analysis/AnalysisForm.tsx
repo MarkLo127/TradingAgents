@@ -155,12 +155,12 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                 />
               </div>
 
-              {/* 研究深度 - 放大顯示 */}
+              {/* 研究深度 - 單欄寬度 */}
               <FormField
                 control={form.control}
                 name="research_depth"
                 render={({ field }) => (
-                  <FormItem className="md:col-span-2">
+                  <FormItem>
                     <FormLabel className="text-lg font-semibold">研究深度</FormLabel>
                     <Select
                       onValueChange={(value) => field.onChange(parseInt(value))}

@@ -3,14 +3,10 @@
  */
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AnalysisForm } from "@/components/analysis/AnalysisForm";
-import { TradingDecision } from "@/components/analysis/TradingDecision";
-import { AnalystReport } from "@/components/analysis/AnalystReport";
-import { PriceChart } from "@/components/analysis/PriceChart";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
-import { Button } from "@/components/ui/button";
 import { useAnalysis } from "@/hooks/useAnalysis";
 import { useAnalysisContext } from "@/context/AnalysisContext";
 import type { AnalysisRequest } from "@/lib/types";
@@ -20,9 +16,17 @@ export default function AnalysisPage() {
   const { setAnalysisResult } = useAnalysisContext();
   const { runAnalysis, loading, error, result } = useAnalysis();
 
-  const handleSubmit = async (request: AnalysisRequest) => {
+  // 當分析完成時自動跳轉到結果頁面
+  useEffect(() => {
+    if (result && !loading && !error) {
+      setAnalysisResult(result);
+      router.push("/analysis/results");
+    }
+  }, [result, loading, error, router, setAnalysisResult]);
+
+  const handleSubmit = async (data: AnalysisRequest) => {
     try {
-      await runAnalysis(request);
+      await runAnalysis(data);
     } catch (err) {
       // Error is handled by the hook
       console.error("Analysis failed:", err);
