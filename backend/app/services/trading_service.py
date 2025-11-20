@@ -111,12 +111,28 @@ class TradingService:
                     "risk_debate_state": final_state.get("risk_debate_state"),
                 }
                 
+                # Load price data
+                from backend.app.services.price_service import PriceService
+                price_data = None
+                price_stats = None
+                
+                try:
+                    price_df = PriceService.load_price_data(ticker, config.get("data_cache_dir"))
+                    if price_df is not None:
+                        price_data = PriceService.prepare_chart_data(price_df)
+                        price_stats = PriceService.calculate_stats(price_df)
+                        logger.info(f"Loaded {len(price_data)} price data points for {ticker}")
+                except Exception as e:
+                    logger.warning(f"Could not load price data for {ticker}: {e}")
+                
                 return {
                     "status": "success",
                     "ticker": ticker,
                     "analysis_date": analysis_date,
                     "decision": decision,
                     "reports": reports,
+                    "price_data": price_data,
+                    "price_stats": price_stats,
                 }
                 
             finally:

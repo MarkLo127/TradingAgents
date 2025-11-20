@@ -16,13 +16,33 @@ export interface AnalysisRequest {
   alpha_vantage_api_key?: string;
 }
 
+export interface PriceData {
+  Date: string;
+  Open: number;
+  High: number;
+  Low: number;
+  Close: number;
+  Volume: number;
+}
+
+export interface PriceStats {
+  growth_rate: number;
+  duration_days: number;
+  start_date: string;
+  end_date: string;
+  start_price: number;
+  end_price: number;
+}
+
 export interface AnalysisResponse {
-  status: "success" | "error" | "processing";
+  status: string;
   ticker: string;
   analysis_date: string;
-  decision?: Decision;
-  reports?: Reports;
+  decision?: any;
+  reports?: any;
   error?: string;
+  price_data?: PriceData[];
+  price_stats?: PriceStats;
 }
 
 export interface Decision {

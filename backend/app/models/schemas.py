@@ -30,6 +30,26 @@ class AnalysisRequest(BaseModel):
     )
 
 
+class PriceData(BaseModel):
+    """Stock price data model"""
+    Date: str
+    Open: float
+    High: float
+    Low: float
+    Close: float
+    Volume: int
+
+
+class PriceStats(BaseModel):
+    """Price statistics model"""
+    growth_rate: float = Field(..., description="Price growth rate in percentage")
+    duration_days: int = Field(..., description="Data duration in days")
+    start_date: str
+    end_date: str
+    start_price: float
+    end_price: float
+
+
 class AnalysisResponse(BaseModel):
     """Response model for trading analysis"""
     status: str = Field(..., description="Analysis status (success, error, processing)")
@@ -38,6 +58,8 @@ class AnalysisResponse(BaseModel):
     decision: Optional[Dict[str, Any]] = Field(None, description="Trading decision details")
     reports: Optional[Dict[str, Any]] = Field(None, description="Analysis reports from different teams")
     error: Optional[str] = Field(None, description="Error message if analysis failed")
+    price_data: Optional[List[PriceData]] = Field(None, description="Historical price data")
+    price_stats: Optional[PriceStats] = Field(None, description="Price statistics")
 
 
 class ConfigResponse(BaseModel):

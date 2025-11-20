@@ -20,6 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -33,6 +34,7 @@ import type { AnalysisRequest } from "@/lib/types";
 const formSchema = z.object({
   ticker: z.string().min(1, "股票代碼為必填").max(10),
   analysis_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "日期格式必須為 YYYY-MM-DD"),
+  analysts: z.array(z.string()).min(1, "請至少選擇一位分析師"),
   research_depth: z.number().min(1).max(5),
   deep_think_llm: z.string(), 
   quick_think_llm: z.string(),
@@ -48,12 +50,20 @@ interface AnalysisFormProps {
   loading?: boolean;
 }
 
+const ANALYSTS = [
+  { value: "market", label: "市場分析師" },
+  { value: "social", label: "社群媒體分析師" },
+  { value: "news", label: "新聞分析師" },
+  { value: "fundamentals", label: "基本面分析師" },
+];
+
 export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       ticker: "NVDA",
       analysis_date: format(new Date(), "yyyy-MM-dd"),
+      analysts: ["market", "social", "news", "fundamentals"], // 預設全選
       research_depth: 1,
       deep_think_llm: "gpt-4o-mini",
       quick_think_llm: "gpt-4o-mini",
@@ -63,10 +73,19 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
     },
   });
 
+  // 全選/取消全選
+  const toggleSelectAll = () => {
+    const currentAnalysts = form.getValues("analysts");
+    if (currentAnalysts.length === ANALYSTS.length) {
+      form.setValue("analysts", []);
+    } else {
+      form.setValue("analysts", ANALYSTS.map(a => a.value));
+    }
+  };
+
   function handleSubmit(values: z.infer<typeof formSchema>) {
     const request: AnalysisRequest = {
       ...values,
-      analysts: ["market", "sentiment", "news", "fundamentals"],
     };
     onSubmit(request);
   }
@@ -83,6 +102,65 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* 分析師選擇區塊 */}
+              <div className="md:col-span-2 border-b pb-6">
+                <div className="flex justify-between items-center mb-4">
+                  <FormLabel className="text-base font-semibold">分析師團隊</FormLabel>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={toggleSelectAll}
+                  >
+                    {form.watch("analysts").length === ANALYSTS.length ? "取消全選" : "全選"}
+                  </Button>
+                </div>
+                <FormField
+                  control={form.control}
+                  name="analysts"
+                  render={() => (
+                    <FormItem>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {ANALYSTS.map((analyst) => (
+                          <FormField
+                            key={analyst.value}
+                            control={form.control}
+                            name="analysts"
+                            render={({ field }) => {
+                              return (
+                                <FormItem
+                                  key={analyst.value}
+                                  className="flex flex-row items-start space-x-3 space-y-0"
+                                >
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value?.includes(analyst.value)}
+                                      onCheckedChange={(checked) => {
+                                        return checked
+                                          ? field.onChange([...field.value, analyst.value])
+                                          : field.onChange(
+                                              field.value?.filter(
+                                                (value: string) => value !== analyst.value
+                                              )
+                                            );
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="font-normal cursor-pointer">
+                                    {analyst.label}
+                                  </FormLabel>
+                                </FormItem>
+                              );
+                            }}
+                          />
+                        ))}
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <FormField
                 control={form.control}
                 name="ticker"
@@ -133,9 +211,11 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="1">淺層 - 快速研究，較少的辯論和策略討論</SelectItem>
-                        <SelectItem value="3">中等 - 中等程度，適度的辯論和策略討論</SelectItem>
-                        <SelectItem value="5">深層 - 全面研究，深入的辯論和策略討論</SelectItem>
+                        <SelectItem value="1">1 - 快速</SelectItem>
+                        <SelectItem value="2">2 - 標準</SelectItem>
+                        <SelectItem value="3">3 - 詳盡</SelectItem>
+                        <SelectItem value="4">4 - 深入</SelectItem>
+                        <SelectItem value="5">5 - 全面</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormDescription>

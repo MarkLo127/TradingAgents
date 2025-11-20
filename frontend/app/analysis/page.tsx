@@ -7,6 +7,7 @@ import { useState } from "react";
 import { AnalysisForm } from "@/components/analysis/AnalysisForm";
 import { TradingDecision } from "@/components/analysis/TradingDecision";
 import { AnalystReport } from "@/components/analysis/AnalystReport";
+import { PriceChart } from "@/components/analysis/PriceChart";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { useAnalysis } from "@/hooks/useAnalysis";
 import type { AnalysisRequest } from "@/lib/types";
@@ -48,7 +49,19 @@ export default function AnalysisPage() {
 
         {result && !loading && (
           <div className="space-y-8">
+            {/* 價格圖表 */}
+            {result.price_data && result.price_stats && (
+              <PriceChart
+                priceData={result.price_data}
+                priceStats={result.price_stats}
+                ticker={result.ticker}
+              />
+            )}
+            
+            {/* 交易決策 */}
             <TradingDecision result={result} />
+            
+            {/* 分析報告 */}
             {result.reports && <AnalystReport reports={result.reports} />}
           </div>
         )}
