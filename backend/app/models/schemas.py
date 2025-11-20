@@ -2,7 +2,7 @@
 Pydantic models for request/response schemas
 """
 from pydantic import BaseModel, Field
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Union
 from datetime import date
 
 
@@ -55,7 +55,7 @@ class AnalysisResponse(BaseModel):
     status: str = Field(..., description="Analysis status (success, error, processing)")
     ticker: str = Field(..., description="Stock ticker analyzed")
     analysis_date: str = Field(..., description="Date of analysis")
-    decision: Optional[Dict[str, Any]] = Field(None, description="Trading decision details")
+    decision: Optional[Union[str, Dict[str, Any]]] = Field(None, description="Trading decision (string or details dict)")
     reports: Optional[Dict[str, Any]] = Field(None, description="Analysis reports from different teams")
     error: Optional[str] = Field(None, description="Error message if analysis failed")
     price_data: Optional[List[PriceData]] = Field(None, description="Historical price data")
