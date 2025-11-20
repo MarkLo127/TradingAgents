@@ -20,7 +20,7 @@ export default function HomePage() {
             </Button>
           </Link>
           <a
-            href="https://github.com/TauricResearch/TradingAgents"
+            href="https://github.com/MarkLo127/TradingAgents"
             target="_blank"
             rel="noopener noreferrer"
           >

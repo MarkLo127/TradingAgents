@@ -2,6 +2,7 @@
  * Header component
  */
 import Link from "next/link";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export function Header() {
   return (
@@ -14,7 +15,7 @@ export function Header() {
               多代理 LLM 金融交易框架
             </div>
           </Link>
-          <nav className="flex gap-6">
+          <nav className="flex gap-6 items-center">
             <Link
               href="/"
               className="hover:opacity-80 transition-opacity font-medium"
@@ -27,6 +28,7 @@ export function Header() {
             >
               分析
             </Link>
+            <ThemeToggle />
           </nav>
         </div>
       </div>
