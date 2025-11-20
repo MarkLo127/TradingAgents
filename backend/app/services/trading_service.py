@@ -70,7 +70,7 @@ class TradingService:
         try:
             # Default analysts if not provided
             if analysts is None:
-                analysts = ["market", "sentiment", "news", "fundamentals"]
+                analysts = ["market", "social", "news", "fundamentals"]
             
             # Dynamically set environment variables for this request
             import os
@@ -142,7 +142,7 @@ class TradingService:
     
     def get_available_analysts(self) -> List[str]:
         """Get list of available analyst types"""
-        return ["market", "sentiment", "news", "fundamentals"]
+        return ["market", "social", "news", "fundamentals"]
     
     def get_available_llms(self) -> List[str]:
         """Get list of available OpenAI LLM models"""

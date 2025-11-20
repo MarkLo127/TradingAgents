@@ -133,11 +133,9 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="1">1 - 快速</SelectItem>
-                        <SelectItem value="2">2 - 標準</SelectItem>
-                        <SelectItem value="3">3 - 詳盡</SelectItem>
-                        <SelectItem value="4">4 - 深入</SelectItem>
-                        <SelectItem value="5">5 - 全面</SelectItem>
+                        <SelectItem value="1">淺層 - 快速研究，較少的辯論和策略討論</SelectItem>
+                        <SelectItem value="3">中等 - 中等程度，適度的辯論和策略討論</SelectItem>
+                        <SelectItem value="5">深層 - 全面研究，深入的辯論和策略討論</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormDescription>
