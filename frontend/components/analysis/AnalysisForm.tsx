@@ -96,7 +96,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* 分析師選擇區塊 */}
+              {/* 分析師選擇區塊 - 全寬 */}
               <div className="md:col-span-2 border-b pb-6">
                 <div className="flex justify-between items-center mb-4">
                   <FormLabel className="text-base font-semibold">分析師團隊</FormLabel>
