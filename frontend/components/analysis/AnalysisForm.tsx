@@ -91,14 +91,8 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
   }
 
   return (
-    <Card className="w-full shadow-lg">
-      <CardHeader>
-        <CardTitle>交易分析配置</CardTitle>
-        <CardDescription>
-          配置您的交易分析參數
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+    <Card className="shadow-lg">
+      <CardContent className="pt-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -234,7 +228,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                     <FormLabel>快速思維模型</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-12 text-base">
                           <SelectValue placeholder="選擇模型" />
                         </SelectTrigger>
                       </FormControl>
@@ -265,7 +259,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                     <FormLabel>深層思維模型</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-12 text-base">
                           <SelectValue placeholder="選擇模型" />
                         </SelectTrigger>
                       </FormControl>
