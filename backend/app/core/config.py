@@ -34,6 +34,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         case_sensitive = False
+        extra = "ignore"  # Ignore extra environment variables like CLAUDE_API_KEY, etc.
 
 
 # Global settings instance
