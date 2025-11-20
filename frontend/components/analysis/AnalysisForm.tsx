@@ -155,133 +155,134 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                 />
               </div>
 
-              {/* 研究深度 - 單欄寬度 */}
-              <FormField
-                control={form.control}
-                name="research_depth"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-lg font-semibold">研究深度</FormLabel>
-                    <Select
-                      onValueChange={(value) => field.onChange(parseInt(value))}
-                      defaultValue={field.value.toString()}
-                    >
+              {/* 第一行：股票代碼、分析日期（2列） */}
+              <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="ticker"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>股票代碼</FormLabel>
                       <FormControl>
-                        <SelectTrigger className="h-12 text-base">
-                          <SelectValue placeholder="選擇研究深度" />
-                        </SelectTrigger>
+                        <Input placeholder="NVDA" {...field} />
                       </FormControl>
-                      <SelectContent className="max-h-80">
-                        <SelectItem value="1" className="py-4 text-base cursor-pointer">淺層 - 快速研究，較少的辯論和策略討論</SelectItem>
-                        <SelectItem value="3" className="py-4 text-base cursor-pointer">中等 - 中等程度，適度的辯論和策略討論</SelectItem>
-                        <SelectItem value="5" className="py-4 text-base cursor-pointer">深層 - 全面研究，深入的辯論和策略討論</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      選擇分析的深度和完整性
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormDescription>
+                        輸入股票代碼（例如：NVDA、AAPL）
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="ticker"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>股票代碼</FormLabel>
-                    <FormControl>
-                      <Input placeholder="NVDA" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      輸入股票代碼（例如：NVDA、AAPL）
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="analysis_date"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>分析日期</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      選擇分析日期
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* 快速思維模型 */}
-              <FormField
-                control={form.control}
-                name="shallow_thinking_agent"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>快速思維模型</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormField
+                  control={form.control}
+                  name="analysis_date"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>分析日期</FormLabel>
                       <FormControl>
-                        <SelectTrigger className="h-12 text-base">
-                          <SelectValue placeholder="選擇模型" />
-                        </SelectTrigger>
+                        <Input type="date" {...field} />
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="gpt-5.1-2025-11-13">GPT-5.1</SelectItem>
-                        <SelectItem value="gpt-5-mini-2025-08-07">GPT-5 Mini</SelectItem>
-                        <SelectItem value="gpt-5-nano-2025-08-07">GPT-5 Nano</SelectItem>
-                        <SelectItem value="gpt-4.1-mini">GPT-4.1 Mini</SelectItem>
-                        <SelectItem value="gpt-4.1-nano">GPT-4.1 Nano</SelectItem>
-                        <SelectItem value="gpt-4o">GPT-4o</SelectItem>
-                        <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      用於快速回應的模型
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormDescription>
+                        選擇分析日期
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-              {/* 深層思維模型 */}
-              <FormField
-                control={form.control}
-                name="deep_thinking_agent"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>深層思維模型</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="h-12 text-base">
-                          <SelectValue placeholder="選擇模型" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="gpt-5.1-2025-11-13">GPT-5.1</SelectItem>
-                        <SelectItem value="gpt-5-mini-2025-08-07">GPT-5 Mini</SelectItem>
-                        <SelectItem value="gpt-5-nano-2025-08-07">GPT-5 Nano</SelectItem>
-                        <SelectItem value="gpt-4.1-mini">GPT-4.1 Mini</SelectItem>
-                        <SelectItem value="gpt-4.1-nano">GPT-4.1 Nano</SelectItem>
-                        <SelectItem value="gpt-4o">GPT-4o</SelectItem>
-                        <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      用於複雜推理的模型
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
+              {/* 第二行：研究深度、快速思維模型、深層思維模型（3列） */}
+              <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <FormField
+                  control={form.control}
+                  name="research_depth"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>研究深度</FormLabel>
+                      <Select
+                        onValueChange={(value) => field.onChange(parseInt(value))}
+                        defaultValue={field.value.toString()}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="選擇研究深度" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="max-h-80">
+                          <SelectItem value="1" className="py-3 cursor-pointer">淺層 - 快速研究</SelectItem>
+                          <SelectItem value="3" className="py-3 cursor-pointer">中等 - 適度討論</SelectItem>
+                          <SelectItem value="5" className="py-3 cursor-pointer">深層 - 深入研究</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        選擇分析深度
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
+                <FormField
+                  control={form.control}
+                  name="shallow_thinking_agent"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>快速思維模型</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="選擇模型" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="gpt-5.1-2025-11-13">GPT-5.1</SelectItem>
+                          <SelectItem value="gpt-5-mini-2025-08-07">GPT-5 Mini</SelectItem>
+                          <SelectItem value="gpt-5-nano-2025-08-07">GPT-5 Nano</SelectItem>
+                          <SelectItem value="gpt-4.1-mini">GPT-4.1 Mini</SelectItem>
+                          <SelectItem value="gpt-4.1-nano">GPT-4.1 Nano</SelectItem>
+                          <SelectItem value="gpt-4o">GPT-4o</SelectItem>
+                          <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        快速回應模型
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="deep_thinking_agent"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>深層思維模型</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="選擇模型" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="gpt-5.1-2025-11-13">GPT-5.1</SelectItem>
+                          <SelectItem value="gpt-5-mini-2025-08-07">GPT-5 Mini</SelectItem>
+                          <SelectItem value="gpt-5-nano-2025-08-07">GPT-5 Nano</SelectItem>
+                          <SelectItem value="gpt-4.1-mini">GPT-4.1 Mini</SelectItem>
+                          <SelectItem value="gpt-4.1-nano">GPT-4.1 Nano</SelectItem>
+                          <SelectItem value="gpt-4o">GPT-4o</SelectItem>
+                          <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        複雜推理模型
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
 
             {/* API Configuration Section */}
