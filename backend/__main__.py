@@ -24,12 +24,12 @@ def main():
     print(f"📍 Host: {host}")
     print(f"🔌 Port: {port}")
     print(f"🔄 Reload: {reload}")
-    print(f"\n📖 API Documentation: http://{host}:{port}/docs")
-    print(f"📊 Health Check: http://{host}:{port}/api/health\n")
+    print(f"\n📖 API Documentation: http://localhost:{port}/docs")
+    print(f"📊 Health Check: http://localhost:{port}/api/health\n")
     
     # Start uvicorn server
     uvicorn.run(
-        "app.main:app",
+        "backend.app.main:app",  # Use full module path
         host=host,
         port=port,
         reload=reload,
