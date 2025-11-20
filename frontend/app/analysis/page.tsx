@@ -4,15 +4,20 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { AnalysisForm } from "@/components/analysis/AnalysisForm";
 import { TradingDecision } from "@/components/analysis/TradingDecision";
 import { AnalystReport } from "@/components/analysis/AnalystReport";
 import { PriceChart } from "@/components/analysis/PriceChart";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
+import { Button } from "@/components/ui/button";
 import { useAnalysis } from "@/hooks/useAnalysis";
+import { useAnalysisContext } from "@/context/AnalysisContext";
 import type { AnalysisRequest } from "@/lib/types";
 
 export default function AnalysisPage() {
+  const router = useRouter();
+  const { setAnalysisResult } = useAnalysisContext();
   const { runAnalysis, loading, error, result } = useAnalysis();
 
   const handleSubmit = async (request: AnalysisRequest) => {
@@ -21,6 +26,13 @@ export default function AnalysisPage() {
     } catch (err) {
       // Error is handled by the hook
       console.error("Analysis failed:", err);
+    }
+  };
+
+  const handleViewResults = () => {
+    if (result) {
+      setAnalysisResult(result);
+      router.push("/analysis/results");
     }
   };
 
@@ -49,6 +61,13 @@ export default function AnalysisPage() {
 
         {result && !loading && (
           <div className="space-y-8">
+            {/* 查看詳細結果按鈕 */}
+            <div className="flex justify-end">
+              <Button onClick={handleViewResults} size="lg" className="gap-2">
+                查看詳細分析結果 →
+              </Button>
+            </div>
+            
             {/* 價格圖表 */}
             {result.price_data && result.price_stats && (
               <PriceChart

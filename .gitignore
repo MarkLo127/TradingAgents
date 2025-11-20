@@ -1,11 +1,12 @@
 .venv
-results
-env/
-__pycache__/
-.DS_Store
+# Project specific
+/results
 *.csv
-src/
+*.json
+*.log
+*.db
+
+# Evaluation results
 eval_results/
-eval_data/
 *.egg-info/
 .env
