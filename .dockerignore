@@ -1,0 +1,29 @@
+# Ignore git files
+.git
+.gitignore
+
+# Ignore backend files from root
+backend/
+frontend/
+
+# Ignore documentation
+README.md
+*.md
+
+# Ignore results and cache
+results/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+
+# Ignore development files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore Mac files
+.DS_Store

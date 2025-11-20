@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: tradingagents-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ALPHA_VANTAGE_API_KEY=${ALPHA_VANTAGE_API_KEY}
+      - TRADINGAGENTS_RESULTS_DIR=/app/results
+    volumes:
+      - ./results:/app/results
+      - ./tradingagents:/app/tradingagents:ro
+    networks:
+      - tradingagents-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: tradingagents-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8000
+    depends_on:
+      - backend
+    networks:
+      - tradingagents-network
+    restart: unless-stopped
+
+networks:
+  tradingagents-network:
+    driver: bridge
+
+volumes:
+  results:
