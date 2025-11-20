@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useAnalysisContext } from "@/context/AnalysisContext";
 import { PriceChart } from "@/components/analysis/PriceChart";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 
 const ANALYSTS = [
   { key: "market", label: "市場分析師", reportKey: "market_report" },
@@ -63,7 +65,7 @@ export default function AnalysisResultsPage() {
             onClick={() => router.push("/analysis")}
             className="gap-2"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4" />
             返回分析
           </Button>
         </div>
@@ -108,9 +110,9 @@ export default function AnalysisResultsPage() {
                   <CardContent>
                     {currentReport ? (
                       <div className="prose prose-sm max-w-none dark:prose-invert">
-                        <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
                           {currentReport}
-                        </pre>
+                        </ReactMarkdown>
                       </div>
                     ) : (
                       <div className="text-center py-8">

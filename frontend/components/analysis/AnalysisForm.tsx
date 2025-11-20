@@ -177,10 +177,10 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                           <SelectValue placeholder="選擇研究深度" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="1">淺層 - 快速研究，較少的辯論和策略討論</SelectItem>
-                        <SelectItem value="3">中等 - 中等程度，適度的辯論和策略討論</SelectItem>
-                        <SelectItem value="5">深層 - 全面研究，深入的辯論和策略討論</SelectItem>
+                      <SelectContent className="max-h-80">
+                        <SelectItem value="1" className="py-4 text-base cursor-pointer">淺層 - 快速研究，較少的辯論和策略討論</SelectItem>
+                        <SelectItem value="3" className="py-4 text-base cursor-pointer">中等 - 中等程度，適度的辯論和策略討論</SelectItem>
+                        <SelectItem value="5" className="py-4 text-base cursor-pointer">深層 - 全面研究，深入的辯論和策略討論</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormDescription>

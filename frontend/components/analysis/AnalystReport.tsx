@@ -3,6 +3,8 @@
  */
 "use client";
 
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Reports } from "@/lib/types";
@@ -126,7 +128,9 @@ function ReportSection({ title, content }: { title: string; content: string }) {
     <div className="border rounded-lg p-4">
       <h3 className="font-semibold text-lg mb-2">{title}</h3>
       <div className="prose prose-sm dark:prose-invert max-w-none">
-        <p className="whitespace-pre-wrap text-sm">{content}</p>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {content}
+        </ReactMarkdown>
       </div>
     </div>
   );
