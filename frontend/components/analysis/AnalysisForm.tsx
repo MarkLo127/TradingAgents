@@ -36,6 +36,11 @@ const formSchema = z.object({
   research_depth: z.number().min(1).max(5),
   deep_think_llm: z.string(), 
   quick_think_llm: z.string(),
+  
+  // API Configuration
+  openai_api_key: z.string().min(20, "請輸入有效的 OpenAI API Key"),
+  openai_base_url: z.string().url("請輸入有效的 URL").optional().or(z.literal("")),
+  alpha_vantage_api_key: z.string().optional().or(z.literal("")),
 });
 
 interface AnalysisFormProps {
@@ -52,6 +57,9 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
       research_depth: 1,
       deep_think_llm: "gpt-4o-mini",
       quick_think_llm: "gpt-4o-mini",
+      openai_api_key: "",
+      openai_base_url: "https://api.openai.com/v1",
+      alpha_vantage_api_key: "",
     },
   });
 
@@ -153,13 +161,73 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
+                        <SelectItem value="gpt-5.1-2025-11-13">GPT-5.1</SelectItem>
+                        <SelectItem value="gpt-5-mini-2025-08-07">GPT-5 Mini</SelectItem>
+                        <SelectItem value="gpt-5-nano-2025-08-07">GPT-5 Nano</SelectItem>
+                        <SelectItem value="gpt-4.1-mini">GPT-4.1 Mini</SelectItem>
+                        <SelectItem value="gpt-4.1-nano">GPT-4.1 Nano</SelectItem>
                         <SelectItem value="gpt-4o">GPT-4o</SelectItem>
                         <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
-                        <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormDescription>
                       用於複雜推理的模型
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* API Configuration Section */}
+            <div className="space-y-4 border-t pt-6 mt-6">
+              <h3 className="text-lg font-semibold">API 配置</h3>
+              
+              <FormField
+                control={form.control}
+                name="openai_api_key"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>OpenAI API Key（必填）</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="sk-..." {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      您的 OpenAI API Key（用於 LLM 推理）
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="openai_base_url"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>OpenAI Base URL（選填）</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://api.openai.com/v1" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      API 基礎網址（預設為 OpenAI 官方）
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="alpha_vantage_api_key"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Alpha Vantage API Key（選填）</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="選填，用於更詳細的數據" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      用於獲取更詳細的財務數據（可選）
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

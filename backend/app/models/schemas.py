@@ -17,6 +17,17 @@ class AnalysisRequest(BaseModel):
     research_depth: Optional[int] = Field(default=1, ge=1, le=5, description="Research depth (1-5)")
     deep_think_llm: Optional[str] = Field(default="gpt-4o-mini", description="Deep thinking LLM model")
     quick_think_llm: Optional[str] = Field(default="gpt-4o-mini", description="Quick thinking LLM model")
+    
+    # API Configuration
+    openai_api_key: str = Field(..., description="OpenAI API Key (required)", min_length=10)
+    openai_base_url: Optional[str] = Field(
+        default="https://api.openai.com/v1",
+        description="OpenAI API Base URL (optional)"
+    )
+    alpha_vantage_api_key: Optional[str] = Field(
+        None,
+        description="Alpha Vantage API Key (optional, for enhanced data)"
+    )
 
 
 class AnalysisResponse(BaseModel):

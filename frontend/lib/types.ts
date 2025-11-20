@@ -9,6 +9,11 @@ export interface AnalysisRequest {
   research_depth?: number;
   deep_think_llm?: string;
   quick_think_llm?: string;
+  
+  // API Configuration
+  openai_api_key: string;
+  openai_base_url?: string;
+  alpha_vantage_api_key?: string;
 }
 
 export interface AnalysisResponse {

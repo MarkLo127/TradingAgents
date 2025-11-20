@@ -47,40 +47,26 @@ async def run_analysis(
     service: TradingService = Depends(get_trading_service),
 ):
     """
-    Run trading analysis for a given ticker and date
+    Run a comprehensive trading analysis for a given ticker and date.
     
-    This endpoint initiates a comprehensive trading analysis using the TradingAgents
-    multi-agent system. The analysis includes:
-    - Market technical analysis
-    - Sentiment analysis
-    - News analysis
-    - Fundamental analysis
-    - Research team debate
-    - Trading decision
-    - Risk assessment
-    - Portfolio management decision
-    
-    The process may take several minutes depending on the research depth.
+    Requires OpenAI API key to be provided in the request.
     """
     logger.info(f"Received analysis request for {request.ticker} on {request.analysis_date}")
     
-    try:
-        # Run analysis
-        result = await service.run_analysis(
-            ticker=request.ticker,
-            analysis_date=request.analysis_date,
-            analysts=request.analysts,
-            research_depth=request.research_depth,
-            deep_think_llm=request.deep_think_llm,
-            quick_think_llm=request.quick_think_llm,
-        )
-        
-        # Return response
-        return AnalysisResponse(**result)
-        
-    except Exception as e:
-        logger.error(f"Analysis failed: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
+    # Run analysis with all provided parameters including API keys
+    result = await trading_service.run_analysis(
+        ticker=request.ticker,
+        analysis_date=request.analysis_date,
+        openai_api_key=request.openai_api_key,
+        openai_base_url=request.openai_base_url,
+        alpha_vantage_api_key=request.alpha_vantage_api_key,
+        analysts=request.analysts,
+        research_depth=request.research_depth,
+        deep_think_llm=request.deep_think_llm,
+        quick_think_llm=request.quick_think_llm,
+    )
+    
+    return result   
 
 
 @router.get("/tickers")
