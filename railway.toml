@@ -12,5 +12,5 @@ sourcePath = "."
 
 [[services]]
 name = "frontend"
-dockerfilePath = "frontend/Dockerfile"
+dockerfilePath = "Dockerfile"
 sourcePath = "frontend"
