@@ -2,7 +2,7 @@
 Pydantic models for request/response schemas
 """
 from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Any, Literal
+from typing import List, Optional, Dict, Any, Literal, Union
 from datetime import date
 
 
