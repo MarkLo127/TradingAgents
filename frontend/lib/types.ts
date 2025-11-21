@@ -93,3 +93,23 @@ export interface Ticker {
   symbol: string;
   name: string;
 }
+
+// Task Management Types
+
+export interface TaskCreatedResponse {
+  task_id: string;
+  status: "pending";
+  message: string;
+}
+
+export interface TaskStatusResponse {
+  task_id: string;
+  status: "pending" | "running" | "completed" | "failed";
+  created_at: string;
+  updated_at: string;
+  progress?: string;
+  result?: AnalysisResponse;
+  error?: string;
+  completed_at?: string;
+}
+

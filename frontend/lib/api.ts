@@ -8,6 +8,8 @@ import type {
   ConfigResponse,
   HealthResponse,
   Ticker,
+  TaskCreatedResponse,
+  TaskStatusResponse,
 } from "./types";
 
 const apiClient = axios.create({
@@ -34,13 +36,21 @@ export const api = {
   },
 
   /**
-   * Run trading analysis
+   * Start analysis (returns task ID)
    */
-  async runAnalysis(request: AnalysisRequest): Promise<AnalysisResponse> {
-    const response = await apiClient.post<AnalysisResponse>(
+  async runAnalysis(request: AnalysisRequest): Promise<TaskCreatedResponse> {
+    const response = await apiClient.post<TaskCreatedResponse>(
       "/api/analyze",
       request
     );
+    return response.data;
+  },
+
+  /**
+   * Get task status
+   */
+  async getTaskStatus(taskId: string): Promise<TaskStatusResponse> {
+    const response = await apiClient.get<TaskStatusResponse>(`/api/task/${taskId}`);
     return response.data;
   },
 

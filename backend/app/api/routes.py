@@ -4,6 +4,7 @@ API route definitions for TradingAgents Backend
 from fastapi import APIRouter, Depends, HTTPException
 from datetime import datetime
 import logging
+import threading
 
 from backend.app.models.schemas import (
     AnalysisRequest,
@@ -11,10 +12,16 @@ from backend.app.models.schemas import (
     ConfigResponse,
     HealthResponse,
     Ticker,
+    TaskCreatedResponse,
+    TaskStatusResponse,
 )
 from backend.app.services.trading_service import TradingService
+from backend.app.services.task_manager import RedisTaskManager, TaskStatus
 from backend.app.api.dependencies import get_trading_service
 from backend.app.core.config import settings
+
+# Initialize task manager
+task_manager = RedisTaskManager(settings.redis_url)
 
 logger = logging.getLogger(__name__)
 
@@ -42,49 +49,102 @@ async def get_config(service: TradingService = Depends(get_trading_service)):
     )
 
 
-@router.post("/analyze", response_model=AnalysisResponse)
+@router.post("/analyze", response_model=TaskCreatedResponse)
 async def run_analysis(
     request: AnalysisRequest,
     service: TradingService = Depends(get_trading_service),
 ):
     """
-    Run a comprehensive trading analysis for a given ticker and date.
+    Start an async trading analysis task.
     
-    Requires OpenAI API key to be provided in the request.
+    This endpoint creates an async task and returns immediately with a task ID.
+    Use the /api/task/{task_id} endpoint to check the status and get results.
+    
+    Args:
+        request: Analysis request configuration
+        service: Trading service instance (injected)
+    
+    Returns:
+        TaskCreatedResponse: Task ID and initial status
     """
-    try:
-        logger.info(f"Received analysis request for {request.ticker} on {request.analysis_date}")
-        
-        # Run analysis with all provided parameters including API keys
-        result = await service.run_analysis(
-            ticker=request.ticker,
-            analysis_date=request.analysis_date,
-            openai_api_key=request.openai_api_key,
-            openai_base_url=request.openai_base_url,
-            alpha_vantage_api_key=request.alpha_vantage_api_key,
-            analysts=request.analysts,
-            research_depth=request.research_depth,
-            deep_think_llm=request.deep_think_llm,
-            quick_think_llm=request.quick_think_llm,
-        )
-        
-        # Check if result contains error
-        if result.get("status") == "error":
-            logger.error(f"Analysis failed: {result.get('error')}")
-            raise HTTPException(
-                status_code=500,
-                detail=f"Analysis failed: {result.get('error', 'Unknown error')}"
+    logger.info(f"Creating analysis task for {request.ticker} on {request.analysis_date}")
+    
+    # Create task in Redis
+    task_id = task_manager.create_task({
+        "ticker": request.ticker,
+        "analysis_date": request.analysis_date,
+    })
+    
+    # Start background analysis
+    def run_background_analysis():
+        try:
+            task_manager.update_task_status(
+                task_id,
+                TaskStatus.RUNNING,
+                progress="Starting analysis..."
             )
-        
-        return result
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Unexpected error during analysis: {str(e)}", exc_info=True)
-        raise HTTPException(
-            status_code=500,
-            detail=f"Analysis failed: {str(e)}"
-        )   
+            
+            result = service.run_analysis(
+                ticker=request.ticker,
+                analysis_date=request.analysis_date,
+                analysts=request.analysts,
+                research_depth=request.research_depth,
+                deep_think_llm=request.deep_think_llm,
+                quick_think_llm=request.quick_think_llm,
+                openai_api_key=request.openai_api_key,
+                openai_base_url=request.openai_base_url,
+                alpha_vantage_api_key=request.alpha_vantage_api_key,
+            )
+            
+            # Check for errors in result
+            if "status" in result and result["status"] == "error":
+                task_manager.set_task_result(
+                    task_id,
+                    result={},
+                    error=result.get("message", "Analysis failed")
+                )
+            else:
+                task_manager.set_task_result(task_id, result=result)
+                
+        except Exception as e:
+            logger.error(f"Analysis task {task_id} failed: {str(e)}", exc_info=True)
+            task_manager.set_task_result(
+                task_id,
+                result={},
+                error=str(e)
+            )
+    
+    # Start background thread
+    thread = threading.Thread(target=run_background_analysis, daemon=True)
+    thread.start()
+    
+    return TaskCreatedResponse(
+        task_id=task_id,
+        status="pending",
+        message="Analysis task created successfully"
+    )
+
+
+@router.get("/task/{task_id}", response_model=TaskStatusResponse)
+async def get_task_status(task_id: str):
+    """
+    Get the status of an analysis task.
+    
+    Args:
+        task_id: Task identifier
+    
+    Returns:
+        TaskStatusResponse: Current task status and results if completed
+    
+    Raises:
+        HTTPException: If task not found
+    """
+    task = task_manager.get_task(task_id)
+    
+    if not task:
+        raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
+    
+    return TaskStatusResponse(**task)
 
 
 @router.get("/tickers")

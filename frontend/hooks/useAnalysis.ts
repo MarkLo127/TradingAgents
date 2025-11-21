@@ -1,9 +1,9 @@
 /**
- * Custom hook for trading analysis
+ * Custom hook for trading analysis with async task support
  */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { api } from "@/lib/api";
 import type { AnalysisRequest, AnalysisResponse } from "@/lib/types";
 
@@ -11,30 +11,120 @@ export function useAnalysis() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<AnalysisResponse | null>(null);
+  const [taskId, setTaskId] = useState<string | null>(null);
+  const [progress, setProgress] = useState<string | null>(null);
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Poll for task status
+  const pollTaskStatus = async (id: string) => {
+    try {
+      const status = await api.getTaskStatus(id);
+      
+      // Update progress
+      if (status.progress) {
+        setProgress(status.progress);
+      }
+      
+      // Check if completed
+      if (status.status === "completed") {
+        if (status.result) {
+          setResult(status.result);
+        }
+        setLoading(false);
+        setProgress(null);
+        // Stop polling
+        if (pollingIntervalRef.current) {
+          clearInterval(pollingIntervalRef.current);
+          pollingIntervalRef.current = null;
+        }
+        return true;
+      }
+      
+      // Check if failed
+      if (status.status === "failed") {
+        setError(status.error || "Analysis failed");
+        setLoading(false);
+        setProgress(null);
+        // Stop polling
+        if (pollingIntervalRef.current) {
+          clearInterval(pollingIntervalRef.current);
+          pollingIntervalRef.current = null;
+        }
+        return true;
+      }
+      
+      return false; // Still running
+    } catch (err: any) {
+      console.error("Error polling task status:", err);
+      // Don't stop polling on temporary errors
+      return false;
+    }
+  };
+
+  // Start polling
+  const startPolling = (id: string) => {
+    // Clear any existing interval
+    if (pollingIntervalRef.current) {
+      clearInterval(pollingIntervalRef.current);
+    }
+    
+    // Poll every 3 seconds
+    pollingIntervalRef.current = setInterval(async () => {
+      await pollTaskStatus(id);
+    }, 3000);
+    
+    // Also poll immediately
+    pollTaskStatus(id);
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+        pollingIntervalRef.current = null;
+      }
+    };
+  }, []);
 
   const runAnalysis = async (request: AnalysisRequest) => {
     setLoading(true);
     setError(null);
     setResult(null);
+    setProgress("Submitting analysis request...");
 
     try {
-      const response = await api.runAnalysis(request);
-      setResult(response);
-      return response;
+      // Start analysis task
+      const taskResponse = await api.runAnalysis(request);
+      setTaskId(taskResponse.task_id);
+      setProgress("Analysis started, waiting for results...");
+      
+      // Start polling for status
+      startPolling(taskResponse.task_id);
+      
+      return taskResponse;
     } catch (err: any) {
       const errorMessage =
-        err.response?.data?.detail || err.message || "Analysis failed";
+        err.response?.data?.detail || err.message || "Failed to start analysis";
       setError(errorMessage);
-      throw err;
-    } finally {
       setLoading(false);
+      setProgress(null);
+      throw err;
     }
   };
 
   const reset = () => {
+    // Stop polling
+    if (pollingIntervalRef.current) {
+      clearInterval(pollingIntervalRef.current);
+      pollingIntervalRef.current = null;
+    }
+    
     setLoading(false);
     setError(null);
     setResult(null);
+    setTaskId(null);
+    setProgress(null);
   };
 
   return {
@@ -42,6 +132,8 @@ export function useAnalysis() {
     loading,
     error,
     result,
+    taskId,
+    progress,
     reset,
   };
 }

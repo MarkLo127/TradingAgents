@@ -4,15 +4,20 @@ Configuration management for TradingAgents Backend API
 from pydantic_settings import BaseSettings
 from typing import Optional
 import os
+from pydantic import Field
 
 
 class Settings(BaseSettings):
     """Application settings loaded from environment variables"""
     
-    # API Configuration
+    # Application settings
     app_name: str = "TradingAgents API"
     app_version: str = "1.0.0"
-    debug: bool = True
+    debug: bool = Field(default=False)
+    results_dir: str = Field(default="./results")
+    
+    # Redis configuration for task queue
+    redis_url: str = Field(default="redis://localhost:6379")
     
     # API Keys
     openai_api_key: Optional[str] = None

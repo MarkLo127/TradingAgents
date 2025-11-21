@@ -2,7 +2,7 @@
 Pydantic models for request/response schemas
 """
 from pydantic import BaseModel, Field
-from typing import Optional, List, Dict, Any, Union
+from typing import List, Optional, Dict, Any, Literal
 from datetime import date
 
 
@@ -87,3 +87,24 @@ class Ticker(BaseModel):
     """Ticker information model"""
     symbol: str = Field(..., description="Stock ticker symbol")
     name: str = Field(..., description="Company name")
+
+
+# Task Management Schemas
+
+class TaskCreatedResponse(BaseModel):
+    """Response when a task is created"""
+    task_id: str = Field(..., description="Unique task identifier")
+    status: Literal["pending"] = Field(default="pending", description="Initial task status")
+    message: str = Field(default="Analysis task created successfully", description="Success message")
+
+
+class TaskStatusResponse(BaseModel):
+    """Response for task status query"""
+    task_id: str = Field(..., description="Task identifier")
+    status: Literal["pending", "running", "completed", "failed"] = Field(..., description="Current task status")
+    created_at: str = Field(..., description="Task creation timestamp")
+    updated_at: str = Field(..., description="Last update timestamp")
+    progress: Optional[str] = Field(None, description="Progress message")
+    result: Optional[AnalysisResponse] = Field(None, description="Analysis result (only when completed)")
+    error: Optional[str] = Field(None, description="Error message (only when failed)")
+    completed_at: Optional[str] = Field(None, description="Completion timestamp")
