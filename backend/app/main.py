@@ -30,6 +30,10 @@ app = FastAPI(
 @app.on_event("startup")
 async def startup_event():
     """Log configuration on startup"""
+    # Debug: Log available environment variables (keys only)
+    import os
+    logger.warning(f"Available environment variables: {list(os.environ.keys())}")
+    
     redis_url = settings.redis_url
     # Mask password if present
     if "@" in redis_url:
