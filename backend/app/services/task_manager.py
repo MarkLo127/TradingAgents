@@ -157,7 +157,7 @@ class InMemoryTaskManager:
             task_id: Task ID
             
         Returns:
-            Dictionary with task status information
+            Dictionary with task status information including all required fields
         """
         task = self.get_task(task_id)
         if not task:
@@ -166,9 +166,12 @@ class InMemoryTaskManager:
         return {
             "task_id": task["task_id"],
             "status": task["status"],
+            "created_at": task.get("created_at"),
+            "updated_at": task.get("updated_at", task.get("created_at")),  # Fallback to created_at if updated_at not set
             "progress": task.get("progress"),
             "result": task.get("result"),
             "error": task.get("error"),
+            "completed_at": task.get("completed_at"),
         }
     
     def delete_task(self, task_id: str):

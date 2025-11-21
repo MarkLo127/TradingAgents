@@ -4,9 +4,11 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   reactCompiler: true,
   async rewrites() {
-    // Use BACKEND_URL env var, or fallback to public Railway URL
-    // In Railway, services cannot use simple hostnames to communicate
-    const backendUrl = process.env.BACKEND_URL || "https://tradinaagents-backend.up.railway.app";
+    // In development: use localhost backend
+    // In production (Railway): use BACKEND_URL env var or fallback to Railway URL
+    const isDev = process.env.NODE_ENV === 'development';
+    const backendUrl = process.env.BACKEND_URL || 
+      (isDev ? "http://localhost:8000" : "https://tradinaagents-backend.up.railway.app");
     
     return [
       {
