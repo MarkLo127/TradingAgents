@@ -3,8 +3,7 @@
 .gitignore
 
 # Ignore backend files from root
-backend/
-frontend/
+
 
 # Ignore documentation
 README.md
