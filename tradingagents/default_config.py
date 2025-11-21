@@ -4,10 +4,10 @@ DEFAULT_CONFIG = {
     "project_dir": os.path.abspath(os.path.join(os.path.dirname(__file__), ".")),
     "results_dir": os.getenv("TRADINGAGENTS_RESULTS_DIR", "./results"),
     "data_dir": os.path.join(os.path.expanduser("~"), "Documents/Code/ScAI/FR1-data"),
-    "data_cache_dir": os.path.join(
+    "data_cache_dir": os.getenv("TRADINGAGENTS_DATA_CACHE_DIR", os.path.join(
         os.path.abspath(os.path.join(os.path.dirname(__file__), ".")),
         "dataflows/data_cache",
-    ),
+    )),
     # LLM 設定
     "llm_provider": "openai",
     "deep_think_llm": "gpt-4o-mini",
