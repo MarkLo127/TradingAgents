@@ -29,7 +29,8 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 COPY ./app ./app
 
 # Copy tradingagents package from parent directory
-COPY ../tradingagents ./tradingagents
+# Note: This assumes docker-compose builds from project root with context
+COPY ./tradingagents ./tradingagents
 
 # Create results directory
 RUN mkdir -p /app/results

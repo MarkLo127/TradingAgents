@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     cors_origins: list = [
         "http://localhost:3000",
         "http://frontend:3000",
+        "https://*.vercel.app",  # Vercel deployments
+        "https://*.onrender.com",  # Render deployments
+        "https://*.railway.app",  # Railway deployments
     ]
     
     # TradingAgents Configuration
