@@ -49,13 +49,16 @@ fi
 echo ""
 
 if [ "$OPENAI_OK" = false ] || [ "$ALPHA_OK" = false ]; then
-    echo "⚠️  Please set the required API keys in .env file before deploying."
+    echo "⚠️  API keys are missing in .env file."
+    echo "   You can proceed if you intend to use BYOK (Bring Your Own Key) mode,"
+    echo "   where users must enter their keys in the frontend."
     echo ""
-    echo "Get your API keys from:"
-    echo "  - OpenAI: https://platform.openai.com/api-keys"
-    echo "  - Alpha Vantage: https://www.alphavantage.co/support/#api-key"
+    read -p "Do you want to proceed with BYOK mode? (y/n) " -n 1 -r
     echo ""
-    exit 1
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "Please set the required API keys in .env file before deploying."
+        exit 1
+    fi
 fi
 
 echo "✅ All required API keys are configured!"

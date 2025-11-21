@@ -404,6 +404,23 @@ docker-compose config
 
 ---
 
+## 🔑 Bring Your Own Key (BYOK) 模式
+
+如果您希望讓用戶使用自己的 API Key，而不是在服務器端配置：
+
+1. **Render 配置**：
+   - 不要設置 `OPENAI_API_KEY` 和 `ALPHA_VANTAGE_API_KEY` 環境變數
+   - 或者將它們設置為空值
+
+2. **前端行為**：
+   - 應用程式會檢測到沒有預設 Key
+   - 用戶在執行分析時，界面會要求輸入他們自己的 API Key
+   - Key 僅用於當次請求，不會存儲在服務器上
+
+這對於公開演示或讓社群使用您的部署版本非常有用，您無需為他人的使用付費。
+
+---
+
 ## 📊 成本估算
 
 ### 完全免費方案（Vercel + Render）
