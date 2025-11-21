@@ -19,7 +19,7 @@ class AnalysisRequest(BaseModel):
     quick_think_llm: Optional[str] = Field(default="gpt-4o-mini", description="Quick thinking LLM model")
     
     # API Configuration
-    openai_api_key: str = Field(..., description="OpenAI API Key (required)", min_length=10)
+    openai_api_key: Optional[str] = Field(None, description="OpenAI API Key (optional if set on server)", min_length=0)
     openai_base_url: Optional[str] = Field(
         default="https://api.openai.com/v1",
         description="OpenAI API Base URL (optional)"

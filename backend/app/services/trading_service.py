@@ -79,7 +79,12 @@ class TradingService:
             
             try:
                 # Set API keys for this request
-                os.environ["OPENAI_API_KEY"] = openai_api_key
+                if openai_api_key:
+                    os.environ["OPENAI_API_KEY"] = openai_api_key
+                elif not os.environ.get("OPENAI_API_KEY"):
+                    # If no key provided and no env var, this will fail later, but let's log it
+                    logger.warning("No OpenAI API key provided in request or environment")
+
                 if alpha_vantage_api_key:
                     os.environ["ALPHA_VANTAGE_API_KEY"] = alpha_vantage_api_key
                 
@@ -137,9 +142,11 @@ class TradingService:
                 
             finally:
                 # Clean up environment variables after request
+                # Clean up environment variables after request
                 if original_openai_key is not None:
                     os.environ["OPENAI_API_KEY"] = original_openai_key
-                elif "OPENAI_API_KEY" in os.environ:
+                elif openai_api_key and "OPENAI_API_KEY" in os.environ:
+                    # Only delete if we set it (and there was no original key)
                     del os.environ["OPENAI_API_KEY"]
                     
                 if original_alpha_key is not None:

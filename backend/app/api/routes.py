@@ -91,7 +91,7 @@ async def run_analysis(
                 research_depth=request.research_depth,
                 deep_think_llm=request.deep_think_llm,
                 quick_think_llm=request.quick_think_llm,
-                openai_api_key=request.openai_api_key,
+                openai_api_key=request.openai_api_key or "",  # Pass empty string if None, service handles it
                 openai_base_url=request.openai_base_url,
                 alpha_vantage_api_key=request.alpha_vantage_api_key,
             ))

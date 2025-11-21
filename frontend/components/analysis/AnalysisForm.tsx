@@ -40,7 +40,7 @@ const formSchema = z.object({
   deep_thinking_agent: z.string().min(1, "請選擇深層思維模型"),
   
   // API Configuration
-  openai_api_key: z.string().min(20, "請輸入有效的 OpenAI API Key"),
+  openai_api_key: z.string().optional().or(z.literal("")),
   openai_base_url: z.string().url("請輸入有效的 URL").optional().or(z.literal("")),
   alpha_vantage_api_key: z.string().optional().or(z.literal("")),
 });
@@ -294,12 +294,12 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                 name="openai_api_key"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>OpenAI API Key（必填）</FormLabel>
+                    <FormLabel>OpenAI API Key（若伺服器已設定則選填）</FormLabel>
                     <FormControl>
                       <Input type="password" placeholder="sk-..." {...field} />
                     </FormControl>
                     <FormDescription>
-                      您的 OpenAI API Key（用於 LLM 推理）
+                      您的 OpenAI API Key（若未填寫將使用伺服器環境變數）
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
