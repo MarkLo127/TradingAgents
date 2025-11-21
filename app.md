@@ -166,13 +166,13 @@ pnpm -C frontend dev
 
 ```bash
 # 使用 Docker Compose 啟動
-docker-compose up -d
+docker compose up -d --build
 
 # 查看日誌
-docker-compose logs -f
+docker compose logs -f
 
 # 停止服務
-docker-compose down -v
+docker compose down -v
 ```
 
 ### 使用流程
