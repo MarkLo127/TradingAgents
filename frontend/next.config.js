@@ -1,10 +1,14 @@
 const nextConfig = {
   output: 'standalone',
   async rewrites() {
+    // Use BACKEND_URL env var, or fallback to public Railway URL
+    // In Railway, services cannot use simple hostnames to communicate
+    const backendUrl = process.env.BACKEND_URL || "https://tradingagents-backend.up.railway.app";
+    
     return [
       {
         source: "/api/:path*",
-        destination: `${process.env.API_URL || "http://backend:8000"}/api/:path*`,
+        destination: `${backendUrl}/api/:path*`,
       },
     ];
   },
