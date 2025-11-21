@@ -22,8 +22,7 @@ COPY frontend .
 # Enable pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Set environment variable for build
-ENV NEXT_PUBLIC_API_URL=http://backend:8000
+
 
 # Build Next.js app
 RUN pnpm run build
