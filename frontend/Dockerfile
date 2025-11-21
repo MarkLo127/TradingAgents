@@ -16,6 +16,10 @@ RUN pnpm install --frozen-lockfile
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
+
+# Install pnpm in builder stage
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
