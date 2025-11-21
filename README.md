@@ -341,9 +341,28 @@ docker compose down -v
      - 🔴 **深層 (Deep)**: 全面深入分析，耗時較長
 
    - **選擇 LLM 模型**:
-     - `gpt-4o` (預設): 平衡性能與成本
-     - `gpt-4-turbo`: 更快的回應速度
-     - `o1-mini`: OpenAI 最新推理模型
+     
+     系統提供兩種類型的模型配置：
+     
+     **快速思維模型** (用於快速分析和即時回應):
+     - `gpt-5.1-2025-11-13` - GPT-5.1 (最新)
+     - `gpt-5-mini-2025-08-07` - GPT-5 Mini
+     - `gpt-5-nano-2025-08-07` - GPT-5 Nano
+     - `gpt-4.1-mini` - GPT-4.1 Mini
+     - `gpt-4.1-nano` - GPT-4.1 Nano
+     - `gpt-4o` - GPT-4o (推薦預設)
+     - `gpt-4o-mini` - GPT-4o Mini (預設)
+     
+     **深層思維模型** (用於複雜推理和深度分析):
+     - `gpt-5.1-2025-11-13` - GPT-5.1 (最新)
+     - `gpt-5-mini-2025-08-07` - GPT-5 Mini
+     - `gpt-5-nano-2025-08-07` - GPT-5 Nano
+     - `gpt-4.1-mini` - GPT-4.1 Mini
+     - `gpt-4.1-nano` - GPT-4.1 Nano
+     - `gpt-4o` - GPT-4o (推薦預設)
+     - `gpt-4o-mini` - GPT-4o Mini
+     
+     > 💡 **提示**: 快速思維模型用於初步分析和資料收集，深層思維模型用於複雜決策和策略制定。您可以根據需求選擇不同的模型組合。
 
    - **輸入 API 金鑰**:
      - 在表單中直接輸入您的 OpenAI API Key
