@@ -11,7 +11,7 @@ export interface AnalysisRequest {
   deep_thinking_agent?: string;
   
   // API Configuration
-  openai_api_key: string;
+  openai_api_key?: string;
   openai_base_url?: string;
   alpha_vantage_api_key?: string;
 }
