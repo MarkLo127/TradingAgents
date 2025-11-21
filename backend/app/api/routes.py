@@ -136,7 +136,7 @@ async def get_task_status(task_id: str):
     Raises:
         HTTPException: If task not found
     """
-    task = task_manager.get_task(task_id)
+    task = task_manager.get_task_status(task_id)
     
     if not task:
         raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
