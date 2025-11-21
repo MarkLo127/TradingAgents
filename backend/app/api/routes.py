@@ -77,7 +77,7 @@ async def run_analysis(
         try:
             task_manager.update_task_status(
                 task_id,
-                TaskStatus.RUNNING,
+                "running",
                 progress="Starting analysis..."
             )
             
@@ -95,9 +95,8 @@ async def run_analysis(
             
             # Check for errors in result
             if "status" in result and result["status"] == "error":
-                task_manager.set_task_result(
+                task_manager.set_task_error(
                     task_id,
-                    result={},
                     error=result.get("message", "Analysis failed")
                 )
             else:
@@ -105,9 +104,8 @@ async def run_analysis(
                 
         except Exception as e:
             logger.error(f"Analysis task {task_id} failed: {str(e)}", exc_info=True)
-            task_manager.set_task_result(
+            task_manager.set_task_error(
                 task_id,
-                result={},
                 error=str(e)
             )
     
