@@ -1,225 +1,247 @@
-<p align="center">
-  <img src="assets/TauricResearch.png" style="width: 60%; height: auto;">
-</p>
+# TradingAgents - 多代理交易分析系統
 
-<div align="center" style="line-height: 1;">
-  <a href="https://arxiv.org/abs/2412.20138" target="_blank"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2412.20138-B31B1B?logo=arxiv"/></a>
-  <a href="https://discord.com/invite/hk9PGKShPK" target="_blank"><img alt="Discord" src="https://img.shields.io/badge/Discord-TradingResearch-7289da?logo=discord&logoColor=white&color=7289da"/></a>
-  <a href="./assets/wechat.png" target="_blank"><img alt="WeChat" src="https://img.shields.io/badge/WeChat-TauricResearch-brightgreen?logo=wechat&logoColor=white"/></a>
-  <a href="https://x.com/TauricResearch" target="_blank"><img alt="X Follow" src="https://img.shields.io/badge/X-TauricResearch-white?logo=x&logoColor=white"/></a>
-  <br>
-  <a href="https://github.com/TauricResearch/" target="_blank"><img alt="Community" src="https://img.shields.io/badge/Join_GitHub_Community-TauricResearch-14C290?logo=discourse"/></a>
-</div>
+> 基於 LangGraph 的智能股票交易分析平台，結合多個 AI 代理進行協作決策
 
-<div align="center">
-  <!-- Keep these links. Translations will automatically update with the README. -->
-  <a href="https://www.readme-i18n.com/TauricResearch/TradingAgents?lang=de">Deutsch</a> | 
-  <a href="https://www.readme-i18n.com/TauricResearch/TradingAgents?lang=es">Español</a> | 
-  <a href="https://www.readme-i18n.com/TauricResearch/TradingAgents?lang=fr">français</a> | 
-  <a href="https://www.readme-i18n.com/TauricResearch/TradingAgents?lang=ja">日本語</a> | 
-  <a href="https://www.readme-i18n.com/TauricResearch/TradingAgents?lang=ko">한국어</a> | 
-  <a href="https://www.readme-i18n.com/TauricResearch/TradingAgents?lang=pt">Português</a> | 
-  <a href="https://www.readme-i18n.com/TauricResearch/TradingAgents?lang=ru">Русский</a> | 
-  <a href="https://www.readme-i18n.com/TauricResearch/TradingAgents?lang=zh">中文</a>
-</div>
+- GitHub: [MarkLo127/TradingAgents](https://github.com/MarkLo127/TradingAgents)
 
----
+## 系統架構
 
-# TradingAgents: Multi-Agents LLM Financial Trading Framework 
+### 後端架構 (FastAPI)
 
-> 🎉 **TradingAgents** officially released! We have received numerous inquiries about the work, and we would like to express our thanks for the enthusiasm in our community.
->
-> So we decided to fully open-source the framework. Looking forward to building impactful projects with you!
+```
+backend/
+├── __main__.py          # 應用入口點
+├── requirements.txt     # Python 依賴
+└── app/
+    ├── main.py         # FastAPI 應用主程式
+    ├── api/            # API 路由層
+    │   ├── routes.py   # 分析、配置等 API 端點
+    │   └── dependencies.py  # 依賴注入
+    ├── core/           # 核心配置
+    │   ├── config.py   # 環境變數設定
+    │   └── cors.py     # CORS 配置
+    ├── models/         # 數據模型
+    │   └── schemas.py  # Pydantic 數據模式
+    └── services/       # 業務邏輯
+        ├── trading_service.py  # TradingAgents 整合
+        └── price_service.py    # 股價數據處理
+```
 
-<div align="center">
-<a href="https://www.star-history.com/#TauricResearch/TradingAgents&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=TauricResearch/TradingAgents&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=TauricResearch/TradingAgents&type=Date" />
-   <img alt="TradingAgents Star History" src="https://api.star-history.com/svg?repos=TauricResearch/TradingAgents&type=Date" style="width: 80%; height: auto;" />
- </picture>
-</a>
-</div>
+**核心技術棧**：
+- **FastAPI**: 現代化異步 Web 框架
+- **Pydantic**: 數據驗證與序列化
+- **LangGraph**: 多代理工作流編排
+- **LangChain**: LLM 整合框架
+- **Chromadb**: 向量數據庫（記憶系統）
+- **yfinance**: 股票數據獲取
 
-<div align="center">
+### 前端架構 (Next.js)
 
-🚀 [TradingAgents](#tradingagents-framework) | ⚡ [Installation & CLI](#installation-and-cli) | 🎬 [Demo](https://www.youtube.com/watch?v=90gr5lwjIho) | 📦 [Package Usage](#tradingagents-package) | 🤝 [Contributing](#contributing) | 📄 [Citation](#citation)
+```
+frontend/
+├── app/                # Next.js 應用路由
+│   ├── layout.tsx     # 根佈局
+│   ├── page.tsx       # 首頁
+│   └── analysis/      # 分析功能
+│       ├── page.tsx   # 分析表單頁面
+│       └── results/   # 結果展示頁面
+├── components/         # React 組件
+│   ├── analysis/      # 分析相關組件
+│   │   ├── AnalysisForm.tsx    # 分析參數表單
+│   │   ├── TradingDecision.tsx # 交易決策展示
+│   │   ├── AnalystReport.tsx   # 分析師報告
+│   │   └── PriceChart.tsx      # 股價圖表
+│   ├── layout/        # 佈局組件
+│   │   ├── Header.tsx # 導航欄
+│   │   └── Footer.tsx # 頁腳
+│   ├── shared/        # 共用組件
+│   └── ui/            # shadcn/ui 基礎組件
+├── context/           # React Context
+│   └── AnalysisContext.tsx  # 分析結果共享
+├── hooks/             # 自定義 Hooks
+│   ├── useAnalysis.ts # 分析請求管理
+│   └── useConfig.ts   # 配置獲取
+└── lib/               # 工具函數
+    ├── api.ts         # API 客戶端
+    ├── types.ts       # TypeScript 類型
+    └── utils.ts       # 輔助函數
+```
 
-</div>
+**核心技術棧**：
+- **Next.js 16**: React 全棧框架
+- **TypeScript**: 靜態類型檢查
+- **Tailwind CSS**: 實用優先的 CSS 框架
+- **shadcn/ui**: 可定制的 UI 組件庫
+- **React Hook Form + Zod**: 表單驗證
+- **Recharts**: 數據可視化
+- **Axios**: HTTP 客戶端
+- **react-markdown**: Markdown 渲染
 
-## TradingAgents Framework
+## 安裝步驟
 
-TradingAgents is a multi-agent trading framework that mirrors the dynamics of real-world trading firms. By deploying specialized LLM-powered agents: from fundamental analysts, sentiment experts, and technical analysts, to trader, risk management team, the platform collaboratively evaluates market conditions and informs trading decisions. Moreover, these agents engage in dynamic discussions to pinpoint the optimal strategy.
+### 前置要求
 
-<p align="center">
-  <img src="assets/schema.png" style="width: 100%; height: auto;">
-</p>
+- **Python**: 3.10 或以上
+- **Node.js**: 18.x 或以上
+- **pnpm**: 最新版本
+- **Conda**: (推薦) 用於 Python 環境管理
+- **API 金鑰**:
+  - OpenAI API Key (必需)
+  - Alpha Vantage API Key (可選，用於更詳細數據)
 
-> TradingAgents framework is designed for research purposes. Trading performance may vary based on many factors, including the chosen backbone language models, model temperature, trading periods, the quality of data, and other non-deterministic factors. [It is not intended as financial, investment, or trading advice.](https://tauric.ai/disclaimer/)
+### 1. 克隆專案
 
-Our framework decomposes complex trading tasks into specialized roles. This ensures the system achieves a robust, scalable approach to market analysis and decision-making.
-
-### Analyst Team
-- Fundamentals Analyst: Evaluates company financials and performance metrics, identifying intrinsic values and potential red flags.
-- Sentiment Analyst: Analyzes social media and public sentiment using sentiment scoring algorithms to gauge short-term market mood.
-- News Analyst: Monitors global news and macroeconomic indicators, interpreting the impact of events on market conditions.
-- Technical Analyst: Utilizes technical indicators (like MACD and RSI) to detect trading patterns and forecast price movements.
-
-<p align="center">
-  <img src="assets/analyst.png" width="100%" style="display: inline-block; margin: 0 2%;">
-</p>
-
-### Researcher Team
-- Comprises both bullish and bearish researchers who critically assess the insights provided by the Analyst Team. Through structured debates, they balance potential gains against inherent risks.
-
-<p align="center">
-  <img src="assets/researcher.png" width="70%" style="display: inline-block; margin: 0 2%;">
-</p>
-
-### Trader Agent
-- Composes reports from the analysts and researchers to make informed trading decisions. It determines the timing and magnitude of trades based on comprehensive market insights.
-
-<p align="center">
-  <img src="assets/trader.png" width="70%" style="display: inline-block; margin: 0 2%;">
-</p>
-
-### Risk Management and Portfolio Manager
-- Continuously evaluates portfolio risk by assessing market volatility, liquidity, and other risk factors. The risk management team evaluates and adjusts trading strategies, providing assessment reports to the Portfolio Manager for final decision.
-- The Portfolio Manager approves/rejects the transaction proposal. If approved, the order will be sent to the simulated exchange and executed.
-
-<p align="center">
-  <img src="assets/risk.png" width="70%" style="display: inline-block; margin: 0 2%;">
-</p>
-
-## Installation and CLI
-
-### Installation
-
-Clone TradingAgents:
 ```bash
-git clone https://github.com/TauricResearch/TradingAgents.git
+git clone https://github.com/MarkLo127/TradingAgents.git
 cd TradingAgents
 ```
 
-Create a virtual environment in any of your favorite environment managers:
+### 2. 後端設置
+
+#### 2.1 創建 Python 環境
+
 ```bash
+# 使用 Conda (推薦)
 conda create -n tradingagents python=3.13
 conda activate tradingagents
 ```
 
-Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-### Required APIs
-
-You will need the OpenAI API for all the agents, and [Alpha Vantage API](https://www.alphavantage.co/support/#api-key) for fundamental and news data (default configuration).
+#### 2.2 安裝依賴
 
 ```bash
-export OPENAI_API_KEY=$YOUR_OPENAI_API_KEY
-export ALPHA_VANTAGE_API_KEY=$YOUR_ALPHA_VANTAGE_API_KEY
+# 安裝 TradingAgents 核心
+pip install -e .
+
+# 安裝後端依賴
+pip install -r backend/requirements.txt
 ```
 
-Alternatively, you can create a `.env` file in the project root with your API keys (see `.env.example` for reference):
+#### 2.3 環境配置
+
+在專案根目錄創建 `.env` 文件：
+
 ```bash
-cp .env.example .env
-# Edit .env with your actual API keys
+# API 金鑰
+OPENAI_API_KEY=sk-your-openai-api-key
+OPENAI_BASE_URL=https://api.openai.com/v1
+ALPHA_VANTAGE_API_KEY=your-alpha-vantage-key  # 可選
+
+# 後端配置
+BACKEND_HOST=0.0.0.0
+BACKEND_PORT=8000
+
+# CORS 配置
+CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 ```
 
-**Note:** We are happy to partner with Alpha Vantage to provide robust API support for TradingAgents. You can get a free AlphaVantage API [here](https://www.alphavantage.co/support/#api-key), TradingAgents-sourced requests also have increased rate limits to 60 requests per minute with no daily limits. Typically the quota is sufficient for performing complex tasks with TradingAgents thanks to Alpha Vantage’s open-source support program. If you prefer to use OpenAI for these data sources instead, you can modify the data vendor settings in `tradingagents/default_config.py`.
+#### 2.4 啟動後端
 
-### CLI Usage
-
-You can also try out the CLI directly by running:
 ```bash
-python -m cli.main
-```
-You will see a screen where you can select your desired tickers, date, LLMs, research depth, etc.
-
-<p align="center">
-  <img src="assets/cli/cli_init.png" width="100%" style="display: inline-block; margin: 0 2%;">
-</p>
-
-An interface will appear showing results as they load, letting you track the agent's progress as it runs.
-
-<p align="center">
-  <img src="assets/cli/cli_news.png" width="100%" style="display: inline-block; margin: 0 2%;">
-</p>
-
-<p align="center">
-  <img src="assets/cli/cli_transaction.png" width="100%" style="display: inline-block; margin: 0 2%;">
-</p>
-
-## TradingAgents Package
-
-### Implementation Details
-
-We built TradingAgents with LangGraph to ensure flexibility and modularity. We utilize `o1-preview` and `gpt-4o` as our deep thinking and fast thinking LLMs for our experiments. However, for testing purposes, we recommend you use `o4-mini` and `gpt-4.1-mini` to save on costs as our framework makes **lots of** API calls.
-
-### Python Usage
-
-To use TradingAgents inside your code, you can import the `tradingagents` module and initialize a `TradingAgentsGraph()` object. The `.propagate()` function will return a decision. You can run `main.py`, here's also a quick example:
-
-```python
-from tradingagents.graph.trading_graph import TradingAgentsGraph
-from tradingagents.default_config import DEFAULT_CONFIG
-
-ta = TradingAgentsGraph(debug=True, config=DEFAULT_CONFIG.copy())
-
-# forward propagate
-_, decision = ta.propagate("NVDA", "2024-05-10")
-print(decision)
+# 從專案根目錄運行
+python -m backend
 ```
 
-You can also adjust the default configuration to set your own choice of LLMs, debate rounds, etc.
+後端將運行在 `http://localhost:8000`
 
-```python
-from tradingagents.graph.trading_graph import TradingAgentsGraph
-from tradingagents.default_config import DEFAULT_CONFIG
+- API 文檔: http://localhost:8000/docs
+- 健康檢查: http://localhost:8000/api/health
 
-# Create a custom config
-config = DEFAULT_CONFIG.copy()
-config["deep_think_llm"] = "gpt-4.1-nano"  # Use a different model
-config["quick_think_llm"] = "gpt-4.1-nano"  # Use a different model
-config["max_debate_rounds"] = 1  # Increase debate rounds
+### 3. 前端設置
 
-# Configure data vendors (default uses yfinance and Alpha Vantage)
-config["data_vendors"] = {
-    "core_stock_apis": "yfinance",           # Options: yfinance, alpha_vantage, local
-    "technical_indicators": "yfinance",      # Options: yfinance, alpha_vantage, local
-    "fundamental_data": "alpha_vantage",     # Options: openai, alpha_vantage, local
-    "news_data": "alpha_vantage",            # Options: openai, alpha_vantage, google, local
-}
+#### 3.1 安裝依賴
 
-# Initialize with custom config
-ta = TradingAgentsGraph(debug=True, config=config)
-
-# forward propagate
-_, decision = ta.propagate("NVDA", "2024-05-10")
-print(decision)
+```bash
+pnpm -C frontend i
 ```
 
-> The default configuration uses yfinance for stock price and technical data, and Alpha Vantage for fundamental and news data. For production use or if you encounter rate limits, consider upgrading to [Alpha Vantage Premium](https://www.alphavantage.co/premium/) for more stable and reliable data access. For offline experimentation, there's a local data vendor option that uses our **Tauric TradingDB**, a curated dataset for backtesting, though this is still in development. We're currently refining this dataset and plan to release it soon alongside our upcoming projects. Stay tuned!
+#### 3.2 啟動前端
 
-You can view the full list of configurations in `tradingagents/default_config.py`.
-
-## Contributing
-
-We welcome contributions from the community! Whether it's fixing a bug, improving documentation, or suggesting a new feature, your input helps make this project better. If you are interested in this line of research, please consider joining our open-source financial AI research community [Tauric Research](https://tauric.ai/).
-
-## Citation
-
-Please reference our work if you find *TradingAgents* provides you with some help :)
-
+```bash
+pnpm -C frontend dev
 ```
-@misc{xiao2025tradingagentsmultiagentsllmfinancial,
-      title={TradingAgents: Multi-Agents LLM Financial Trading Framework}, 
-      author={Yijia Xiao and Edward Sun and Di Luo and Wei Wang},
-      year={2025},
-      eprint={2412.20138},
-      archivePrefix={arXiv},
-      primaryClass={q-fin.TR},
-      url={https://arxiv.org/abs/2412.20138}, 
-}
+
+前端將運行在 `http://localhost:3000`
+
+### Docker 部署
+
+```bash
+# 使用 Docker Compose 啟動
+docker compose up -d --build
+
+# 查看日誌
+docker compose logs -f
+
+# 停止服務
+docker compose down -v
 ```
+
+### 使用流程
+
+1. **訪問首頁** - 查看功能介紹
+2. **進入分析頁面** - 點擊"開始分析"
+3. **配置參數**：
+   - 選擇分析師團隊（市場、情緒、新聞、基本面）
+   - 輸入股票代碼（如 NVDA, AAPL, TSLA）
+   - 選擇分析日期
+   - 設定研究深度（淺層/中等/深層）
+   - 選擇 LLM 模型
+   - 輸入 API 金鑰
+4. **執行分析** - 點擊"執行分析"按鈕
+5. **查看結果** - 自動跳轉至結果頁面，查看：
+   - 交易決策（買入/賣出/持有）
+   - 股價走勢圖表
+   - 各分析師詳細報告
+
+## 核心功能
+
+### 多代理協作系統
+
+- **市場分析師**: 技術指標與價格走勢分析
+- **情緒分析師**: 社交媒體情緒分析
+- **新聞分析師**: 新聞事件影響評估  
+- **基本面分析師**: 財務數據與估值分析
+- **研究團隊**: 看漲/看跌辯論機制
+- **交易員**: 投資計劃制定
+- **風險管理**: 風險評估與倉位管理
+
+### 智能特性
+
+- **動態研究深度**: 可調節分析詳細程度
+- **多模型支持**: GPT-4o, GPT-5.1 等
+- **記憶系統**: ChromaDB 向量存儲歷史決策
+- **Markdown 報告**: 格式化的分析輸出
+- **實時數據**: yfinance 股票數據整合
+
+## 應用截圖
+
+### 首頁
+
+![首頁](web_screenshot/1.png)
+
+### 分析配置頁面
+
+![分析配置](web_screenshot/2.png)
+
+### 股價走勢與交易量（折線圖）
+
+![股價走勢與交易量（折線圖）](web_screenshot/3.png)
+
+### 股價走勢與交易量（K線圖）
+
+![股價走勢與交易量（K線圖）](web_screenshot/4.png)
+
+### 市場分析師報告
+
+![市場分析師報告](web_screenshot/5.png)
+
+### 社群分析師報告
+
+![社群分析師報告](web_screenshot/6.png)
+
+### 新聞分析師報告
+
+![新聞分析師報告](web_screenshot/7.png)
+
+### 基本面 分析師報告
+
+![基本面分析師報告](web_screenshot/8.png)
