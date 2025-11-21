@@ -1,0 +1,16 @@
+[build]
+builder = "dockerfile"
+
+[deploy]
+startCommand = ""
+restartPolicyType = "on_failure"
+
+[[services]]
+name = "backend"
+dockerfilePath = "backend/Dockerfile"
+sourcePath = "."
+
+[[services]]
+name = "frontend"
+dockerfilePath = "frontend/Dockerfile"
+sourcePath = "frontend"
