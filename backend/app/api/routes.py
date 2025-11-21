@@ -74,6 +74,8 @@ async def run_analysis(
     
     # Start background analysis
     def run_background_analysis():
+        import asyncio
+        
         try:
             task_manager.update_task_status(
                 task_id,
@@ -81,7 +83,8 @@ async def run_analysis(
                 progress="Starting analysis..."
             )
             
-            result = service.run_analysis(
+            # Run async function in sync context
+            result = asyncio.run(service.run_analysis(
                 ticker=request.ticker,
                 analysis_date=request.analysis_date,
                 analysts=request.analysts,
@@ -91,7 +94,7 @@ async def run_analysis(
                 openai_api_key=request.openai_api_key,
                 openai_base_url=request.openai_base_url,
                 alpha_vantage_api_key=request.alpha_vantage_api_key,
-            )
+            ))
             
             # Check for errors in result
             if "status" in result and result["status"] == "error":
