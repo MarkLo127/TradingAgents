@@ -53,7 +53,8 @@ async def global_exception_handler(request, exc):
         status_code=500,
         content={
             "error": "Internal server error",
-            "detail": str(exc) if settings.debug else "An unexpected error occurred",
+            "detail": str(exc),  # Always return detailed error for user debugging
+            "type": type(exc).__name__,
         },
     )
 

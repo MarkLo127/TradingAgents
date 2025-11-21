@@ -52,22 +52,39 @@ async def run_analysis(
     
     Requires OpenAI API key to be provided in the request.
     """
-    logger.info(f"Received analysis request for {request.ticker} on {request.analysis_date}")
-    
-    # Run analysis with all provided parameters including API keys
-    result = await service.run_analysis(
-        ticker=request.ticker,
-        analysis_date=request.analysis_date,
-        openai_api_key=request.openai_api_key,
-        openai_base_url=request.openai_base_url,
-        alpha_vantage_api_key=request.alpha_vantage_api_key,
-        analysts=request.analysts,
-        research_depth=request.research_depth,
-        deep_think_llm=request.deep_think_llm,
-        quick_think_llm=request.quick_think_llm,
-    )
-    
-    return result   
+    try:
+        logger.info(f"Received analysis request for {request.ticker} on {request.analysis_date}")
+        
+        # Run analysis with all provided parameters including API keys
+        result = await service.run_analysis(
+            ticker=request.ticker,
+            analysis_date=request.analysis_date,
+            openai_api_key=request.openai_api_key,
+            openai_base_url=request.openai_base_url,
+            alpha_vantage_api_key=request.alpha_vantage_api_key,
+            analysts=request.analysts,
+            research_depth=request.research_depth,
+            deep_think_llm=request.deep_think_llm,
+            quick_think_llm=request.quick_think_llm,
+        )
+        
+        # Check if result contains error
+        if result.get("status") == "error":
+            logger.error(f"Analysis failed: {result.get('error')}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Analysis failed: {result.get('error', 'Unknown error')}"
+            )
+        
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error during analysis: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Analysis failed: {str(e)}"
+        )   
 
 
 @router.get("/tickers")
