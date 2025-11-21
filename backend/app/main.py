@@ -34,9 +34,9 @@ async def startup_event():
     # Mask password if present
     if "@" in redis_url:
         masked_url = redis_url.split("@")[1]
-        logger.info(f"Redis configured with host: {masked_url}")
+        logger.warning(f"Redis configured with host: {masked_url}")
     else:
-        logger.info(f"Redis configured with URL: {redis_url}")
+        logger.warning(f"Redis configured with URL: {redis_url}")
 
 # Setup CORS
 setup_cors(app)
