@@ -84,8 +84,11 @@ Start Command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
 OPENAI_API_KEY=your_openai_api_key_here
 ALPHA_VANTAGE_API_KEY=your_alpha_vantage_key_here
 TRADINGAGENTS_RESULTS_DIR=/opt/render/project/src/results
-PYTHON_VERSION=3.11
+PYTHON_VERSION=3.11.9
 ```
+
+> [!IMPORTANT]
+> Render 要求 `PYTHON_VERSION` 必須是完整的版本號（例如 `3.11.9`），不能只是 `3.11`。
 
 #### 1.5 選擇免費方案
 - Instance Type: **Free**
