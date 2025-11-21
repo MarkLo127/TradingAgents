@@ -305,7 +305,6 @@ docker compose down -v
 - 後端服務運行於: `http://localhost:8000`
 - 前端服務運行於: `http://localhost:3000`
 - 分析結果會持久化儲存在 `./results` 目錄
-- 服務會在容器異常退出時自動重啟
 
 ---
 
