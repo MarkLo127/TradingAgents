@@ -26,7 +26,7 @@ COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/pytho
 COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Copy application code from backend directory
-COPY backend/app ./app
+COPY backend/app ./backend/app
 
 # Copy tradingagents package from project root
 COPY tradingagents ./tradingagents
@@ -38,4 +38,4 @@ RUN mkdir -p /app/results
 EXPOSE 8000
 
 # Run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
