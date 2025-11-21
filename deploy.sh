@@ -22,7 +22,9 @@ check_api_key() {
     local key_name=$1
     local key_value=$(grep "^${key_name}=" .env | cut -d '=' -f2)
     
-    if [ -z "$key_value" ] || [ "$key_value" = "${key_name,,}_placeholder" ]; then
+    local key_placeholder=$(echo "$key_name" | tr '[:upper:]' '[:lower:]')_placeholder
+    
+    if [ -z "$key_value" ] || [ "$key_value" = "$key_placeholder" ]; then
         echo "❌ $key_name is not set"
         return 1
     else
