@@ -19,6 +19,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY frontend .
 
+# Enable pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 # Set environment variable for build
 ENV NEXT_PUBLIC_API_URL=http://backend:8000
 
