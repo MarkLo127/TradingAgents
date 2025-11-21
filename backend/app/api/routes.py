@@ -16,12 +16,9 @@ from backend.app.models.schemas import (
     TaskStatusResponse,
 )
 from backend.app.services.trading_service import TradingService
-from backend.app.services.task_manager import RedisTaskManager, TaskStatus
+from backend.app.services.task_manager import task_manager
 from backend.app.api.dependencies import get_trading_service
 from backend.app.core.config import settings
-
-# Initialize task manager
-task_manager = RedisTaskManager(settings.redis_url)
 
 logger = logging.getLogger(__name__)
 

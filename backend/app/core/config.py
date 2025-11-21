@@ -16,9 +16,6 @@ class Settings(BaseSettings):
     debug: bool = Field(default=False)
     results_dir: str = Field(default="./results")
     
-    # Redis configuration for task queue
-    redis_url: str = Field(default="redis://localhost:6379", validation_alias="REDIS_URL")
-    
     # API Keys
     openai_api_key: Optional[str] = None
     alpha_vantage_api_key: Optional[str] = None

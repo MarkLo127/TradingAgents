@@ -27,21 +27,6 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-@app.on_event("startup")
-async def startup_event():
-    """Log configuration on startup"""
-    # Debug: Log available environment variables (keys only)
-    import os
-    logger.warning(f"Available environment variables: {list(os.environ.keys())}")
-    
-    redis_url = settings.redis_url
-    # Mask password if present
-    if "@" in redis_url:
-        masked_url = redis_url.split("@")[1]
-        logger.warning(f"Redis configured with host: {masked_url}")
-    else:
-        logger.warning(f"Redis configured with URL: {redis_url}")
-
 # Setup CORS
 setup_cors(app)
 
