@@ -633,5 +633,3 @@ pnpm -C frontend start
 - [shadcn/ui](https://github.com/shadcn/ui) - 精美的 React 組件庫
 - [ChromaDB](https://github.com/chroma-core/chroma) - AI 原生向量資料庫
 - [yfinance](https://github.com/ranaroussi/yfinance) - Yahoo Finance 資料下載工具
-
----
