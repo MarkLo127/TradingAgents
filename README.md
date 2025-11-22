@@ -10,6 +10,8 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-Latest-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
+[![Deploy on Railway](https://railway.app/button.svg)](https://tradingagents.up.railway.app)
+
 </div>
 
 ## 📖 簡介
