@@ -635,11 +635,3 @@ pnpm -C frontend start
 - [yfinance](https://github.com/ranaroussi/yfinance) - Yahoo Finance 資料下載工具
 
 ---
-
-<div align="center">
-
-**⭐ 如果這個專案對您有幫助，請給我們一個 Star！**
-
-Made with ❤️ by [MarkLo127](https://github.com/MarkLo127)
-
-</div>
