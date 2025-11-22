@@ -7,9 +7,24 @@ from openai import OpenAI
 class FinancialSituationMemory:
     def __init__(self, name, config):
         self.embedding = "text-embedding-3-small"
-        # Get the OpenAI API key from environment variable
-        openai_api_key = os.getenv("OPENAI_API_KEY")
-        self.client = OpenAI(base_url=config["backend_url"], api_key=openai_api_key)
+        
+        # Get embedding configuration from config, with fallbacks
+        embedding_base_url = config.get("embedding_base_url", "https://api.openai.com/v1")
+        embedding_api_key = config.get("embedding_api_key")
+        
+        # Fallback chain for API key
+        if not embedding_api_key:
+            # Try environment variable first
+            embedding_api_key = os.getenv("OPENAI_API_KEY")
+            if not embedding_api_key:
+                # Fall back to LLM keys as last resort
+                embedding_api_key = config.get("quick_think_api_key") or config.get("deep_think_api_key")
+                if embedding_api_key:
+                    import logging
+                    logging.warning("Using LLM API key for embeddings. Consider setting embedding_api_key or OPENAI_API_KEY.")
+        
+        # Use configured endpoint for embeddings
+        self.client = OpenAI(base_url=embedding_base_url, api_key=embedding_api_key)
         self.chroma_client = chromadb.Client(Settings(allow_reset=True))
         self.situation_collection = self.chroma_client.get_or_create_collection(name=name)
 

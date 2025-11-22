@@ -82,28 +82,44 @@ class TradingAgentsGraph:
         )
 
         # 初始化 LLM
+        # 初始化 LLM
         provider = self.config["llm_provider"].lower()
-        if provider in ["openai"]:
-            # Get the OpenAI API key from environment variable
-            openai_api_key = os.getenv("OPENAI_API_KEY")
-            self.deep_thinking_llm = ChatOpenAI(
-                model=self.config["deep_think_llm"],
-                base_url=self.config["backend_url"],
-                openai_api_key=openai_api_key
-            )
-            self.quick_thinking_llm = ChatOpenAI(
-                model=self.config["quick_think_llm"],
-                base_url=self.config["backend_url"],
-                openai_api_key=openai_api_key
-            )
-        elif provider == "anthropic":
-            self.deep_thinking_llm = ChatAnthropic(model=self.config["deep_think_llm"], base_url=self.config["backend_url"])
-            self.quick_thinking_llm = ChatAnthropic(model=self.config["quick_think_llm"], base_url=self.config["backend_url"])
-        elif provider == "google":
-            self.deep_thinking_llm = ChatGoogleGenerativeAI(model=self.config["deep_think_llm"])
-            self.quick_thinking_llm = ChatGoogleGenerativeAI(model=self.config["quick_think_llm"])
-        else:
-            raise ValueError(f"不支援的 LLM 供應商: {self.config['llm_provider']}")
+        
+        # Get base URLs from config, defaulting to backend_url for backward compatibility
+        deep_base_url = self.config.get("deep_think_base_url", self.config.get("backend_url"))
+        quick_base_url = self.config.get("quick_think_base_url", self.config.get("backend_url"))
+        
+        # Get API keys from config
+        deep_api_key = self.config.get("deep_think_api_key", os.getenv("OPENAI_API_KEY"))
+        quick_api_key = self.config.get("quick_think_api_key", os.getenv("OPENAI_API_KEY"))
+        
+        # Helper to initialize LLM based on URL/Provider
+        def _create_llm(model: str, base_url: str, api_key: str):
+            # Determine provider based on Base URL
+            if "anthropic.com" in base_url:
+                return ChatAnthropic(model=model, base_url=base_url, api_key=api_key)
+            else:
+                # Default to ChatOpenAI for OpenAI, Grok, DeepSeek, Qwen, and other OpenAI-compatible APIs
+                return ChatOpenAI(
+                    model=model,
+                    base_url=base_url,
+                    openai_api_key=api_key
+                )
+
+        # Initialize LLMs independently
+        print(f"DEBUG: Initializing Deep Thinking LLM: Model={self.config['deep_think_llm']}, BaseURL={deep_base_url}, Key={deep_api_key[:10]}...")
+        self.deep_thinking_llm = _create_llm(
+            self.config["deep_think_llm"],
+            deep_base_url,
+            deep_api_key
+        )
+        
+        print(f"DEBUG: Initializing Quick Thinking LLM: Model={self.config['quick_think_llm']}, BaseURL={quick_base_url}, Key={quick_api_key[:10]}...")
+        self.quick_thinking_llm = _create_llm(
+            self.config["quick_think_llm"],
+            quick_base_url,
+            quick_api_key
+        )
 
         # 初始化記憶體
         self.bull_memory = FinancialSituationMemory("bull_memory", self.config)

@@ -197,9 +197,11 @@ def select_shallow_thinking_agent(provider) -> str:
             ("Claude Haiku 3", "claude-3-haiku-20240307")
         ],
         "google": [
-            ("Gemini 2.0 Flash-Lite", "gemini-2.0-flash-lite"),
+            ("Gemini 2.5 Pro", "gemini-2.5-pro"),
+            ("Gemini 2.5 Flash", "gemini-2.5-flash"),
+            ("Gemini 2.5 Flash Lite", "gemini-2.5-flash-lite"),
             ("Gemini 2.0 Flash", "gemini-2.0-flash"),
-            ("Gemini 2.5 Flash Lite", "gemini-2.5-flash-lite")
+            ("Gemini 2.0 Flash-Lite", "gemini-2.0-flash-lite")
         ],
         "Grok":[
             ("Grok 4.1 Fast Reasoning","grok-4-1-fast-reasoning"),
@@ -215,7 +217,7 @@ def select_shallow_thinking_agent(provider) -> str:
             ("DeepSeek Chat","deepseek-chat")
         ],
         "Qwen":[
-            ("Qwen 3.5 Max", "qwen3-max"),
+            ("Qwen 3 Max", "qwen3-max"),
             ("Qwen Plus", "qwen-plus")
         ]
     }
@@ -279,9 +281,11 @@ def select_deep_thinking_agent(provider) -> str:
             ("Claude Haiku 3", "claude-3-haiku-20240307")
         ],
         "google": [
-            ("Gemini 2.0 Flash-Lite", "gemini-2.0-flash-lite"),
+            ("Gemini 2.5 Pro", "gemini-2.5-pro"),
+            ("Gemini 2.5 Flash", "gemini-2.5-flash"),
+            ("Gemini 2.5 Flash Lite", "gemini-2.5-flash-lite"),
             ("Gemini 2.0 Flash", "gemini-2.0-flash"),
-            ("Gemini 2.5 Flash Lite", "gemini-2.5-flash-lite")
+            ("Gemini 2.0 Flash-Lite", "gemini-2.0-flash-lite")
         ],
         "Grok":[
             ("Grok 4.1 Fast Reasoning","grok-4-1-fast-reasoning"),
@@ -297,7 +301,7 @@ def select_deep_thinking_agent(provider) -> str:
             ("DeepSeek Chat","deepseek-chat")
         ],
         "Qwen":[
-            ("Qwen 3.5 Max", "qwen3-max"),
+            ("Qwen 3 Max", "qwen3-max"),
             ("Qwen Plus", "qwen-plus")
         ]
     }

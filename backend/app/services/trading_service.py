@@ -42,8 +42,14 @@ class TradingService:
         self,
         ticker: str,
         analysis_date: str,
-        openai_api_key: str,
+        openai_api_key: Optional[str] = None,
         openai_base_url: str = "https://api.openai.com/v1",
+        quick_think_base_url: str = "https://api.openai.com/v1",
+        deep_think_base_url: str = "https://api.openai.com/v1",
+        quick_think_api_key: Optional[str] = None,
+        deep_think_api_key: Optional[str] = None,
+        embedding_base_url: str = "https://api.openai.com/v1",
+        embedding_api_key: Optional[str] = None,
         alpha_vantage_api_key: Optional[str] = None,
         analysts: Optional[List[str]] = None,
         research_depth: int = 1,
@@ -57,7 +63,9 @@ class TradingService:
             ticker: Stock ticker symbol
             analysis_date: Date in YYYY-MM-DD format
             openai_api_key: OpenAI API Key (required)
-            openai_base_url: OpenAI API Base URL (optional)
+            openai_base_url: OpenAI API Base URL (optional, deprecated)
+            quick_think_base_url: Base URL for Quick Thinking Model
+            deep_think_base_url: Base URL for Deep Thinking Model
             alpha_vantage_api_key: Alpha Vantage API Key (optional)
             analysts: List of analyst types to include
             research_depth: Research depth (1-5)
@@ -78,13 +86,7 @@ class TradingService:
             original_alpha_key = os.environ.get("ALPHA_VANTAGE_API_KEY")
             
             try:
-                # Set API keys for this request
-                if openai_api_key:
-                    os.environ["OPENAI_API_KEY"] = openai_api_key
-                elif not os.environ.get("OPENAI_API_KEY"):
-                    # If no key provided and no env var, this will fail later, but let's log it
-                    logger.warning("No OpenAI API key provided in request or environment")
-
+                # Set Alpha Vantage API key if provided
                 if alpha_vantage_api_key:
                     os.environ["ALPHA_VANTAGE_API_KEY"] = alpha_vantage_api_key
                 
@@ -92,9 +94,33 @@ class TradingService:
                 logger.info(f"Initializing TradingAgents for {ticker} on {analysis_date}")
                 config = self.create_config(research_depth, deep_think_llm, quick_think_llm)
                 
+                # Normalize base URLs (ensure lowercase paths, common issue with custom endpoints)
+                def normalize_base_url(url: str) -> str:
+                    """Normalize base URL to ensure proper formatting"""
+                    if url:
+                        # Replace common case variations
+                        url = url.replace("/V1", "/v1")
+                        url = url.replace("/V2", "/v2")
+                    return url
+                
                 # Override with user-provided settings
                 config["llm_provider"] = "openai"
-                config["backend_url"] = openai_base_url
+                # Use specific base URLs if provided, otherwise fallback to openai_base_url
+                config["quick_think_base_url"] = normalize_base_url(
+                    quick_think_base_url if quick_think_base_url != "https://api.openai.com/v1" else openai_base_url
+                )
+                config["deep_think_base_url"] = normalize_base_url(
+                    deep_think_base_url if deep_think_base_url != "https://api.openai.com/v1" else openai_base_url
+                )
+                # Set backend_url as a fallback
+                config["backend_url"] = normalize_base_url(openai_base_url)
+                
+                # Resolve API keys: Use specific key if provided, else fallback to openai_api_key (legacy/shared)
+                # Note: For non-OpenAI providers, the user MUST provide the specific key if it differs from the shared one.
+                config["quick_think_api_key"] = quick_think_api_key if quick_think_api_key else openai_api_key
+                config["deep_think_api_key"] = deep_think_api_key if deep_think_api_key else openai_api_key
+                config["embedding_base_url"] = normalize_base_url(embedding_base_url)
+                config["embedding_api_key"] = embedding_api_key if embedding_api_key else openai_api_key
                 
                 # Initialize TradingAgents graph
                 graph = TradingAgentsGraph(analysts, config=config, debug=True)
@@ -183,10 +209,6 @@ class TradingService:
             "claude-sonnet-4-0",
             "claude-3-5-haiku-20241022",
             "claude-3-haiku-20240307",
-            # Google
-            "gemini-2.0-flash-lite",
-            "gemini-2.0-flash",
-            "gemini-2.5-flash-lite",
             # Grok
             "grok-4-1-fast-reasoning",
             "grok-4-1-fast-non-reasoning",

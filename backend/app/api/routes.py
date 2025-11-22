@@ -93,6 +93,12 @@ async def run_analysis(
                 quick_think_llm=request.quick_think_llm,
                 openai_api_key=request.openai_api_key or "",  # Pass empty string if None, service handles it
                 openai_base_url=request.openai_base_url,
+                quick_think_base_url=request.quick_think_base_url,
+                deep_think_base_url=request.deep_think_base_url,
+                quick_think_api_key=request.quick_think_api_key or "",
+                deep_think_api_key=request.deep_think_api_key or "",
+                embedding_base_url=request.embedding_base_url,
+                embedding_api_key=request.embedding_api_key or "",
                 alpha_vantage_api_key=request.alpha_vantage_api_key,
             ))
             

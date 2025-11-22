@@ -40,9 +40,13 @@ const formSchema = z.object({
   deep_thinking_agent: z.string().min(1, "請選擇深層思維模型"),
   
   // API Configuration
-  openai_api_key: z.string().optional().or(z.literal("")),
-  openai_base_url: z.string().url("請輸入有效的 URL").optional().or(z.literal("")),
-  alpha_vantage_api_key: z.string().optional().or(z.literal("")),
+  quick_think_base_url: z.string().url("請輸入有效的 URL").optional().or(z.literal("")),
+  deep_think_base_url: z.string().url("請輸入有效的 URL").optional().or(z.literal("")),
+  quick_think_api_key: z.string().optional().or(z.literal("")),
+  deep_think_api_key: z.string().optional().or(z.literal("")),
+  embedding_base_url: z.string().url("請輸入有效的 URL").optional().or(z.literal("")),
+  embedding_api_key: z.string().optional().or(z.literal("")),
+  alpha_vantage_api_key: z.string().min(1, "請輸入 Alpha Vantage API Key"),
 });
 
 interface AnalysisFormProps {
@@ -67,8 +71,12 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
       research_depth: 3, // 預設中等層級
       shallow_thinking_agent: "gpt-5-mini-2025-08-07",
       deep_thinking_agent: "gpt-5-mini-2025-08-07",
-      openai_api_key: "",
-      openai_base_url: "https://api.openai.com/v1",
+      quick_think_base_url: "https://api.openai.com/v1",
+      deep_think_base_url: "https://api.openai.com/v1",
+      quick_think_api_key: "",
+      deep_think_api_key: "",
+      embedding_base_url: "https://api.openai.com/v1",
+      embedding_api_key: "",
       alpha_vantage_api_key: "",
     },
   });
@@ -229,7 +237,10 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>快速思維模型</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select 
+                        onValueChange={field.onChange} 
+                        defaultValue={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="選擇模型" />
@@ -251,10 +262,6 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                           <SelectItem value="claude-3-5-haiku-20241022">Anthropic: Claude 3.5 Haiku</SelectItem>
                           <SelectItem value="claude-3-haiku-20240307">Anthropic: Claude 3 Haiku</SelectItem>
 
-                          {/* Google */}
-                          <SelectItem value="gemini-2.0-flash-lite">Google: Gemini 2.0 Flash-Lite</SelectItem>
-                          <SelectItem value="gemini-2.0-flash">Google: Gemini 2.0 Flash</SelectItem>
-                          <SelectItem value="gemini-2.5-flash-lite">Google: Gemini 2.5 Flash Lite</SelectItem>
 
                           {/* Grok */}
                           <SelectItem value="grok-4-1-fast-reasoning">Grok: 4.1 Fast Reasoning</SelectItem>
@@ -270,7 +277,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                           <SelectItem value="deepseek-chat">DeepSeek: Chat</SelectItem>
 
                           {/* Qwen */}
-                          <SelectItem value="qwen3-max">Qwen: 3.5 Max</SelectItem>
+                          <SelectItem value="qwen3-max">Qwen: 3 Max</SelectItem>
                           <SelectItem value="qwen-plus">Qwen: Plus</SelectItem>
                         </SelectContent>
                       </Select>
@@ -288,7 +295,10 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>深層思維模型</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select 
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="選擇模型" />
@@ -310,10 +320,6 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                           <SelectItem value="claude-3-5-haiku-20241022">Anthropic: Claude 3.5 Haiku</SelectItem>
                           <SelectItem value="claude-3-haiku-20240307">Anthropic: Claude 3 Haiku</SelectItem>
 
-                          {/* Google */}
-                          <SelectItem value="gemini-2.0-flash-lite">Google: Gemini 2.0 Flash-Lite</SelectItem>
-                          <SelectItem value="gemini-2.0-flash">Google: Gemini 2.0 Flash</SelectItem>
-                          <SelectItem value="gemini-2.5-flash-lite">Google: Gemini 2.5 Flash Lite</SelectItem>
 
                           {/* Grok */}
                           <SelectItem value="grok-4-1-fast-reasoning">Grok: 4.1 Fast Reasoning</SelectItem>
@@ -329,7 +335,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                           <SelectItem value="deepseek-chat">DeepSeek: Chat</SelectItem>
 
                           {/* Qwen */}
-                          <SelectItem value="qwen3-max">Qwen: 3.5 Max</SelectItem>
+                          <SelectItem value="qwen3-max">Qwen: 3 Max</SelectItem>
                           <SelectItem value="qwen-plus">Qwen: Plus</SelectItem>
                         </SelectContent>
                       </Select>
@@ -343,33 +349,17 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
               </div>
             </div>
 
-            {/* API Configuration Section */}
-            <div className="space-y-4 border-t pt-6 mt-6">
-              <h3 className="text-lg font-semibold">API 配置</h3>
-              
-              <FormField
-                control={form.control}
-                name="openai_api_key"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>OpenAI API Key（若伺服器已設定則選填）</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="sk-..." {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      您的 OpenAI API Key（若未填寫將使用伺服器環境變數）
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {/* API Configuration Section */}
+              <div className="space-y-4 border-t pt-6 mt-6">
+                <h3 className="text-lg font-semibold">API 配置</h3>
+
 
               <FormField
                 control={form.control}
-                name="openai_base_url"
+                name="quick_think_base_url"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>API Base URL</FormLabel>
+                    <FormLabel>快速思維模型 Base URL</FormLabel>
                     <Select
                       onValueChange={(value) => {
                         if (value !== "custom") {
@@ -377,7 +367,6 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                         } else {
                           field.onChange(""); // Clear value for custom input
                         }
-                        // Store selection state if needed, or just rely on field value
                       }}
                       defaultValue={
                         [
@@ -408,7 +397,6 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                       </SelectContent>
                     </Select>
                     
-                    {/* Show input only when custom is selected or value is not in the list */}
                     {(![
                       "https://api.openai.com/v1",
                       "https://api.anthropic.com/",
@@ -429,7 +417,179 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                     )}
                     
                     <FormDescription>
-                      選擇或輸入 LLM 服務的 API 基礎網址
+                      快速思維模型的 API 基礎網址
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="quick_think_api_key"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>快速思維模型 API Key</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="sk-..." {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      該模型的專屬 API Key（若留空則使用預設/環境變數）
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="deep_think_base_url"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>深層思維模型 Base URL</FormLabel>
+                    <Select
+                      onValueChange={(value) => {
+                        if (value !== "custom") {
+                          field.onChange(value);
+                        } else {
+                          field.onChange(""); // Clear value for custom input
+                        }
+                      }}
+                      defaultValue={
+                        [
+                          "https://api.openai.com/v1",
+                          "https://api.anthropic.com/",
+                          "https://generativelanguage.googleapis.com/v1",
+                          "https://api.x.ai/v1",
+                          "https://api.deepseek.com",
+                          "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
+                        ].includes(field.value || "") 
+                          ? field.value 
+                          : "custom"
+                      }
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="選擇 API 端點" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="https://api.openai.com/v1">OpenAI (預設)</SelectItem>
+                        <SelectItem value="https://api.anthropic.com/">Anthropic</SelectItem>
+                        <SelectItem value="https://generativelanguage.googleapis.com/v1">Google Gemini</SelectItem>
+                        <SelectItem value="https://api.x.ai/v1">Grok (xAI)</SelectItem>
+                        <SelectItem value="https://api.deepseek.com">DeepSeek</SelectItem>
+                        <SelectItem value="https://dashscope-intl.aliyuncs.com/compatible-mode/v1">Qwen (Alibaba)</SelectItem>
+                        <SelectItem value="custom">自訂端點</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    
+                    {(![
+                      "https://api.openai.com/v1",
+                      "https://api.anthropic.com/",
+                      "https://generativelanguage.googleapis.com/v1",
+                      "https://api.x.ai/v1",
+                      "https://api.deepseek.com",
+                      "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
+                    ].includes(field.value || "") || field.value === "") && (
+                      <div className="mt-2">
+                        <FormControl>
+                          <Input 
+                            placeholder="請輸入自訂 Base URL" 
+                            value={field.value || ""} 
+                            onChange={field.onChange} 
+                          />
+                        </FormControl>
+                      </div>
+                    )}
+                    
+                    <FormDescription>
+                      深層思維模型的 API 基礎網址
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="deep_think_api_key"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>深層思維模型 API Key</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="sk-..." {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      該模型的專屬 API Key（若留空則使用預設/環境變數）
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="embedding_base_url"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>嵌入模型 Base URL</FormLabel>
+                    <Select
+                      onValueChange={(value) => {
+                        if (value !== "custom") {
+                          field.onChange(value);
+                        } else {
+                          field.onChange(""); // Clear value for custom input
+                        }
+                      }}
+                      defaultValue={
+                        field.value === "https://api.openai.com/v1" || !field.value
+                          ? "https://api.openai.com/v1"
+                          : "custom"
+                      }
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="選擇嵌入模型端點" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="https://api.openai.com/v1">OpenAI (預設)</SelectItem>
+                        <SelectItem value="custom">自訂端點</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    
+                    {field.value !== "https://api.openai.com/v1" && (
+                      <div className="mt-2">
+                        <FormControl>
+                          <Input 
+                            placeholder="請輸入自訂 Base URL" 
+                            value={field.value || ""} 
+                            onChange={field.onChange} 
+                          />
+                        </FormControl>
+                      </div>
+                    )}
+                    
+                    <FormDescription>
+                      嵌入向量生成的 API 端點（用於記憶體系統）
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="embedding_api_key"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>嵌入模型 API Key</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="sk-..." {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      該端點的 API Key（若留空則使用環境變數 OPENAI_API_KEY）
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -441,12 +601,12 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                 name="alpha_vantage_api_key"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Alpha Vantage API Key（選填）</FormLabel>
+                    <FormLabel>Alpha Vantage API Key *</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="選填，用於更詳細的數據" {...field} />
+                      <Input type="password" placeholder="輸入 Alpha Vantage API Key（必填）" {...field} />
                     </FormControl>
                     <FormDescription>
-                      用於獲取更詳細的財務數據（可選）
+                      用於獲取市場基本面數據（必填）
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

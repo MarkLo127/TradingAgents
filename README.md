@@ -21,13 +21,67 @@
 ### 🎯 核心特色
 
 - 🤖 **多代理協作架構** - 專業化的 AI 代理團隊協同工作
+- 🌐 **多模型靈活支援** - 支援 OpenAI、Anthropic、Grok、DeepSeek、Qwen 等多家 LLM 提供商
+- 🔧 **自訂端點配置** - 完整支援自訂 API 端點，可連接任何 OpenAI 兼容的服務
 - 📊 **全方位市場分析** - 整合技術面、基本面、情緒面、新聞面分析
 - 🔄 **結構化決策流程** - 透過看漲/看跌辯論機制減少偏見
 - 🧠 **長期記憶系統** - 使用 ChromaDB 向量數據庫儲存歷史決策
 - 🎨 **現代化 Web 介面** - 基於 Next.js 16 的響應式 UI
 - 🔌 **RESTful API** - 完整的後端 API 支援
-- 🐳 **一鍵部署** - 支援 Docker Compose 和 Railway 部署
+- 🐳 **一鍵部署** - 支援 Docker Compose 部署
 - 🔑 **BYOK (Bring Your Own Key)** - 使用者自帶 API 金鑰，保障隱私與成本控制
+
+---
+
+## 🤖 LLM 模型支援
+
+TradingAgents 支援業界領先的多家 LLM 提供商，並為每個模型配置**獨立的 API Key 和 Base URL**，實現最大靈活性。
+
+### 📋 支援的 LLM 提供商矩陣
+
+| 提供商 | 支援模型 | Base URL | 是否支援自訂端點 |
+|--------|---------|----------|----------------|
+| **OpenAI** | GPT-5.1, GPT-5 Mini/Nano, GPT-4.1 Mini/Nano, o4-mini | `https://api.openai.com/v1` | ✅ 是 |
+| **Anthropic** | Claude Haiku 4.5, Claude Sonnet 4.5/4.0, Claude 3.5 Haiku, Claude 3 Haiku | `https://api.anthropic.com/` | ✅ 是 |
+| **Grok (xAI)** | Grok-4.1 Fast, Grok-4 Fast, Grok-4, Grok-3, Grok-3 Mini | `https://api.x.ai/v1` | ✅ 是 |
+| **DeepSeek** | DeepSeek Reasoner, DeepSeek Chat | `https://api.deepseek.com` | ✅ 是 |
+| **Qwen (Alibaba)** | Qwen3-Max, Qwen-Plus | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1` | ✅ 是 |
+| **自訂端點** | 任何 OpenAI 兼容的 API | 使用者自訂 | ✅ 完全支援 |
+
+### 🔧 三層獨立配置
+
+系統支援**三個獨立的 LLM 配置點**，每個都可使用不同的提供商和 API Key：
+
+#### 1️⃣ 快速思維模型 (Quick Thinking)
+用於快速分析和即時回應（市場分析師、情緒分析師等）
+
+#### 2️⃣ 深層思維模型 (Deep Thinking)  
+用於複雜推理和深度分析（研究團隊辯論、風險管理等）
+
+#### 3️⃣ 嵌入模型 (Embedding)
+用於向量記憶體系統（ChromaDB 嵌入生成）
+
+**配置示例：**
+```yaml
+快速思維: OpenAI GPT-5 Mini @ api.openai.com
+深層思維: Anthropic Claude Sonnet 4.5 @ api.anthropic.com
+嵌入模型: 自訂端點 @ your-custom-endpoint.com
+```
+
+### 🌍 自訂端點支援
+
+**完整支援自訂 API 端點**，任何實現 OpenAI Chat Completions API 規範的服務都可以使用：
+
+✅ **支援場景：**
+- 私有化部署的 LLM 服務
+- 第三方 OpenAI 兼容代理
+- 本地運行的 LLM（如 Ollama、LocalAI）
+- 企業內部 AI Gateway
+
+**配置方式：**
+1. 在前端表單的 Base URL 輸入框直接輸入自訂 URL
+2. 填入對應的 API Key
+3. 系統自動使用您的端點進行推理
 
 ---
 
@@ -48,14 +102,14 @@ TradingAgents/
 │       │   ├── routes.py     # API 端點定義
 │       │   └── dependencies.py  # 依賴注入
 │       ├── core/             # 核心配置
-│       │   ├── config.py     # 環境變數與設定
+│       │   ├──config.py     # 環境變數與設定
 │       │   └── cors.py       # CORS 中間件配置
 │       ├── models/           # 資料模型
 │       │   └── schemas.py    # Pydantic 資料結構
 │       └── services/         # 業務邏輯層
 │           ├── trading_service.py  # TradingAgents 核心整合
-│           └── price_service.py    # 股價資料處理服務
-│
+│           └── task_manager.py    # 異步任務管理
+
 ├── frontend/                  # Next.js 前端應用
 │   ├── app/                  # Next.js App Router
 │   │   ├── layout.tsx        # 根佈局組件
@@ -72,10 +126,7 @@ TradingAgents/
 │   │   ├── layout/           # 佈局組件
 │   │   │   ├── Header.tsx    # 頂部導航欄
 │   │   │   └── Footer.tsx    # 頁腳
-│   │   ├── shared/           # 共用組件
 │   │   └── ui/               # shadcn/ui 基礎組件
-│   ├── context/              # React Context API
-│   │   └── AnalysisContext.tsx  # 分析狀態管理
 │   ├── hooks/                # 自定義 React Hooks
 │   │   ├── useAnalysis.ts    # 分析請求管理
 │   │   └── useConfig.ts      # 配置資料獲取
@@ -83,7 +134,7 @@ TradingAgents/
 │       ├── api.ts            # API 客戶端封裝
 │       ├── types.ts          # TypeScript 型別定義
 │       └── utils.ts          # 通用輔助函式
-│
+
 └── tradingagents/            # 核心 Python 套件
     ├── agents/               # AI 代理定義
     ├── dataflows/            # 資料流處理
@@ -103,6 +154,7 @@ TradingAgents/
 | **yfinance** | 股票市場資料獲取 | ≥0.2.63 |
 | **Uvicorn** | ASGI 伺服器 | ≥0.24.0 |
 | **python-dotenv** | 環境變數管理 | 1.0.0 |
+| **Redis** | 任務隊列與緩存 | Latest |
 
 #### 其他整合
 - **stockstats**: 技術指標計算
@@ -141,9 +193,19 @@ TradingAgents/
 
 #### 必要的 API 金鑰
 
-- **OpenAI API Key** (必需) - 用於驅動 AI 代理
+根據您選擇的 LLM 提供商，準備相應的 API 金鑰：
+
+- **OpenAI API Key** - GPT 系列模型
   - 申請網址: https://platform.openai.com/api-keys
-- **Alpha Vantage API Key** (可選) - 用於更詳細的股票資料
+- **Anthropic API Key** - Claude 系列模型
+  - 申請網址: https://console.anthropic.com
+- **Grok API Key** - Grok 系列模型
+  - 申請網址: https://console.x.ai
+- **DeepSeek API Key** - DeepSeek 系列模型
+  - 申請網址: https://platform.deepseek.com
+- **Qwen API Key** - Qwen 系列模型  
+  - 申請網址: https://www.alibabacloud.com
+- **Alpha Vantage API Key** (必需) - 股票基本面資料
   - 申請網址: https://www.alphavantage.co/support/#api-key
 
 > 💡 **提示**: 本系統採用 BYOK (Bring Your Own Key) 模式，您可以在前端介面直接輸入 API 金鑰，無需設定環境變數（適合快速測試）。
@@ -185,7 +247,7 @@ pip install -e .
 pip install -r backend/requirements.txt
 ```
 
-##### 2.3 配置環境變數
+##### 2.3 配置環境變數（可選）
 
 複製範例環境變數檔案並編輯：
 
@@ -196,18 +258,24 @@ cp .env.example .env
 編輯 `.env` 檔案，填入您的 API 金鑰：
 
 ```bash
-# ============ API 金鑰配置 ============
-# OpenAI API (必需)
+# ============ LLM API 金鑰配置 ============
+# OpenAI (可選 - 可在前端直接輸入)
 OPENAI_API_KEY=sk-your-openai-api-key-here
-OPENAI_BASE_URL=https://api.openai.com/v1
 
-# Alpha Vantage API (可選)
+# Anthropic Claude (可選)
+ANTHROPIC_API_KEY=sk-ant-your-claude-key
+
+# Grok / xAI (可選)
+XAI_API_KEY=your-grok-key
+
+# DeepSeek (可選)
+DEEPSEEK_API_KEY=your-deepseek-key
+
+# Qwen / Alibaba Cloud (可選)
+DASHSCOPE_API_KEY=your-qwen-key
+
+# Alpha Vantage (強烈建議 - 用於基本面數據)
 ALPHA_VANTAGE_API_KEY=your-alpha-vantage-key
-
-# 其他 LLM 提供商 (可選)
-ANTHROPIC_API_KEY=your-claude-api-key
-GOOGLE_API_KEY=your-gemini-api-key
-GOOGLE_API_KEY=your-gemini-api-key
 
 # ============ 後端服務配置 ============
 BACKEND_HOST=0.0.0.0
@@ -219,6 +287,8 @@ CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 # ============ 資料儲存配置 ============
 TRADINGAGENTS_RESULTS_DIR=./results
 ```
+
+> 📝 **注意**: 環境變數中的 API Key 為可選配置。您可以在前端表單中直接輸入，系統會優先使用前端輸入的 Key。
 
 ##### 2.4 啟動後端服務
 
@@ -276,17 +346,27 @@ npm --prefix frontend run dev
 
 最簡單的部署方式，一鍵啟動前後端服務：
 
+**前置要求：**
+- Docker Engine 20.10+
+- Docker Compose V2
+
+**部署步驟：**
+
 ```bash
-# 啟動所有服務（首次執行會自動構建映像）
+# 1. 確保 .env 文件已配置（至少包含 Alpha Vantage API Key）
+cp .env.example .env
+# 編輯 .env，填入必要的 API 金鑰
+
+# 2. 啟動所有服務（首次執行會自動構建映像）
 docker compose up -d --build
 
-# 查看服務運行狀態
+# 3. 查看服務運行狀態
 docker compose ps
 
-# 查看即時日誌
+# 4. 查看即時日誌
 docker compose logs -f
 
-# 查看特定服務日誌
+# 5. 查看特定服務日誌
 docker compose logs -f backend
 docker compose logs -f frontend
 
@@ -301,6 +381,7 @@ docker compose down -v
 - 後端服務運行於: `http://localhost:8000`
 - 前端服務運行於: `http://localhost:3000`
 - 分析結果會持久化儲存在 `./results` 目錄
+- 環境變數從 `.env` 文件自動載入
 
 ---
 
@@ -318,6 +399,8 @@ docker compose down -v
 
 3. **配置分析參數**
 
+   #### 📊 基本設定
+   
    - **選擇分析師團隊**: 勾選您需要的分析師類型
      - ✅ 市場分析師 (Market Analyst) - 技術分析與價格走勢
      - ✅ 情緒分析師 (Sentiment Analyst) - 社交媒體情緒評估
@@ -335,31 +418,44 @@ docker compose down -v
      - 🟡 **中等 (Medium)**: 平衡速度與深度
      - 🔴 **深層 (Deep)**: 全面深入分析，耗時較長
 
-   - **選擇 LLM 模型**:
-     
-     系統提供兩種類型的模型配置：
-     
-     **快速思維模型** (用於快速分析和即時回應):
-     - `gpt-5.1-2025-11-13` - GPT-5.1 (最新)
-     - `gpt-5-mini-2025-08-07` - GPT-5 Mini (預設)
-     - `gpt-5-nano-2025-08-07` - GPT-5 Nano
-     - `gpt-4.1-mini` - GPT-4.1 Mini
-     - `gpt-4.1-nano` - GPT-4.1 Nano
-     - `o4-mini-2025-04-16` - o4-mini
-     
-     **深層思維模型** (用於複雜推理和深度分析):
-     - `gpt-5.1-2025-11-13` - GPT-5.1 (最新)
-     - `gpt-5-mini-2025-08-07` - GPT-5 Mini (預設)
-     - `gpt-5-nano-2025-08-07` - GPT-5 Nano
-     - `gpt-4.1-mini` - GPT-4.1 Mini
-     - `gpt-4.1-nano` - GPT-4.1 Nano
-     - `o4-mini-2025-04-16` - o4-mini
-     
-     > 💡 **提示**: 快速思維模型用於初步分析和資料收集，深層思維模型用於複雜決策和策略制定。您可以根據需求選擇不同的模型組合。
+   #### 🤖 LLM 模型配置
 
-   - **輸入 API 金鑰**:
-     - 在表單中直接輸入您的 OpenAI API Key
-     - 或使用環境變數預設值（如已配置）
+   系統提供**三個獨立的 LLM 配置選項**，每個都可使用不同的提供商：
+
+   **1. 快速思維模型配置**
+   - **模型選擇**: 從下拉選單選擇模型（OpenAI, Anthropic, Grok, DeepSeek, Qwen）
+   - **Base URL**: 直接輸入自訂端點 URL（例如：`https://api.your-custom-endpoint.com/v1`）
+   - **API Key**: 輸入對應的 API 金鑰
+
+   **2. 深層思維模型配置**
+   - **模型選擇**: 可選擇與快速思維不同的模型
+   - **Base URL**: 支援不同的端點
+   - **API Key**: 支援不同的金鑰
+
+   **3. 嵌入模型配置**
+   - **Base URL**: 下拉選擇 OpenAI 或自訂端點
+   - **API Key**: 若留空則使用環境變數 `OPENAI_API_KEY`
+
+   **配置示例：**
+   ```
+   快速思維模型: gpt-5-mini-2025-08-07
+   快速思維 Base URL: https://api.openai.com/v1
+   快速思維 API Key: sk-your-openai-key
+   
+   深層思維模型: claude-sonnet-4-5-20250929
+   深層思維 Base URL: https://api.anthropic.com/
+   深層思維 API Key: sk-ant-your-claude-key
+   
+   嵌入模型 Base URL: 自訂 → https://api.your-embedding-service.com/v1
+   嵌入模型 API Key: your-embedding-key
+   ```
+
+   > 💡 **靈活性**: 您可以混合使用不同提供商的模型，例如用 OpenAI 做快速分析，用 Claude 做深度推理，用自訂端點做嵌入生成。
+
+   #### 🔑 API 金鑰配置
+
+   - **Alpha Vantage API Key** (必填): 用於獲取股票基本面數據
+   - 如未在環境變數中配置 LLM API Key，需在此填入
 
 4. **執行分析**
    - 檢查所有參數無誤後，點擊「執行分析」按鈕
@@ -399,7 +495,7 @@ docker compose down -v
 curl http://localhost:8000/api/health
 ```
 
-#### 執行股票分析
+#### 執行股票分析（使用自訂端點）
 
 ```bash
 curl -X POST http://localhost:8000/api/analyze \
@@ -407,10 +503,17 @@ curl -X POST http://localhost:8000/api/analyze \
   -d '{
     "ticker": "NVDA",
     "analysis_date": "2024-01-15",
-    "research_depth": "medium",
-    "model": "gpt-5-mini-2025-08-07",
-    "selected_analysts": ["market", "sentiment", "news", "fundamental"],
-    "api_key": "sk-your-openai-key"
+    "research_depth": 2,
+    "deep_think_llm": "claude-sonnet-4-5-20250929",
+    "quick_think_llm": "gpt-5-mini-2025-08-07",
+    "analysts": ["market", "sentiment", "news", "fundamental"],
+    "quick_think_base_url": "https://api.openai.com/v1",
+    "deep_think_base_url": "https://api.anthropic.com/",
+    "embedding_base_url": "https://api.openai.com/v1",
+    "quick_think_api_key": "sk-your-openai-key",
+    "deep_think_api_key": "sk-ant-your-claude-key",
+    "embedding_api_key": "sk-your-embedding-key",
+    "alpha_vantage_api_key": "your-alpha-vantage-key"
   }'
 ```
 
@@ -492,31 +595,25 @@ TradingAgents 模擬真實交易公司的組織架構，每個代理都有其專
 ### 智能特性
 
 #### 1. 動態研究深度調整
-- **Shallow**: 每個代理進行 1 輪分析，適合快速決策
-- **Medium**: 每個代理進行 2-3 輪分析，平衡深度與速度
-- **Deep**: 每個代理進行 5+ 輪分析，全面深入研究
+- **Shallow (1)**: 每個代理進行 1 輪分析，適合快速決策
+- **Medium (2)**: 每個代理進行 2 輪分析，平衡深度與速度
+- **Deep (3+)**: 每個代理進行 3+ 輪分析，全面深入研究
 
-#### 2. 多模型支持
-- 支援 OpenAI (GPT-4, GPT-4o, o1 系列)
-- 支援 Anthropic Claude
-- 支援 Google Gemini
-- 支援 Google Gemini
-
-#### 3. 長期記憶系統
+#### 2. 長期記憶系統
 - 使用 ChromaDB 向量資料庫儲存歷史決策
 - 代理可以參考過去類似情況的決策
 - 持續學習與改進分析品質
 
-#### 4. 結構化輸出
+#### 3. 結構化輸出
 - 所有報告均採用 Markdown 格式
 - 清晰的章節結構
 - 支援表格、列表、程式碼區塊等豐富格式
 
-#### 5. 實時資料整合
+#### 4. 實時資料整合
 - yfinance: 即時股價與歷史資料
 - Reddit API: 社群情緒分析
 - RSS Feeds: 財經新聞抓取
-- Alpha Vantage: 詳細財務資料（可選）
+- Alpha Vantage: 詳細財務資料（必需）
 
 ---
 
@@ -530,7 +627,7 @@ TradingAgents 模擬真實交易公司的組織架構，每個代理都有其專
 
 ### 分析配置頁面
 
-直觀的表單介面，輕鬆配置所有分析參數
+直觀的表單介面，輕鬆配置所有分析參數（包含多模型和自訂端點配置）
 
 ![分析配置頁面](web_screenshot/2.png)
 
@@ -589,3 +686,9 @@ TradingAgents 模擬真實交易公司的組織架構，每個代理都有其專
 - [shadcn/ui](https://github.com/shadcn/ui) - 精美的 React 組件庫
 - [ChromaDB](https://github.com/chroma-core/chroma) - AI 原生向量資料庫
 - [yfinance](https://github.com/ranaroussi/yfinance) - Yahoo Finance 資料下載工具
+
+---
+
+## 📄 License
+
+本專案採用 Apache 2.0 許可證 - 查看 [LICENSE](LICENSE) 文件了解詳情。

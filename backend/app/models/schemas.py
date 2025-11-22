@@ -22,11 +22,27 @@ class AnalysisRequest(BaseModel):
     openai_api_key: Optional[str] = Field(None, description="OpenAI API Key (optional if set on server)", min_length=0)
     openai_base_url: Optional[str] = Field(
         default="https://api.openai.com/v1",
-        description="OpenAI API Base URL (optional)"
+        description="OpenAI API Base URL (optional, deprecated)"
     )
-    alpha_vantage_api_key: Optional[str] = Field(
-        None,
-        description="Alpha Vantage API Key (optional, for enhanced data)"
+    quick_think_base_url: Optional[str] = Field(
+        default="https://api.openai.com/v1",
+        description="Base URL for Quick Thinking Model"
+    )
+    deep_think_base_url: Optional[str] = Field(
+        default="https://api.openai.com/v1",
+        description="Base URL for Deep Thinking Model"
+    )
+    quick_think_api_key: Optional[str] = Field(None, description="API Key for Quick Thinking Model", min_length=0)
+    deep_think_api_key: Optional[str] = Field(None, description="API Key for Deep Thinking Model", min_length=0)
+    embedding_base_url: Optional[str] = Field(
+        default="https://api.openai.com/v1",
+        description="Base URL for Embedding Model"
+    )
+    embedding_api_key: Optional[str] = Field(None, description="API Key for Embedding Model", min_length=0)
+    alpha_vantage_api_key: str = Field(
+        ...,
+        description="Alpha Vantage API Key (required for fundamental data)",
+        min_length=1
     )
 
 
