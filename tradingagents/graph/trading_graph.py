@@ -83,7 +83,7 @@ class TradingAgentsGraph:
 
         # 初始化 LLM
         provider = self.config["llm_provider"].lower()
-        if provider in ["openai", "ollama", "openrouter"]:
+        if provider in ["openai"]:
             # Get the OpenAI API key from environment variable
             openai_api_key = os.getenv("OPENAI_API_KEY")
             self.deep_thinking_llm = ChatOpenAI(

@@ -187,28 +187,36 @@ def select_shallow_thinking_agent(provider) -> str:
             ("GPT-5-nano","gpt-5-nano-2025-08-07"),
             ("GPT-4.1-mini", "gpt-4.1-mini"),
             ("GPT-4.1-nano", "gpt-4.1-nano"),
-            ("GPT-4o", "gpt-4o"),
-            ("GPT-4o-mini", "gpt-4o-mini")
+            ("o4-mini", "o4-mini-2025-04-16")
         ],
         "anthropic": [
-            ("Claude Haiku 3.5", "claude-3-5-haiku-latest"),
-            ("Claude Sonnet 3.5", "claude-3-5-sonnet-latest"),
-            ("Claude Sonnet 3.7", "claude-3-7-sonnet-latest"),
+            ("Claude Haiku 4.5", "claude-haiku-4-5-20251001"),
+            ("Claude Sonnet 4.5", "claude-sonnet-4-5-20250929"),
             ("Claude Sonnet 4", "claude-sonnet-4-0"),
+            ("Claude Haiku 3.5", "claude-3-5-haiku-20241022"),
+            ("Claude Haiku 3", "claude-3-haiku-20240307")
         ],
         "google": [
             ("Gemini 2.0 Flash-Lite", "gemini-2.0-flash-lite"),
             ("Gemini 2.0 Flash", "gemini-2.0-flash"),
-            ("Gemini 2.5 Flash", "gemini-2.5-flash-preview-05-20"),
+            ("Gemini 2.5 Flash Lite", "gemini-2.5-flash-lite")
         ],
-        "openrouter": [
-            ("Meta: Llama 4 Scout", "meta-llama/llama-4-scout:free"),
-            ("Meta: Llama 3.3 8B Instruct - Llama 3.3 70B", "meta-llama/llama-3.3-8b-instruct:free"),
-            ("google/gemini-2.0-flash-exp:free - Gemini Flash 2.0", "google/gemini-2.0-flash-exp:free"),
+        "Grok":[
+            ("Grok 4.1 Fast Reasoning","grok-4-1-fast-reasoning"),
+            ("Grok 4.1 Fast Non Reasoning","grok-4-1-fast-non-reasoning"),
+            ("Grok 4 Fast Reasoning","grok-4-fast-reasoning"),
+            ("Grok 4 Fast Non Reasoning","grok-4-fast-non-reasoning"),
+            ("Grok 4","grok-4-0709"),
+            ("Grok 3","grok-3"),
+            ("Grok 3 Mini","grok-3-mini")           
         ],
-        "ollama": [
-            ("llama3.1 本機版", "llama3.1"),
-            ("llama3.2 本機版", "llama3.2"),
+        "DeepSeek": [
+            ("DeepSeek Reasoner","deepseek-reasoner"),
+            ("DeepSeek Chat","deepseek-chat")
+        ],
+        "Qwen":[
+            ("Qwen 3.5 Max", "qwen3-max"),
+            ("Qwen Plus", "qwen-plus")
         ]
     }
 
@@ -261,29 +269,36 @@ def select_deep_thinking_agent(provider) -> str:
             ("GPT-5-nano","gpt-5-nano-2025-08-07"),
             ("GPT-4.1-mini", "gpt-4.1-mini"),
             ("GPT-4.1-nano", "gpt-4.1-nano"),
-            ("GPT-4o", "gpt-4o"),
-            ("GPT-4o-mini", "gpt-4o-mini")
+            ("o4-mini", "o4-mini-2025-04-16")
         ],
         "anthropic": [
-            ("Claude Haiku 3.5", "claude-3-5-haiku-latest"),
-            ("Claude Sonnet 3.5", "claude-3-5-sonnet-latest"),
-            ("Claude Sonnet 3.7", "claude-3-7-sonnet-latest"),
+            ("Claude Haiku 4.5", "claude-haiku-4-5-20251001"),
+            ("Claude Sonnet 4.5", "claude-sonnet-4-5-20250929"),
             ("Claude Sonnet 4", "claude-sonnet-4-0"),
-            ("Claude Opus 4", "claude-opus-4-0"),
+            ("Claude Haiku 3.5", "claude-3-5-haiku-20241022"),
+            ("Claude Haiku 3", "claude-3-haiku-20240307")
         ],
         "google": [
             ("Gemini 2.0 Flash-Lite", "gemini-2.0-flash-lite"),
             ("Gemini 2.0 Flash", "gemini-2.0-flash"),
-            ("Gemini 2.5 Flash", "gemini-2.5-flash-preview-05-20"),
-            ("Gemini 2.5 Pro", "gemini-2.5-pro-preview-06-05"),
+            ("Gemini 2.5 Flash Lite", "gemini-2.5-flash-lite")
         ],
-        "openrouter": [
-            ("DeepSeek V3 - 一個 685B 參數的專家混合模型", "deepseek/deepseek-chat-v3-0324:free"),
-            ("Deepseek - DeepSeek 團隊旗艦聊天模型的最新版本", "deepseek/deepseek-chat-v3-0324:free"),
+        "Grok":[
+            ("Grok 4.1 Fast Reasoning","grok-4-1-fast-reasoning"),
+            ("Grok 4.1 Fast Non Reasoning","grok-4-1-fast-non-reasoning"),
+            ("Grok 4 Fast Reasoning","grok-4-fast-reasoning"),
+            ("Grok 4 Fast Non Reasoning","grok-4-fast-non-reasoning"),
+            ("Grok 4","grok-4-0709"),
+            ("Grok 3","grok-3"),
+            ("Grok 3 Mini","grok-3-mini")           
         ],
-        "ollama": [
-            ("llama3.1 本機版", "llama3.1"),
-            ("qwen3", "qwen3"),
+        "DeepSeek":[
+            ("DeepSeek Reasoner","deepseek-reasoner"),
+            ("DeepSeek Chat","deepseek-chat")
+        ],
+        "Qwen":[
+            ("Qwen 3.5 Max", "qwen3-max"),
+            ("Qwen Plus", "qwen-plus")
         ]
     }
     
@@ -326,8 +341,9 @@ def select_llm_provider() -> tuple[str, str]:
         ("OpenAI", "https://api.openai.com/v1"),
         ("Anthropic", "https://api.anthropic.com/"),
         ("Google", "https://generativelanguage.googleapis.com/v1"),
-        ("Openrouter", "https://openrouter.ai/api/v1"),
-        ("Ollama", "http://localhost:11434/v1"),        
+        ("Grok", "https://api.x.ai/v1"),
+        ("DeepSeek", "https://api.deepseek.com"),
+        ("Qwen", "https://dashscope-intl.aliyuncs.com/compatible-mode/v1")       
     ]
     
     choice = questionary.select(

@@ -6,10 +6,7 @@ from openai import OpenAI
 
 class FinancialSituationMemory:
     def __init__(self, name, config):
-        if config["backend_url"] == "http://localhost:11434/v1":
-            self.embedding = "nomic-embed-text"
-        else:
-            self.embedding = "text-embedding-3-small"
+        self.embedding = "text-embedding-3-small"
         # Get the OpenAI API key from environment variable
         openai_api_key = os.getenv("OPENAI_API_KEY")
         self.client = OpenAI(base_url=config["backend_url"], api_key=openai_api_key)

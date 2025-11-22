@@ -49,7 +49,7 @@ def create_risk_manager(llm, memory):
             return text[:max_chars] + "\n...(內容已截斷)"
         
         # 為每個報告設置合理的字符限制
-        # 模型 gpt-4o-mini 的限制是 8192 tokens
+        # 模型 gpt-5-mini 的限制是 8192 tokens
         # 混合中英文估算: 1 字符 ≈ 1.5-2 tokens (取保守值)
         # 目標: 總字符數 < 3500 字符 (約 5250-7000 tokens，留足夠 tokens 給 completion)
         market_research_report = truncate_text(market_research_report, 500)

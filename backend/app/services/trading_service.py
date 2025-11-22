@@ -26,8 +26,8 @@ class TradingService:
     def create_config(
         self,
         research_depth: int = 1,
-        deep_think_llm: str = "gpt-4o-mini",
-        quick_think_llm: str = "gpt-4o-mini",
+        deep_think_llm: str = "gpt-5-mini-2025-08-07",
+        quick_think_llm: str = "gpt-5-mini-2025-08-07",
     ) -> Dict[str, Any]:
         """Create configuration for TradingAgents"""
         config = self.default_config.copy()
@@ -47,8 +47,8 @@ class TradingService:
         alpha_vantage_api_key: Optional[str] = None,
         analysts: Optional[List[str]] = None,
         research_depth: int = 1,
-        deep_think_llm: str = "gpt-4o-mini",
-        quick_think_llm: str = "gpt-4o-mini",
+        deep_think_llm: str = "gpt-5-mini-2025-08-07",
+        quick_think_llm: str = "gpt-5-mini-2025-08-07",
     ) -> Dict[str, Any]:
         """
         Run trading analysis for a given ticker and date with user-provided API keys
@@ -170,21 +170,45 @@ class TradingService:
     def get_available_llms(self) -> List[str]:
         """Get list of available OpenAI LLM models"""
         return [
+            # OpenAI
             "gpt-5.1-2025-11-13",
             "gpt-5-mini-2025-08-07",
             "gpt-5-nano-2025-08-07",
             "gpt-4.1-mini",
             "gpt-4.1-nano",
-            "gpt-4o",
-            "gpt-4o-mini",
+            "o4-mini-2025-04-16",
+            # Anthropic
+            "claude-haiku-4-5-20251001",
+            "claude-sonnet-4-5-20250929",
+            "claude-sonnet-4-0",
+            "claude-3-5-haiku-20241022",
+            "claude-3-haiku-20240307",
+            # Google
+            "gemini-2.0-flash-lite",
+            "gemini-2.0-flash",
+            "gemini-2.5-flash-lite",
+            # Grok
+            "grok-4-1-fast-reasoning",
+            "grok-4-1-fast-non-reasoning",
+            "grok-4-fast-reasoning",
+            "grok-4-fast-non-reasoning",
+            "grok-4-0709",
+            "grok-3",
+            "grok-3-mini",
+            # DeepSeek
+            "deepseek-reasoner",
+            "deepseek-chat",
+            # Qwen
+            "qwen3-max",
+            "qwen-plus",
         ]
     
     def get_default_config(self) -> Dict[str, Any]:
         """Get default configuration"""
         return {
             "research_depth": 1,
-            "deep_think_llm": "gpt-4o-mini",
-            "quick_think_llm": "gpt-4o-mini",
+            "deep_think_llm": "gpt-5-mini-2025-08-07",
+            "quick_think_llm": "gpt-5-mini-2025-08-07",
             "max_debate_rounds": 1,
             "max_risk_discuss_rounds": 1,
         }

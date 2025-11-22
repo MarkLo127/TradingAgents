@@ -65,8 +65,8 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
       analysis_date: format(new Date(), "yyyy-MM-dd"),
       analysts: ["market", "social", "news", "fundamentals"], // 預設全選
       research_depth: 3, // 預設中等層級
-      shallow_thinking_agent: "gpt-4o-mini",
-      deep_thinking_agent: "gpt-4o",
+      shallow_thinking_agent: "gpt-5-mini-2025-08-07",
+      deep_thinking_agent: "gpt-5-mini-2025-08-07",
       openai_api_key: "",
       openai_base_url: "https://api.openai.com/v1",
       alpha_vantage_api_key: "",
@@ -236,13 +236,42 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="gpt-5.1-2025-11-13">GPT-5.1</SelectItem>
-                          <SelectItem value="gpt-5-mini-2025-08-07">GPT-5 Mini</SelectItem>
-                          <SelectItem value="gpt-5-nano-2025-08-07">GPT-5 Nano</SelectItem>
-                          <SelectItem value="gpt-4.1-mini">GPT-4.1 Mini</SelectItem>
-                          <SelectItem value="gpt-4.1-nano">GPT-4.1 Nano</SelectItem>
-                          <SelectItem value="gpt-4o">GPT-4o</SelectItem>
-                          <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
+                          {/* OpenAI */}
+                          <SelectItem value="gpt-5.1-2025-11-13">OpenAI: GPT-5.1</SelectItem>
+                          <SelectItem value="gpt-5-mini-2025-08-07">OpenAI: GPT-5 Mini</SelectItem>
+                          <SelectItem value="gpt-5-nano-2025-08-07">OpenAI: GPT-5 Nano</SelectItem>
+                          <SelectItem value="gpt-4.1-mini">OpenAI: GPT-4.1 Mini</SelectItem>
+                          <SelectItem value="gpt-4.1-nano">OpenAI: GPT-4.1 Nano</SelectItem>
+                          <SelectItem value="o4-mini-2025-04-16">OpenAI: o4-mini</SelectItem>
+                          
+                          {/* Anthropic */}
+                          <SelectItem value="claude-haiku-4-5-20251001">Anthropic: Claude Haiku 4.5</SelectItem>
+                          <SelectItem value="claude-sonnet-4-5-20250929">Anthropic: Claude Sonnet 4.5</SelectItem>
+                          <SelectItem value="claude-sonnet-4-0">Anthropic: Claude Sonnet 4</SelectItem>
+                          <SelectItem value="claude-3-5-haiku-20241022">Anthropic: Claude 3.5 Haiku</SelectItem>
+                          <SelectItem value="claude-3-haiku-20240307">Anthropic: Claude 3 Haiku</SelectItem>
+
+                          {/* Google */}
+                          <SelectItem value="gemini-2.0-flash-lite">Google: Gemini 2.0 Flash-Lite</SelectItem>
+                          <SelectItem value="gemini-2.0-flash">Google: Gemini 2.0 Flash</SelectItem>
+                          <SelectItem value="gemini-2.5-flash-lite">Google: Gemini 2.5 Flash Lite</SelectItem>
+
+                          {/* Grok */}
+                          <SelectItem value="grok-4-1-fast-reasoning">Grok: 4.1 Fast Reasoning</SelectItem>
+                          <SelectItem value="grok-4-1-fast-non-reasoning">Grok: 4.1 Fast Non Reasoning</SelectItem>
+                          <SelectItem value="grok-4-fast-reasoning">Grok: 4 Fast Reasoning</SelectItem>
+                          <SelectItem value="grok-4-fast-non-reasoning">Grok: 4 Fast Non Reasoning</SelectItem>
+                          <SelectItem value="grok-4-0709">Grok: 4</SelectItem>
+                          <SelectItem value="grok-3">Grok: 3</SelectItem>
+                          <SelectItem value="grok-3-mini">Grok: 3 Mini</SelectItem>
+
+                          {/* DeepSeek */}
+                          <SelectItem value="deepseek-reasoner">DeepSeek: Reasoner</SelectItem>
+                          <SelectItem value="deepseek-chat">DeepSeek: Chat</SelectItem>
+
+                          {/* Qwen */}
+                          <SelectItem value="qwen3-max">Qwen: 3.5 Max</SelectItem>
+                          <SelectItem value="qwen-plus">Qwen: Plus</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormDescription>
@@ -266,13 +295,42 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="gpt-5.1-2025-11-13">GPT-5.1</SelectItem>
-                          <SelectItem value="gpt-5-mini-2025-08-07">GPT-5 Mini</SelectItem>
-                          <SelectItem value="gpt-5-nano-2025-08-07">GPT-5 Nano</SelectItem>
-                          <SelectItem value="gpt-4.1-mini">GPT-4.1 Mini</SelectItem>
-                          <SelectItem value="gpt-4.1-nano">GPT-4.1 Nano</SelectItem>
-                          <SelectItem value="gpt-4o">GPT-4o</SelectItem>
-                          <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
+                          {/* OpenAI */}
+                          <SelectItem value="gpt-5.1-2025-11-13">OpenAI: GPT-5.1</SelectItem>
+                          <SelectItem value="gpt-5-mini-2025-08-07">OpenAI: GPT-5 Mini</SelectItem>
+                          <SelectItem value="gpt-5-nano-2025-08-07">OpenAI: GPT-5 Nano</SelectItem>
+                          <SelectItem value="gpt-4.1-mini">OpenAI: GPT-4.1 Mini</SelectItem>
+                          <SelectItem value="gpt-4.1-nano">OpenAI: GPT-4.1 Nano</SelectItem>
+                          <SelectItem value="o4-mini-2025-04-16">OpenAI: o4-mini</SelectItem>
+                          
+                          {/* Anthropic */}
+                          <SelectItem value="claude-haiku-4-5-20251001">Anthropic: Claude Haiku 4.5</SelectItem>
+                          <SelectItem value="claude-sonnet-4-5-20250929">Anthropic: Claude Sonnet 4.5</SelectItem>
+                          <SelectItem value="claude-sonnet-4-0">Anthropic: Claude Sonnet 4</SelectItem>
+                          <SelectItem value="claude-3-5-haiku-20241022">Anthropic: Claude 3.5 Haiku</SelectItem>
+                          <SelectItem value="claude-3-haiku-20240307">Anthropic: Claude 3 Haiku</SelectItem>
+
+                          {/* Google */}
+                          <SelectItem value="gemini-2.0-flash-lite">Google: Gemini 2.0 Flash-Lite</SelectItem>
+                          <SelectItem value="gemini-2.0-flash">Google: Gemini 2.0 Flash</SelectItem>
+                          <SelectItem value="gemini-2.5-flash-lite">Google: Gemini 2.5 Flash Lite</SelectItem>
+
+                          {/* Grok */}
+                          <SelectItem value="grok-4-1-fast-reasoning">Grok: 4.1 Fast Reasoning</SelectItem>
+                          <SelectItem value="grok-4-1-fast-non-reasoning">Grok: 4.1 Fast Non Reasoning</SelectItem>
+                          <SelectItem value="grok-4-fast-reasoning">Grok: 4 Fast Reasoning</SelectItem>
+                          <SelectItem value="grok-4-fast-non-reasoning">Grok: 4 Fast Non Reasoning</SelectItem>
+                          <SelectItem value="grok-4-0709">Grok: 4</SelectItem>
+                          <SelectItem value="grok-3">Grok: 3</SelectItem>
+                          <SelectItem value="grok-3-mini">Grok: 3 Mini</SelectItem>
+
+                          {/* DeepSeek */}
+                          <SelectItem value="deepseek-reasoner">DeepSeek: Reasoner</SelectItem>
+                          <SelectItem value="deepseek-chat">DeepSeek: Chat</SelectItem>
+
+                          {/* Qwen */}
+                          <SelectItem value="qwen3-max">Qwen: 3.5 Max</SelectItem>
+                          <SelectItem value="qwen-plus">Qwen: Plus</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormDescription>
@@ -311,12 +369,67 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                 name="openai_base_url"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>OpenAI Base URL（選填）</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://api.openai.com/v1" {...field} />
-                    </FormControl>
+                    <FormLabel>API Base URL</FormLabel>
+                    <Select
+                      onValueChange={(value) => {
+                        if (value !== "custom") {
+                          field.onChange(value);
+                        } else {
+                          field.onChange(""); // Clear value for custom input
+                        }
+                        // Store selection state if needed, or just rely on field value
+                      }}
+                      defaultValue={
+                        [
+                          "https://api.openai.com/v1",
+                          "https://api.anthropic.com/",
+                          "https://generativelanguage.googleapis.com/v1",
+                          "https://api.x.ai/v1",
+                          "https://api.deepseek.com",
+                          "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
+                        ].includes(field.value || "") 
+                          ? field.value 
+                          : "custom"
+                      }
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="選擇 API 端點" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="https://api.openai.com/v1">OpenAI (預設)</SelectItem>
+                        <SelectItem value="https://api.anthropic.com/">Anthropic</SelectItem>
+                        <SelectItem value="https://generativelanguage.googleapis.com/v1">Google Gemini</SelectItem>
+                        <SelectItem value="https://api.x.ai/v1">Grok (xAI)</SelectItem>
+                        <SelectItem value="https://api.deepseek.com">DeepSeek</SelectItem>
+                        <SelectItem value="https://dashscope-intl.aliyuncs.com/compatible-mode/v1">Qwen (Alibaba)</SelectItem>
+                        <SelectItem value="custom">自訂端點</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    
+                    {/* Show input only when custom is selected or value is not in the list */}
+                    {(![
+                      "https://api.openai.com/v1",
+                      "https://api.anthropic.com/",
+                      "https://generativelanguage.googleapis.com/v1",
+                      "https://api.x.ai/v1",
+                      "https://api.deepseek.com",
+                      "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
+                    ].includes(field.value || "") || field.value === "") && (
+                      <div className="mt-2">
+                        <FormControl>
+                          <Input 
+                            placeholder="請輸入自訂 Base URL" 
+                            value={field.value || ""} 
+                            onChange={field.onChange} 
+                          />
+                        </FormControl>
+                      </div>
+                    )}
+                    
                     <FormDescription>
-                      API 基礎網址（預設為 OpenAI 官方）
+                      選擇或輸入 LLM 服務的 API 基礎網址
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

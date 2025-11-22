@@ -207,7 +207,7 @@ ALPHA_VANTAGE_API_KEY=your-alpha-vantage-key
 # 其他 LLM 提供商 (可選)
 ANTHROPIC_API_KEY=your-claude-api-key
 GOOGLE_API_KEY=your-gemini-api-key
-OPENROUTER_API_KEY=your-openrouter-api-key
+GOOGLE_API_KEY=your-gemini-api-key
 
 # ============ 後端服務配置 ============
 BACKEND_HOST=0.0.0.0
@@ -341,21 +341,19 @@ docker compose down -v
      
      **快速思維模型** (用於快速分析和即時回應):
      - `gpt-5.1-2025-11-13` - GPT-5.1 (最新)
-     - `gpt-5-mini-2025-08-07` - GPT-5 Mini
+     - `gpt-5-mini-2025-08-07` - GPT-5 Mini (預設)
      - `gpt-5-nano-2025-08-07` - GPT-5 Nano
      - `gpt-4.1-mini` - GPT-4.1 Mini
      - `gpt-4.1-nano` - GPT-4.1 Nano
-     - `gpt-4o` - GPT-4o (推薦預設)
-     - `gpt-4o-mini` - GPT-4o Mini (預設)
+     - `o4-mini-2025-04-16` - o4-mini
      
      **深層思維模型** (用於複雜推理和深度分析):
      - `gpt-5.1-2025-11-13` - GPT-5.1 (最新)
-     - `gpt-5-mini-2025-08-07` - GPT-5 Mini
+     - `gpt-5-mini-2025-08-07` - GPT-5 Mini (預設)
      - `gpt-5-nano-2025-08-07` - GPT-5 Nano
      - `gpt-4.1-mini` - GPT-4.1 Mini
      - `gpt-4.1-nano` - GPT-4.1 Nano
-     - `gpt-4o` - GPT-4o (推薦預設)
-     - `gpt-4o-mini` - GPT-4o Mini
+     - `o4-mini-2025-04-16` - o4-mini
      
      > 💡 **提示**: 快速思維模型用於初步分析和資料收集，深層思維模型用於複雜決策和策略制定。您可以根據需求選擇不同的模型組合。
 
@@ -410,7 +408,7 @@ curl -X POST http://localhost:8000/api/analyze \
     "ticker": "NVDA",
     "analysis_date": "2024-01-15",
     "research_depth": "medium",
-    "model": "gpt-4o",
+    "model": "gpt-5-mini-2025-08-07",
     "selected_analysts": ["market", "sentiment", "news", "fundamental"],
     "api_key": "sk-your-openai-key"
   }'
@@ -502,7 +500,7 @@ TradingAgents 模擬真實交易公司的組織架構，每個代理都有其專
 - 支援 OpenAI (GPT-4, GPT-4o, o1 系列)
 - 支援 Anthropic Claude
 - 支援 Google Gemini
-- 可透過 OpenRouter 存取更多模型
+- 支援 Google Gemini
 
 #### 3. 長期記憶系統
 - 使用 ChromaDB 向量資料庫儲存歷史決策

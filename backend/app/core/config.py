@@ -33,8 +33,8 @@ class Settings(BaseSettings):
     results_dir: str = "./results"
     max_debate_rounds: int = 1
     max_risk_discuss_rounds: int = 1
-    deep_think_llm: str = "gpt-4o-mini"
-    quick_think_llm: str = "gpt-4o-mini"
+    deep_think_llm: str = "gpt-5-mini-2025-08-07"
+    quick_think_llm: str = "gpt-5-mini-2025-08-07"
     
     class Config:
         env_file = ".env"
