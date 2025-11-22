@@ -574,48 +574,6 @@ TradingAgents 模擬真實交易公司的組織架構，每個代理都有其專
 
 ---
 
-## 🛠️ 開發指南
-
-### 專案開發
-
-#### 後端開發
-
-```bash
-# 啟用虛擬環境
-conda activate tradingagents
-
-# 以開發模式執行（自動重載）
-uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000
-
-# 執行測試
-pytest backend/tests
-
-# 程式碼格式化
-black backend/
-ruff backend/
-```
-
-#### 前端開發
-
-```bash
-# 開發模式（支援熱重載）
-pnpm -C frontend dev
-
-# 型別檢查
-pnpm -C frontend type-check
-
-# Lint 檢查
-pnpm -C frontend lint
-
-# 建構生產版本
-pnpm -C frontend build
-
-# 預覽生產版本
-pnpm -C frontend start
-```
-
----
-
 ## 🙏 致謝
 
 ### 特別感謝
