@@ -205,8 +205,8 @@ OPENAI_BASE_URL=https://api.openai.com/v1
 ALPHA_VANTAGE_API_KEY=your-alpha-vantage-key
 
 # 其他 LLM 提供商 (可選)
-CLAUDE_API_KEY=your-claude-api-key
-GEMINI_API_KEY=your-gemini-api-key
+ANTHROPIC_API_KEY=your-claude-api-key
+GOOGLE_API_KEY=your-gemini-api-key
 OPENROUTER_API_KEY=your-openrouter-api-key
 
 # ============ 後端服務配置 ============
