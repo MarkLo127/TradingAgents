@@ -10,8 +10,6 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-Latest-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
-[簡介](#簡介) • [特色](#核心特色) • [架構](#系統架構) • [安裝](#快速開始) • [使用](#使用指南) • [部署](#部署方案) • [截圖](#應用截圖)
-
 </div>
 
 ---
