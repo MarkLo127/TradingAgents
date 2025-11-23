@@ -44,8 +44,8 @@ const formSchema = z.object({
     .regex(/^\d{4}-\d{2}-\d{2}$/, "日期格式必須為 YYYY-MM-DD"),
   analysts: z.array(z.string()).min(1, "請至少選擇一位分析師"),
   research_depth: z.number().int().min(1).max(5),
-  shallow_thinking_agent: z.string().min(1, "請選擇快速思維模型"),
-  deep_thinking_agent: z.string().min(1, "請選擇深層思維模型"),
+  quick_think_llm: z.string().min(1, "請選擇快速思維模型"),
+  deep_think_llm: z.string().min(1, "請選擇深層思維模型"),
 
   // API Configuration
   quick_think_base_url: z
@@ -89,8 +89,8 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
       analysis_date: format(new Date(), "yyyy-MM-dd"),
       analysts: ["market", "social", "news", "fundamentals"], // 預設全選
       research_depth: 3, // 預設中等層級
-      shallow_thinking_agent: "gpt-5-mini-2025-08-07",
-      deep_thinking_agent: "gpt-5-mini-2025-08-07",
+      quick_think_llm: "gpt-5-mini-2025-08-07",
+      deep_think_llm: "gpt-5-mini-2025-08-07",
       quick_think_base_url: "https://api.openai.com/v1",
       deep_think_base_url: "https://api.openai.com/v1",
       quick_think_api_key: "",
@@ -273,7 +273,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
 
                 <FormField
                   control={form.control}
-                  name="shallow_thinking_agent"
+                  name="quick_think_llm"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>快速思維模型</FormLabel>
@@ -364,7 +364,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
 
                 <FormField
                   control={form.control}
-                  name="deep_thinking_agent"
+                  name="deep_think_llm"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>深層思維模型</FormLabel>

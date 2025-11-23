@@ -7,12 +7,18 @@ export interface AnalysisRequest {
   analysis_date: string;
   analysts?: string[];
   research_depth?: number;
-  shallow_thinking_agent?: string;
-  deep_thinking_agent?: string;
+  quick_think_llm?: string;
+  deep_think_llm?: string;
   
   // API Configuration
   openai_api_key?: string;
   openai_base_url?: string;
+  quick_think_base_url?: string;
+  deep_think_base_url?: string;
+  quick_think_api_key?: string;
+  deep_think_api_key?: string;
+  embedding_base_url?: string;
+  embedding_api_key?: string;
   alpha_vantage_api_key?: string;
 }
 
