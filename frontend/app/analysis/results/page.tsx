@@ -12,11 +12,91 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { ChevronLeft } from "lucide-react";
 
 const ANALYSTS = [
-  { key: "market", label: "市場分析師", reportKey: "market_report" },
-  { key: "social", label: "社群媒體分析師", reportKey: "sentiment_report" },
-  { key: "news", label: "新聞分析師", reportKey: "news_report" },
-  { key: "fundamentals", label: "基本面分析師", reportKey: "fundamentals_report" },
+  // === 分析師團隊 ===
+  { 
+    key: "market", 
+    label: "市場分析師", 
+    reportKey: "market_report",
+    description: "技術分析與市場趨勢評估"
+  },
+  { 
+    key: "social", 
+    label: "社群媒體分析師", 
+    reportKey: "sentiment_report",
+    description: "社群情緒與市場氛圍分析"
+  },
+  { 
+    key: "news", 
+    label: "新聞分析師", 
+    reportKey: "news_report",
+    description: "新聞事件與影響分析"
+  },
+  { 
+    key: "fundamentals", 
+    label: "基本面分析師", 
+    reportKey: "fundamentals_report",
+    description: "財務數據與基本面分析"
+  },
+  
+  // === 研究團隊 ===
+  { 
+    key: "bull", 
+    label: "看漲研究員", 
+    reportKey: "investment_debate_state.bull_history",
+    description: "看漲觀點與投資論據"
+  },
+  { 
+    key: "bear", 
+    label: "看跌研究員", 
+    reportKey: "investment_debate_state.bear_history",
+    description: "看跌觀點與風險警告"
+  },
+  { 
+    key: "research_manager", 
+    label: "研究經理", 
+    reportKey: "investment_debate_state.judge_decision",
+    description: "研究團隊綜合決策"
+  },
+  
+  // === 交易員 ===
+  { 
+    key: "trader", 
+    label: "交易員", 
+    reportKey: "trader_investment_plan",
+    description: "交易執行計劃與策略"
+  },
+  
+  // === 風險管理團隊 ===
+  { 
+    key: "risky", 
+    label: "激進分析師", 
+    reportKey: "risk_debate_state.risky_history",
+    description: "高風險高回報策略分析"
+  },
+  { 
+    key: "safe", 
+    label: "保守分析師", 
+    reportKey: "risk_debate_state.safe_history",
+    description: "穩健保守策略分析"
+  },
+  { 
+    key: "neutral", 
+    label: "中立分析師", 
+    reportKey: "risk_debate_state.neutral_history",
+    description: "中立平衡策略分析"
+  },
+  { 
+    key: "risk_manager", 
+    label: "風險經理", 
+    reportKey: "risk_debate_state.judge_decision",
+    description: "風險管理綜合決策"
+  },
 ];
+
+// 獲取嵌套對象的值
+const getNestedValue = (obj: any, path: string) => {
+  return path.split('.').reduce((current, key) => current?.[key], obj);
+};
 
 export default function AnalysisResultsPage() {
   const router = useRouter();
@@ -45,7 +125,7 @@ export default function AnalysisResultsPage() {
   }
 
   const currentAnalyst = ANALYSTS.find(a => a.key === selectedAnalyst);
-  const currentReport = analysisResult.reports?.[currentAnalyst?.reportKey || ""];
+  const currentReport = getNestedValue(analysisResult.reports, currentAnalyst?.reportKey || "");
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -72,7 +152,7 @@ export default function AnalysisResultsPage() {
 
         {/* 分析師選擇 Tabs */}
         <Tabs value={selectedAnalyst} onValueChange={setSelectedAnalyst} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto gap-2">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-4 h-auto gap-2">
             {ANALYSTS.map(analyst => (
               <TabsTrigger 
                 key={analyst.key} 
@@ -101,10 +181,7 @@ export default function AnalysisResultsPage() {
                   <CardHeader>
                     <CardTitle>{analyst.label} 報告</CardTitle>
                     <CardDescription>
-                      {analyst.key === "market" && "技術分析與市場趨勢評估"}
-                      {analyst.key === "social" && "社群情緒與市場氛圍分析"}
-                      {analyst.key === "news" && "新聞事件與影響分析"}
-                      {analyst.key === "fundamentals" && "財務數據與基本面分析"}
+                      {analyst.description}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
