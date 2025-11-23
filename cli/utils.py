@@ -219,8 +219,7 @@ def select_shallow_thinking_agent(provider=None) -> str:
         "Qwen":[
             ("Qwen 3 Max", "qwen3-max"),
             ("Qwen Plus", "qwen-plus")
-        ],
-        "自訂": [("手動輸入模型名稱", "custom")]
+        ]
     }
     
     # 第一步：選擇供應商
@@ -343,8 +342,7 @@ def select_deep_thinking_agent(provider=None) -> str:
         "Qwen":[
             ("Qwen 3 Max", "qwen3-max"),
             ("Qwen Plus", "qwen-plus")
-        ],
-        "自訂": [("手動輸入模型名稱", "custom")]
+        ]
     }
     
     # 第一步：選擇供應商
