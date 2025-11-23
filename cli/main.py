@@ -502,6 +502,43 @@ def get_user_selections():
     selected_shallow_thinker = select_shallow_thinking_agent(selected_llm_provider)
     selected_deep_thinker = select_deep_thinking_agent(selected_llm_provider)
 
+    # 步驟 7：嵌入模型供應商
+    console.print(
+        create_question_box(
+            "步驟 7：嵌入模型供應商", "選擇嵌入模型服務（用於記憶體系統）"
+        )
+    )
+    embedding_provider, embedding_url = select_embedding_provider()
+    
+    # 步驟 8：API Keys
+    console.print(
+        create_question_box(
+            "步驟 8：API Keys", "輸入 API Keys（可留空使用 .env 中的設定）"
+        )
+    )
+    
+    import os
+    
+    # 從 .env 讀取 API Key
+    default_openai_key = os.getenv("OPENAI_API_KEY")
+    
+    # 快速思維模型 API Key
+    quick_think_api_key = get_api_key("快速思維模型", default_openai_key)
+    
+    # 深度思維模型 API Key
+    deep_think_api_key = get_api_key("深度思維模型", default_openai_key)
+    
+    # 嵌入模型 API Key
+    embedding_api_key = get_api_key("嵌入模型", default_openai_key)
+    
+    # Alpha Vantage API Key（必填）
+    alpha_vantage_key = os.getenv("ALPHA_VANTAGE_API_KEY")
+    if not alpha_vantage_key:
+        console.print("\n[yellow]未在 .env 中找到 ALPHA_VANTAGE_API_KEY[/yellow]")
+        alpha_vantage_key = get_api_key("Alpha Vantage", None)
+    else:
+        console.print(f"\n[green]✓ 使用 .env 中的 ALPHA_VANTAGE_API_KEY[/green]") 
+
     return {
         "ticker": selected_ticker,
         "analysis_date": analysis_date,
@@ -511,6 +548,12 @@ def get_user_selections():
         "backend_url": backend_url,
         "shallow_thinker": selected_shallow_thinker,
         "deep_thinker": selected_deep_thinker,
+        "embedding_provider": embedding_provider,
+        "embedding_url": embedding_url,
+        "quick_think_api_key": quick_think_api_key,
+        "deep_think_api_key": deep_think_api_key,
+        "embedding_api_key": embedding_api_key,
+        "alpha_vantage_api_key": alpha_vantage_key,
     }
 
 
@@ -766,6 +809,17 @@ def run_analysis():
     config["deep_think_llm"] = selections["deep_thinker"]
     config["backend_url"] = selections["backend_url"]
     config["llm_provider"] = selections["llm_provider"].lower()
+    
+    # 添加 API Keys 到配置
+    config["quick_think_api_key"] = selections["quick_think_api_key"]
+    config["deep_think_api_key"] = selections["deep_think_api_key"]
+    config["embedding_api_key"] = selections["embedding_api_key"]
+    config["embedding_base_url"] = selections["embedding_url"]
+    
+    # 設置環境變數（某些工具可能需要）
+    import os
+    os.environ["OPENAI_API_KEY"] = selections["quick_think_api_key"]
+    os.environ["ALPHA_VANTAGE_API_KEY"] = selections["alpha_vantage_api_key"]
 
     # 初始化圖
     graph = TradingAgentsGraph(

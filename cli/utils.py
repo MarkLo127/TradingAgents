@@ -487,3 +487,118 @@ def select_llm_provider() -> tuple[str, str]:
     
     # 返回供應商名稱和 URL
     return display_name, url
+
+
+def select_embedding_provider() -> tuple[str, str]:
+    """
+    使用互動式選單選擇嵌入模型供應商。
+
+    返回:
+        tuple[str, str]: 包含供應商名稱和 API 基礎 URL 的元組。
+    """
+    # 定義嵌入模型供應商（只有 OpenAI 和自訂）
+    EMBEDDING_PROVIDERS = [
+        ("OpenAI", "https://api.openai.com/v1"),
+        ("自訂 URL", "custom")
+    ]
+    
+    choice = questionary.select(
+        "選擇您的嵌入模型供應商：",
+        # 設定可選項
+        choices=[
+            questionary.Choice(display, value=(display, value))
+            for display, value in EMBEDDING_PROVIDERS
+        ],
+        # 提供操作說明
+        instruction="\n- 使用方向鍵導覽\n- 按下 Enter 鍵選擇",
+        # 設定提示的樣式
+        style=questionary.Style(
+            [
+                ("selected", "fg:cyan noinherit"),
+                ("highlighted", "fg:cyan noinherit"),
+                ("pointer", "fg:cyan noinherit"),
+            ]
+        ),
+    ).ask()
+    
+    # 如果使用者沒有選擇，則退出程式
+    if choice is None:
+        console.print("\n[red]未選擇嵌入模型供應商。正在結束程式...[/red]")
+        exit(1)
+    
+    # 解構選擇的元組
+    display_name, url = choice
+    
+    # 如果選擇自訂 URL，提示使用者輸入
+    if url == "custom":
+        custom_url = questionary.text(
+            "請輸入自訂的 Base URL：",
+            validate=lambda x: (x.startswith("http://") or x.startswith("https://")) or "URL 必須以 http:// 或 https:// 開頭",
+            style=questionary.Style(
+                [
+                    ("text", "fg:green"),
+                    ("highlighted", "noinherit"),
+                ]
+            ),
+        ).ask()
+        
+        # 如果使用者沒有輸入，則退出程式
+        if not custom_url:
+            console.print("\n[red]未提供 Base URL。正在結束程式...[/red]")
+            exit(1)
+        
+        url = custom_url.strip()
+        display_name = "自訂供應商"
+    
+    # 印出使用者的選擇
+    print(f"您選擇了嵌入模型：{display_name}\tURL: {url}")
+    
+    # 返回供應商名稱和 URL
+    return display_name, url
+
+
+def get_api_key(model_type: str, default_key: Optional[str] = None) -> str:
+    """
+    提示使用者輸入 API Key，如果留空則使用預設值。
+
+    參數:
+        model_type (str): 模型類型（例如：「快速思維」、「深度思維」、「嵌入模型」）
+        default_key (Optional[str]): 從 .env 文件讀取的預設 API Key
+
+    返回:
+        str: 使用者輸入的 API Key 或預設值
+    """
+    import os
+    from rich.console import Console
+    
+    console = Console()
+    
+    # 顯示提示訊息
+    if default_key:
+        hint = f"[dim]（留空使用 .env 中的 API Key: {default_key[:10]}...{default_key[-4:]}）[/dim]"
+    else:
+        hint = "[dim]（必填）[/dim]"
+    
+    console.print(f"\n[cyan]{model_type} API Key {hint}[/cyan]")
+    
+    api_key = questionary.password(
+        f"請輸入 {model_type} 的 API Key：",
+        style=questionary.Style(
+            [
+                ("text", "fg:green"),
+                ("highlighted", "noinherit"),
+            ]
+        ),
+    ).ask()
+    
+    # 如果使用者沒有輸入，使用預設值
+    if not api_key or api_key.strip() == "":
+        if default_key:
+            console.print(f"[green]✓ 使用 .env 中的 API Key[/green]")
+            return default_key
+        else:
+            console.print(f"\n[red]未提供 {model_type} API Key。正在結束程式...[/red]")
+            exit(1)
+    
+    console.print(f"[green]✓ API Key 已設定[/green]")
+    return api_key.strip()
