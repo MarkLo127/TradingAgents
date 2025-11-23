@@ -168,20 +168,20 @@ def select_research_depth() -> int:
     return choice
 
 
-def select_shallow_thinking_agent(provider) -> str:
+def select_shallow_thinking_agent(provider=None) -> str:
     """
     使用互動式選單選擇淺層思維的 LLM 引擎。
 
     參數:
-        provider (str): LLM 供應商的名稱。
+        provider (str, optional): LLM 供應商的名稱（已廢棄，不再使用）。
 
     返回:
         str: 選擇的 LLM 模型的名稱。
     """
-
+    
     # 定義不同供應商的淺層思維 LLM 引擎選項
     SHALLOW_AGENT_OPTIONS = {
-        "openai": [
+        "OpenAI": [
             ("GPT-5.1", "gpt-5.1-2025-11-13"),
             ("GPT-5-mini","gpt-5-mini-2025-08-07"),
             ("GPT-5-nano","gpt-5-nano-2025-08-07"),
@@ -189,14 +189,14 @@ def select_shallow_thinking_agent(provider) -> str:
             ("GPT-4.1-nano", "gpt-4.1-nano"),
             ("o4-mini", "o4-mini-2025-04-16")
         ],
-        "anthropic": [
+        "Anthropic": [
             ("Claude Haiku 4.5", "claude-haiku-4-5-20251001"),
             ("Claude Sonnet 4.5", "claude-sonnet-4-5-20250929"),
             ("Claude Sonnet 4", "claude-sonnet-4-0"),
             ("Claude Haiku 3.5", "claude-3-5-haiku-20241022"),
             ("Claude Haiku 3", "claude-3-haiku-20240307")
         ],
-        "google": [
+        "Google": [
             ("Gemini 2.5 Pro", "gemini-2.5-pro"),
             ("Gemini 2.5 Flash", "gemini-2.5-flash"),
             ("Gemini 2.5 Flash Lite", "gemini-2.5-flash-lite"),
@@ -219,19 +219,39 @@ def select_shallow_thinking_agent(provider) -> str:
         "Qwen":[
             ("Qwen 3 Max", "qwen3-max"),
             ("Qwen Plus", "qwen-plus")
-        ]
+        ],
+        "自訂": [("手動輸入模型名稱", "custom")]
     }
-
-    choice = questionary.select(
-        "選擇您的 [快速思維 LLM 引擎]：",
-        # 根據供應商顯示選項
+    
+    # 第一步：選擇供應商
+    provider_choice = questionary.select(
+        "選擇 [快速思維] 模型供應商：",
+        choices=[
+            questionary.Choice(provider_name, value=provider_name)
+            for provider_name in SHALLOW_AGENT_OPTIONS.keys()
+        ],
+        instruction="\n- 使用方向鍵導覽\n- 按下 Enter 鍵選擇",
+        style=questionary.Style(
+            [
+                ("selected", "fg:cyan noinherit"),
+                ("highlighted", "fg:cyan noinherit"),
+                ("pointer", "fg:cyan noinherit"),
+            ]
+        ),
+    ).ask()
+    
+    if provider_choice is None:
+        console.print("\n[red]未選擇供應商。正在結束程式...[/red]")
+        exit(1)
+    
+    # 第二步：根據選擇的供應商顯示模型列表
+    model_choice = questionary.select(
+        f"選擇 [{provider_choice}] 的快速思維模型：",
         choices=[
             questionary.Choice(display, value=value)
-            for display, value in SHALLOW_AGENT_OPTIONS[provider.lower()]
+            for display, value in SHALLOW_AGENT_OPTIONS[provider_choice]
         ],
-        # 提供操作說明
         instruction="\n- 使用方向鍵導覽\n- 按下 Enter 鍵選擇",
-        # 設定提示的樣式
         style=questionary.Style(
             [
                 ("selected", "fg:magenta noinherit"),
@@ -241,23 +261,43 @@ def select_shallow_thinking_agent(provider) -> str:
         ),
     ).ask()
 
-    # 如果使用者沒有選擇，則退出程式
-    if choice is None:
+    if model_choice is None:
         console.print(
             "\n[red]未選擇快速思維 LLM 引擎。正在結束程式...[/red]"
         )
         exit(1)
+    
+    # 如果選擇自訂，提示輸入模型名稱
+    if model_choice == "custom":
+        model_name = questionary.text(
+            "請輸入快速思維 LLM 模型名稱：",
+            validate=lambda x: len(x.strip()) > 0 or "請輸入有效的模型名稱。",
+            style=questionary.Style(
+                [
+                    ("text", "fg:green"),
+                    ("highlighted", "noinherit"),
+                ]
+            ),
+        ).ask()
+        
+        if not model_name:
+            console.print(
+                "\n[red]未提供模型名稱。正在結束程式...[/red]"
+            )
+            exit(1)
+        
+        return model_name.strip()
 
     # 返回選擇的 LLM 模型
-    return choice
+    return model_choice
 
 
-def select_deep_thinking_agent(provider) -> str:
+def select_deep_thinking_agent(provider=None) -> str:
     """
     使用互動式選單選擇深層思維的 LLM 引擎。
 
     參數:
-        provider (str): LLM 供應商的名稱。
+        provider (str, optional): LLM 供應商的名稱（已廢棄，不再使用）。
 
     返回:
         str: 選擇的 LLM 模型的名稱。
@@ -265,7 +305,7 @@ def select_deep_thinking_agent(provider) -> str:
 
     # 定義不同供應商的深層思維 LLM 引擎選項
     DEEP_AGENT_OPTIONS = {
-        "openai": [
+        "OpenAI": [
             ("GPT-5.1", "gpt-5.1-2025-11-13"),
             ("GPT-5-mini","gpt-5-mini-2025-08-07"),
             ("GPT-5-nano","gpt-5-nano-2025-08-07"),
@@ -273,14 +313,14 @@ def select_deep_thinking_agent(provider) -> str:
             ("GPT-4.1-nano", "gpt-4.1-nano"),
             ("o4-mini", "o4-mini-2025-04-16")
         ],
-        "anthropic": [
+        "Anthropic": [
             ("Claude Haiku 4.5", "claude-haiku-4-5-20251001"),
             ("Claude Sonnet 4.5", "claude-sonnet-4-5-20250929"),
             ("Claude Sonnet 4", "claude-sonnet-4-0"),
             ("Claude Haiku 3.5", "claude-3-5-haiku-20241022"),
             ("Claude Haiku 3", "claude-3-haiku-20240307")
         ],
-        "google": [
+        "Google": [
             ("Gemini 2.5 Pro", "gemini-2.5-pro"),
             ("Gemini 2.5 Flash", "gemini-2.5-flash"),
             ("Gemini 2.5 Flash Lite", "gemini-2.5-flash-lite"),
@@ -303,19 +343,39 @@ def select_deep_thinking_agent(provider) -> str:
         "Qwen":[
             ("Qwen 3 Max", "qwen3-max"),
             ("Qwen Plus", "qwen-plus")
-        ]
+        ],
+        "自訂": [("手動輸入模型名稱", "custom")]
     }
     
-    choice = questionary.select(
-        "選擇您的 [深度思維 LLM 引擎]：",
-        # 根據供應商顯示選項
+    # 第一步：選擇供應商
+    provider_choice = questionary.select(
+        "選擇 [深度思維] 模型供應商：",
+        choices=[
+            questionary.Choice(provider_name, value=provider_name)
+            for provider_name in DEEP_AGENT_OPTIONS.keys()
+        ],
+        instruction="\n- 使用方向鍵導覽\n- 按下 Enter 鍵選擇",
+        style=questionary.Style(
+            [
+                ("selected", "fg:cyan noinherit"),
+                ("highlighted", "fg:cyan noinherit"),
+                ("pointer", "fg:cyan noinherit"),
+            ]
+        ),
+    ).ask()
+    
+    if provider_choice is None:
+        console.print("\n[red]未選擇供應商。正在結束程式...[/red]")
+        exit(1)
+    
+    # 第二步：根據選擇的供應商顯示模型列表
+    model_choice = questionary.select(
+        f"選擇 [{provider_choice}] 的深度思維模型：",
         choices=[
             questionary.Choice(display, value=value)
-            for display, value in DEEP_AGENT_OPTIONS[provider.lower()]
+            for display, value in DEEP_AGENT_OPTIONS[provider_choice]
         ],
-        # 提供操作說明
         instruction="\n- 使用方向鍵導覽\n- 按下 Enter 鍵選擇",
-        # 設定提示的樣式
         style=questionary.Style(
             [
                 ("selected", "fg:magenta noinherit"),
@@ -325,13 +385,33 @@ def select_deep_thinking_agent(provider) -> str:
         ),
     ).ask()
 
-    # 如果使用者沒有選擇，則退出程式
-    if choice is None:
+    if model_choice is None:
         console.print("\n[red]未選擇深度思維 LLM 引擎。正在結束程式...[/red]")
         exit(1)
+    
+    # 如果選擇自訂，提示輸入模型名稱
+    if model_choice == "custom":
+        model_name = questionary.text(
+            "請輸入深度思維 LLM 模型名稱：",
+            validate=lambda x: len(x.strip()) > 0 or "請輸入有效的模型名稱。",
+            style=questionary.Style(
+                [
+                    ("text", "fg:green"),
+                    ("highlighted", "noinherit"),
+                ]
+            ),
+        ).ask()
+        
+        if not model_name:
+            console.print(
+                "\n[red]未提供模型名稱。正在結束程式...[/red]"
+            )
+            exit(1)
+        
+        return model_name.strip()
 
     # 返回選擇的 LLM 模型
-    return choice
+    return model_choice
 
 def select_llm_provider() -> tuple[str, str]:
     """
