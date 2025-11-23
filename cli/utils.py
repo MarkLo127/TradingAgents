@@ -347,7 +347,8 @@ def select_llm_provider() -> tuple[str, str]:
         ("Google", "https://generativelanguage.googleapis.com/v1"),
         ("Grok", "https://api.x.ai/v1"),
         ("DeepSeek", "https://api.deepseek.com"),
-        ("Qwen", "https://dashscope-intl.aliyuncs.com/compatible-mode/v1")       
+        ("Qwen", "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"),
+        ("自訂 URL", "custom")  # 新增自訂 URL 選項
     ]
     
     choice = questionary.select(
@@ -376,6 +377,31 @@ def select_llm_provider() -> tuple[str, str]:
     
     # 解構選擇的元組
     display_name, url = choice
+    
+    # 如果使用者選擇自訂 URL，提示輸入
+    if url == "custom":
+        custom_url = questionary.text(
+            "請輸入自訂的 Base URL：",
+            # 驗證 URL 格式
+            validate=lambda x: (x.strip().startswith("http://") or x.strip().startswith("https://")) 
+                or "請輸入有效的 URL（必須以 http:// 或 https:// 開頭）",
+            # 設定提示的樣式
+            style=questionary.Style(
+                [
+                    ("text", "fg:green"),
+                    ("highlighted", "noinherit"),
+                ]
+            ),
+        ).ask()
+        
+        # 如果使用者沒有輸入，則退出程式
+        if not custom_url:
+            console.print("\n[red]未提供 Base URL。正在結束程式...[/red]")
+            exit(1)
+        
+        url = custom_url.strip()
+        display_name = "自訂供應商"
+    
     # 印出使用者的選擇
     print(f"您選擇了：{display_name}\tURL: {url}")
     
