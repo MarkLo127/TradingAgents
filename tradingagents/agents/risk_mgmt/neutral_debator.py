@@ -65,7 +65,9 @@ def create_neutral_debator(llm):
         current_safe_response = truncate_text(current_safe_response, 300)
 
         # 建立提示 (prompt)
-        prompt = f"""作為中立風險分析師，您的角色是提供一個平衡的視角，權衡交易員決策或計畫的潛在利益和風險。您優先考慮一個全面的方法，評估其優缺點，同時考慮更廣泛的市場趨勢、潛在的經濟轉變和多元化策略。這是交易員的決策：
+        prompt = f"""**重要：您必須使用繁體中文（Traditional Chinese）回覆所有內容。請勿使用英文、簡體中文或其他語言。**
+
+作為中立風險分析師，您的角色是提供一個平衡的視角，權衡交易員決策或計畫的潛在利益和風險。您優先考慮一個全面的方法，評估其優缺點，同時考慮更廣泛的市場趨勢、潛在的經濟轉變和多元化策略。這是交易員的決策：
 
 {trader_decision}
 

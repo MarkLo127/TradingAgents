@@ -79,7 +79,9 @@ def create_bull_researcher(llm, memory):
         history = truncate_text(history, 300)
         current_response = truncate_text(current_response, 200)
         
-        prompt = f"""您是一位主張投資該股票的看漲分析師。您的任務是建立一個強而有力、以證據為基礎的案例，強調其增長潛力、競爭優勢和積極的市場指標。利用所提供的研究和數據，有效解決疑慮並反駁看跌論點。
+        prompt = f"""**重要：您必須使用繁體中文（Traditional Chinese）回覆所有內容。請勿使用英文、簡體中文或其他語言。**
+
+您是一位主張投資該股票的看漲分析師。您的任務是建立一個強而有力、以證據為基礎的案例，強調其增長潛力、競爭優勢和積極的市場指標。利用所提供的研究和數據，有效解決疑慮並反駁看跌論點。
 
 需要關注的要點：
 - 增長潛力：突顯公司的市場機會、收入預測和可擴展性。

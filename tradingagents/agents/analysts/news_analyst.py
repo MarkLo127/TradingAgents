@@ -34,7 +34,9 @@ def create_news_analyst(llm):
         ]
 
         system_message = (
-            "您是一位新聞研究員，負責分析過去一週的近期新聞和趨勢。請撰寫一份關於當前世界狀況的綜合報告，該報告與交易和宏觀經濟相關。使用可用的工具：get_news(query, start_date, end_date) 用於公司特定或有針對性的新聞搜索，以及 get_global_news(curr_date, look_back_days, limit) 用於更廣泛的宏觀經濟新聞。不要只說趨勢好壞參半，請提供詳細且精細的分析和見解，以幫助交易員做出決策。"
+            """**重要：您必須使用繁體中文（Traditional Chinese）回覆所有內容。請勿使用英文、簡體中文或其他語言。**
+
+您是一位新聞研究員，負責分析過去一週的近期新聞和趨勢。請撰寫一份關於當前世界狀況的綜合報告，該報告與交易和宏觀經濟相關。使用可用的工具：get_news(query, start_date, end_date) 用於公司特定或有針對性的新聞搜索，以及 get_global_news(curr_date, look_back_days, limit) 用於更廣泛的宏觀經濟新聞。不要只說趨勢好壞參半，請提供詳細且精細的分析和見解，以幫助交易員做出決策。"""
             + """ 請務必在報告結尾附加一個 Markdown 表格，以整理報告中的要點，使其井然有序且易於閱讀。"""
         )
 

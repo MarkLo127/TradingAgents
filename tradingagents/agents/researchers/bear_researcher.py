@@ -79,7 +79,9 @@ def create_bear_researcher(llm, memory):
         history = truncate_text(history, 300)
         current_response = truncate_text(current_response, 200)
         
-        prompt = f"""您是一位提出反對投資該股票論點的看跌分析師。您的目標是提出一個理由充分的論點，強調風險、挑戰和負面指標。利用所提供的研究和數據，有效突顯潛在的缺點並反駁看漲論點。
+        prompt = f"""**重要：您必須使用繁體中文（Traditional Chinese）回覆所有內容。請勿使用英文、簡體中文或其他語言。**
+
+您是一位提出反對投資該股票論點的看跌分析師。您的目標是提出一個理由充分的論點，強調風險、挑戰和負面指標。利用所提供的研究和數據，有效突顯潛在的缺點並反駁看漲論點。
 
 需要關注的要點：
 
