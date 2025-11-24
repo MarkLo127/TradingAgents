@@ -44,7 +44,7 @@ TradingAgents 支援業界領先的多家 LLM 提供商，並為每個模型配�
 | 提供商 | 支援模型 | Base URL | 是否支援自訂端點 |
 |--------|---------|----------|----------------|
 | **OpenAI** | GPT-5.1, GPT-5 Mini/Nano, GPT-4.1 Mini/Nano, o4-mini | `https://api.openai.com/v1` | ✅ 是 |
-| **Anthropic** | Claude Haiku 4.5, Claude Sonnet 4.5/4.0, Claude 3.5 Haiku, Claude 3 Haiku | `https://api.anthropic.com/` | ✅ 是 |
+| **Anthropic** | Claude Haiku 4.5, Claude Sonnet 4.5/4.0, Claude 3.5 Haiku, Claude 3 Haiku | `https://api.anthropic.com/v1/` | ✅ 是 |
 | **Gemini** | Gemini 2.5 Pro, Gemini 2.5 Flash, Gemini 2.5 Flash Lite, Gemini 2.0 Flash, Gemini 2.0 Flash Lite | `https://generativelanguage.googleapis.com/v1beta/openai/` | ✅ 是 |
 | **Grok (xAI)** | Grok-4.1 Fast, Grok-4 Fast, Grok-4, Grok-3, Grok-3 Mini | `https://api.x.ai/v1` | ✅ 是 |
 | **DeepSeek** | DeepSeek Reasoner, DeepSeek Chat | `https://api.deepseek.com` | ✅ 是 |
@@ -67,7 +67,7 @@ TradingAgents 支援業界領先的多家 LLM 提供商，並為每個模型配�
 **配置示例：**
 ```yaml
 快速思維: OpenAI GPT-5 Mini @ api.openai.com
-深層思維: Anthropic Claude Sonnet 4.5 @ api.anthropic.com
+深層思維: Anthropic Claude Sonnet 4.5 @ api.anthropic.com/v1
 嵌入模型: 自訂端點 @ your-custom-endpoint.com
 ```
 
@@ -446,7 +446,7 @@ docker compose down -v
    快速思維 API Key: sk-your-openai-key
    
    深層思維模型: claude-sonnet-4-5-20250929
-   深層思維 Base URL: https://api.anthropic.com/
+   深層思維 Base URL: https://api.anthropic.com/v1/
    深層思維 API Key: sk-ant-your-claude-key
    
    嵌入模型 Base URL: 自訂 → https://api.your-embedding-service.com/v1
@@ -526,7 +526,7 @@ curl -X POST http://localhost:8000/api/analyze \
     "quick_think_llm": "gpt-5-mini-2025-08-07",
     "analysts": ["market", "sentiment", "news", "fundamental"],
     "quick_think_base_url": "https://api.openai.com/v1",
-    "deep_think_base_url": "https://api.anthropic.com/",
+    "deep_think_base_url": "https://api.anthropic.com/v1/",
     "embedding_base_url": "https://api.openai.com/v1",
     "quick_think_api_key": "sk-your-openai-key",
     "deep_think_api_key": "sk-ant-your-claude-key",
