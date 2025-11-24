@@ -124,3 +124,19 @@ class TaskStatusResponse(BaseModel):
     result: Optional[AnalysisResponse] = Field(None, description="Analysis result (only when completed)")
     error: Optional[str] = Field(None, description="Error message (only when failed)")
     completed_at: Optional[str] = Field(None, description="Completion timestamp")
+
+
+# Download Schemas
+
+class AnalystReport(BaseModel):
+    """Single analyst report for download"""
+    analyst_name: str = Field(..., description="Name of the analyst")
+    report_key: str = Field(..., description="Key to access report in results")
+
+
+class DownloadRequest(BaseModel):
+    """Request model for downloading analyst reports"""
+    ticker: str = Field(..., description="Stock ticker symbol")
+    analysis_date: str = Field(..., description="Analysis date in YYYY-MM-DD format")
+    task_id: str = Field(..., description="Task ID of the completed analysis")
+    analysts: List[str] = Field(..., description="List of analyst keys to download", min_length=1)

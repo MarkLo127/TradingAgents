@@ -14,6 +14,7 @@ from backend.app.models.schemas import (
     Ticker,
     TaskCreatedResponse,
     TaskStatusResponse,
+    DownloadRequest,
 )
 from backend.app.services.trading_service import TradingService
 from backend.app.services.task_manager import task_manager
@@ -167,3 +168,109 @@ async def get_tickers():
             {"symbol": "QQQ", "name": "Invesco QQQ Trust"},
         ]
     }
+
+
+@router.post("/download/reports")
+async def download_reports(request: DownloadRequest):
+    """
+    Download analyst reports as PDF or ZIP
+    
+    Args:
+        request: Download request with ticker, date, task_id, and analyst list
+        
+    Returns:
+        PDF file (single analyst) or ZIP file (multiple analysts)
+    """
+    from fastapi.responses import Response
+    from backend.app.services.download_service import download_service
+    
+    # Get task result
+    task = task_manager.get_task_status(request.task_id)
+    
+    if not task:
+        raise HTTPException(status_code=404, detail=f"Task {request.task_id} not found")
+    
+    if task.get("status") != "completed":
+        raise HTTPException(status_code=400, detail="Task is not completed yet")
+    
+    result = task.get("result")
+    if not result:
+        raise HTTPException(status_code=404, detail="No analysis result found")
+    
+    reports_data = result.get("reports", {})
+    
+    # Analyst name mapping
+    ANALYST_MAPPING = {
+        "market": ("市場分析師", "market_report"),
+        "social": ("社群媒體分析師", "sentiment_report"),
+        "news": ("新聞分析師", "news_report"),
+        "fundamentals": ("基本面分析師", "fundamentals_report"),
+        "bull": ("看漲研究員", "investment_debate_state.bull_history"),
+        "bear": ("看跌研究員", "investment_debate_state.bear_history"),
+        "research_manager": ("研究經理", "investment_debate_state.judge_decision"),
+        "trader": ("交易員", "trader_investment_plan"),
+        "risky": ("激進分析師", "risk_debate_state.risky_history"),
+        "safe": ("保守分析師", "risk_debate_state.safe_history"),
+        "neutral": ("中立分析師", "risk_debate_state.neutral_history"),
+        "risk_manager": ("風險經理", "risk_debate_state.judge_decision"),
+    }
+    
+    # Helper function to get nested value
+    def get_nested_value(obj: dict, path: str):
+        keys = path.split('.')
+        for key in keys:
+            if isinstance(obj, dict):
+                obj = obj.get(key)
+            else:
+                return None
+        return obj
+    
+    # Collect reports
+    reports_to_download = []
+    for analyst_key in request.analysts:
+        if analyst_key not in ANALYST_MAPPING:
+            continue
+        
+        analyst_name, report_key = ANALYST_MAPPING[analyst_key]
+        report_content = get_nested_value(reports_data, report_key)
+        
+        if report_content:
+            reports_to_download.append({
+                "analyst_name": analyst_name,
+                "report_content": report_content,
+            })
+    
+    if not reports_to_download:
+        raise HTTPException(status_code=404, detail="No reports found for selected analysts")
+    
+    # Single report - return PDF
+    if len(reports_to_download) == 1:
+        pdf_bytes, filename = download_service.create_single_pdf(
+            analyst_name=reports_to_download[0]["analyst_name"],
+            ticker=request.ticker,
+            analysis_date=request.analysis_date,
+            report_content=reports_to_download[0]["report_content"],
+        )
+        
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f"attachment; filename={filename}"
+            }
+        )
+    
+    # Multiple reports - return ZIP
+    zip_bytes, filename = download_service.create_multiple_pdfs_zip(
+        ticker=request.ticker,
+        analysis_date=request.analysis_date,
+        reports=reports_to_download,
+    )
+    
+    return Response(
+        content=zip_bytes,
+        media_type="application/zip",
+        headers={
+            "Content-Disposition": f"attachment; filename={filename}"
+        }
+    )

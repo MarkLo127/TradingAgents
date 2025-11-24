@@ -37,3 +37,7 @@ langchain_anthropic
 langchain-google-genai
 beautifulsoup4>=4.12.0
 tenacity>=8.2.0
+
+# PDF and document generation
+reportlab>=4.0.0
+markdown>=3.5.0

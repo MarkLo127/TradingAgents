@@ -6,6 +6,8 @@ import type { AnalysisResponse } from "@/lib/types";
 interface AnalysisContextType {
   analysisResult: AnalysisResponse | null;
   setAnalysisResult: (result: AnalysisResponse | null) => void;
+  taskId: string | null;
+  setTaskId: (taskId: string | null) => void;
 }
 
 const AnalysisContext = createContext<AnalysisContextType | undefined>(
@@ -16,9 +18,10 @@ export function AnalysisProvider({ children }: { children: ReactNode }) {
   const [analysisResult, setAnalysisResult] = useState<AnalysisResponse | null>(
     null
   );
+  const [taskId, setTaskId] = useState<string | null>(null);
 
   return (
-    <AnalysisContext.Provider value={{ analysisResult, setAnalysisResult }}>
+    <AnalysisContext.Provider value={{ analysisResult, setAnalysisResult, taskId, setTaskId }}>
       {children}
     </AnalysisContext.Provider>
   );

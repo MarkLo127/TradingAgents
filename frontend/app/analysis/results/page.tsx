@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useAnalysisContext } from "@/context/AnalysisContext";
 import { PriceChart } from "@/components/analysis/PriceChart";
+import { DownloadReports } from "@/components/analysis/DownloadReports";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -100,7 +101,7 @@ const getNestedValue = (obj: any, path: string) => {
 
 export default function AnalysisResultsPage() {
   const router = useRouter();
-  const { analysisResult } = useAnalysisContext();
+  const { analysisResult, taskId } = useAnalysisContext();
   const [selectedAnalyst, setSelectedAnalyst] = useState("market");
 
   // 如果沒有結果，重定向到分析頁面
@@ -149,6 +150,17 @@ export default function AnalysisResultsPage() {
             返回分析
           </Button>
         </div>
+
+        {/* Download Reports Section */}
+        {taskId && analysisResult.reports && (
+          <DownloadReports
+            ticker={analysisResult.ticker}
+            analysisDate={analysisResult.analysis_date}
+            taskId={taskId}
+            analysts={ANALYSTS}
+            reports={analysisResult.reports}
+          />
+        )}
 
         {/* 分析師選擇 Tabs */}
         <Tabs value={selectedAnalyst} onValueChange={setSelectedAnalyst} className="w-full">

@@ -13,16 +13,19 @@ import type { AnalysisRequest } from "@/lib/types";
 
 export default function AnalysisPage() {
   const router = useRouter();
-  const { setAnalysisResult } = useAnalysisContext();
-  const { runAnalysis, loading, error, result } = useAnalysis();
+  const { setAnalysisResult, setTaskId } = useAnalysisContext();
+  const { runAnalysis, loading, error, result, taskId } = useAnalysis();
 
   // 當分析完成時自動跳轉到結果頁面
   useEffect(() => {
     if (result && !loading && !error) {
       setAnalysisResult(result);
+      if (taskId) {
+        setTaskId(taskId);
+      }
       router.push("/analysis/results");
     }
-  }, [result, loading, error, router, setAnalysisResult]);
+  }, [result, loading, error, router, setAnalysisResult, taskId, setTaskId]);
 
   const handleSubmit = async (data: AnalysisRequest) => {
     try {
