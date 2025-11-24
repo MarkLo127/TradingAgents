@@ -371,7 +371,9 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                           {/* Qwen */}
                           <SelectItem value="qwen3-max">Qwen: 3 Max</SelectItem>
                           <SelectItem value="qwen-plus">Qwen: Plus</SelectItem>
-                          <SelectItem value="qwen-flash">Qwen: Flash</SelectItem>
+                          <SelectItem value="qwen-flash">
+                            Qwen: Flash
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                       <FormDescription>快速回應模型</FormDescription>
@@ -480,7 +482,9 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                           {/* Qwen */}
                           <SelectItem value="qwen3-max">Qwen: 3 Max</SelectItem>
                           <SelectItem value="qwen-plus">Qwen: Plus</SelectItem>
-                          <SelectItem value="qwen-flash">Qwen: Flash</SelectItem>
+                          <SelectItem value="qwen-flash">
+                            Qwen: Flash
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                       <FormDescription>複雜推理模型</FormDescription>
@@ -512,9 +516,9 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                       defaultValue={
                         [
                           "https://api.openai.com/v1",
-                          "https://api.anthropic.com/v1/",
+                          "https://api.anthropic.com/v1",
                           "https://api.x.ai/v1",
-                          "https://api.deepseek.com",
+                          "https://api.deepseek.com/v1",
                           "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
                         ].includes(field.value || "")
                           ? field.value
@@ -530,16 +534,16 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                         <SelectItem value="https://api.openai.com/v1">
                           OpenAI (預設)
                         </SelectItem>
-                        <SelectItem value="https://api.anthropic.com/v1/">
+                        <SelectItem value="https://api.anthropic.com/v1">
                           Anthropic
                         </SelectItem>
-                        <SelectItem value="https://generativelanguage.googleapis.com/v1beta/openai/">
+                        <SelectItem value="https://generativelanguage.googleapis.com/v1beta/openai">
                           Google (Gemini)
                         </SelectItem>
                         <SelectItem value="https://api.x.ai/v1">
                           Grok (xAI)
                         </SelectItem>
-                        <SelectItem value="https://api.deepseek.com">
+                        <SelectItem value="https://api.deepseek.com/v1">
                           DeepSeek
                         </SelectItem>
                         <SelectItem value="https://dashscope-intl.aliyuncs.com/compatible-mode/v1">
@@ -551,10 +555,10 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
 
                     {(![
                       "https://api.openai.com/v1",
-                      "https://api.anthropic.com/v1/",
-                      "https://generativelanguage.googleapis.com/v1beta/openai/",
+                      "https://api.anthropic.com/v1",
+                      "https://generativelanguage.googleapis.com/v1beta/openai",
                       "https://api.x.ai/v1",
-                      "https://api.deepseek.com",
+                      "https://api.deepseek.com/v1",
                       "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
                     ].includes(field.value || "") ||
                       field.value === "") && (
@@ -611,9 +615,9 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                       defaultValue={
                         [
                           "https://api.openai.com/v1",
-                          "https://api.anthropic.com/v1/",
+                          "https://api.anthropic.com/v1",
                           "https://api.x.ai/v1",
-                          "https://api.deepseek.com",
+                          "https://api.deepseek.com/v1",
                           "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
                         ].includes(field.value || "")
                           ? field.value
@@ -629,16 +633,16 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                         <SelectItem value="https://api.openai.com/v1">
                           OpenAI (預設)
                         </SelectItem>
-                        <SelectItem value="https://api.anthropic.com/v1/">
+                        <SelectItem value="https://api.anthropic.com/v1">
                           Anthropic
                         </SelectItem>
-                        <SelectItem value="https://generativelanguage.googleapis.com/v1beta/openai/">
+                        <SelectItem value="https://generativelanguage.googleapis.com/v1beta/openai">
                           Google (Gemini)
                         </SelectItem>
                         <SelectItem value="https://api.x.ai/v1">
                           Grok (xAI)
                         </SelectItem>
-                        <SelectItem value="https://api.deepseek.com">
+                        <SelectItem value="https://api.deepseek.com/v1">
                           DeepSeek
                         </SelectItem>
                         <SelectItem value="https://dashscope-intl.aliyuncs.com/compatible-mode/v1">
@@ -650,10 +654,10 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
 
                     {(![
                       "https://api.openai.com/v1",
-                      "https://api.anthropic.com/v1/",
-                      "https://generativelanguage.googleapis.com/v1beta/openai/",
+                      "https://api.anthropic.com/v1",
+                      "https://generativelanguage.googleapis.com/v1beta/openai",
                       "https://api.x.ai/v1",
-                      "https://api.deepseek.com",
+                      "https://api.deepseek.com/v1",
                       "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
                     ].includes(field.value || "") ||
                       field.value === "") && (

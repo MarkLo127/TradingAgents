@@ -41,30 +41,34 @@ TradingAgents 支援業界領先的多家 LLM 提供商，並為每個模型配�
 
 ### 📋 支援的 LLM 提供商矩陣
 
-| 提供商 | 支援模型 | Base URL | 是否支援自訂端點 |
-|--------|---------|----------|----------------|
-| **OpenAI** | GPT-5.1, GPT-5 Mini/Nano, GPT-4.1 Mini/Nano, o4-mini | `https://api.openai.com/v1` | ✅ 是 |
-| **Anthropic** | Claude Haiku 4.5, Claude Sonnet 4.5/4.0, Claude 3.5 Haiku, Claude 3 Haiku | `https://api.anthropic.com/v1/` | ✅ 是 |
-| **Gemini** | Gemini 2.5 Pro, Gemini 2.5 Flash, Gemini 2.5 Flash Lite, Gemini 2.0 Flash, Gemini 2.0 Flash Lite | `https://generativelanguage.googleapis.com/v1beta/openai/` | ✅ 是 |
-| **Grok (xAI)** | Grok-4.1 Fast, Grok-4 Fast, Grok-4, Grok-3, Grok-3 Mini | `https://api.x.ai/v1` | ✅ 是 |
-| **DeepSeek** | DeepSeek Reasoner, DeepSeek Chat | `https://api.deepseek.com` | ✅ 是 |
-| **Qwen (Alibaba)** | Qwen3-Max, Qwen-Plus, Qwen Flash | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1` | ✅ 是 |
-| **自訂端點** | 上述列表中的模型 | 使用者自訂 | ✅ 完全支援 |
+| 提供商             | 支援模型                                                                                         | Base URL                                                  | 是否支援自訂端點 |
+| ------------------ | ------------------------------------------------------------------------------------------------ | --------------------------------------------------------- | ---------------- |
+| **OpenAI**         | GPT-5.1, GPT-5 Mini/Nano, GPT-4.1 Mini/Nano, o4-mini                                             | `https://api.openai.com/v1`                               | ✅ 是            |
+| **Anthropic**      | Claude Haiku 4.5, Claude Sonnet 4.5/4.0, Claude 3.5 Haiku, Claude 3 Haiku                        | `https://api.anthropic.com/v1`                           | ✅ 是            |
+| **Gemini**         | Gemini 2.5 Pro, Gemini 2.5 Flash, Gemini 2.5 Flash Lite, Gemini 2.0 Flash, Gemini 2.0 Flash Lite | `https://generativelanguage.googleapis.com/v1beta/openai` | ✅ 是            |
+| **Grok (xAI)**     | Grok-4.1 Fast, Grok-4 Fast, Grok-4, Grok-3, Grok-3 Mini                                          | `https://api.x.ai/v1`                                     | ✅ 是            |
+| **DeepSeek**       | DeepSeek Reasoner, DeepSeek Chat                                                                 | `https://api.deepseek.com/v1`                                | ✅ 是            |
+| **Qwen (Alibaba)** | Qwen3-Max, Qwen-Plus, Qwen Flash                                                                 | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1`  | ✅ 是            |
+| **自訂端點**       | 上述列表中的模型                                                                                 | 使用者自訂                                                | ✅ 完全支援      |
 
 ### 🔧 三層獨立配置
 
 系統支援**三個獨立的 LLM 配置點**，每個都可使用不同的提供商和 API Key：
 
 #### 1️⃣ 快速思維模型 (Quick Thinking)
+
 用於快速分析和即時回應（市場分析師、情緒分析師等）
 
-#### 2️⃣ 深層思維模型 (Deep Thinking)  
+#### 2️⃣ 深層思維模型 (Deep Thinking)
+
 用於複雜推理和深度分析（研究團隊辯論、風險管理等）
 
 #### 3️⃣ 嵌入模型 (Embedding)
+
 用於向量記憶體系統（ChromaDB 嵌入生成）
 
 **配置示例：**
+
 ```yaml
 快速思維: OpenAI GPT-5 Mini @ api.openai.com
 深層思維: Anthropic Claude Sonnet 4.5 @ api.anthropic.com/v1
@@ -76,12 +80,14 @@ TradingAgents 支援業界領先的多家 LLM 提供商，並為每個模型配�
 **完整支援自訂 API 端點**，任何實現 OpenAI Chat Completions API 規範的服務都可以使用：
 
 ✅ **支援場景：**
+
 - 私有化部署的 LLM 服務
 - 第三方 OpenAI 兼容代理
 - 本地運行的 LLM（如 Ollama、LocalAI）
 - 企業內部 AI Gateway
 
 **配置方式：**
+
 1. 在前端表單的 Base URL 輸入框直接輸入自訂 URL
 2. 填入對應的 API Key
 3. 系統自動使用您的端點進行推理
@@ -147,19 +153,20 @@ TradingAgents/
 
 ### 🔧 後端技術棧
 
-| 技術 | 用途 | 版本 |
-|------|------|------|
-| **FastAPI** | 現代化異步 Web 框架 | ≥0.104.0 |
-| **Pydantic** | 資料驗證與序列化 | ≥2.9.0 |
-| **LangGraph** | 多代理工作流編排引擎 | ≥0.4.8 |
-| **LangChain** | LLM 應用開發框架 | Latest |
-| **ChromaDB** | 向量資料庫（記憶系統） | ≥1.0.12 |
-| **yfinance** | 股票市場資料獲取 | ≥0.2.63 |
-| **Uvicorn** | ASGI 伺服器 | ≥0.24.0 |
-| **python-dotenv** | 環境變數管理 | 1.0.0 |
-| **Redis** | 任務隊列與緩存 | Latest |
+| 技術              | 用途                   | 版本     |
+| ----------------- | ---------------------- | -------- |
+| **FastAPI**       | 現代化異步 Web 框架    | ≥0.104.0 |
+| **Pydantic**      | 資料驗證與序列化       | ≥2.9.0   |
+| **LangGraph**     | 多代理工作流編排引擎   | ≥0.4.8   |
+| **LangChain**     | LLM 應用開發框架       | Latest   |
+| **ChromaDB**      | 向量資料庫（記憶系統） | ≥1.0.12  |
+| **yfinance**      | 股票市場資料獲取       | ≥0.2.63  |
+| **Uvicorn**       | ASGI 伺服器            | ≥0.24.0  |
+| **python-dotenv** | 環境變數管理           | 1.0.0    |
+| **Redis**         | 任務隊列與緩存         | Latest   |
 
 #### 其他整合
+
 - **stockstats**: 技術指標計算
 - **feedparser**: RSS 新聞抓取
 - **praw**: Reddit 社群情緒分析
@@ -168,17 +175,17 @@ TradingAgents/
 
 ### 🎨 前端技術棧
 
-| 技術 | 用途 | 版本 |
-|------|------|------|
-| **Next.js** | React 全端框架 | 16.x |
-| **TypeScript** | 靜態型別檢查 | Latest |
-| **Tailwind CSS** | 實用優先的 CSS 框架 | Latest |
-| **shadcn/ui** | 可高度客製化的 UI 組件庫 | Latest |
-| **React Hook Form** | 高效能表單管理 | Latest |
-| **Zod** | TypeScript 優先的結構驗證 | Latest |
-| **Recharts** | 資料視覺化圖表庫 | Latest |
-| **Axios** | Promise 基礎的 HTTP 客戶端 | Latest |
-| **react-markdown** | Markdown 內容渲染 | Latest |
+| 技術                | 用途                       | 版本   |
+| ------------------- | -------------------------- | ------ |
+| **Next.js**         | React 全端框架             | 16.x   |
+| **TypeScript**      | 靜態型別檢查               | Latest |
+| **Tailwind CSS**    | 實用優先的 CSS 框架        | Latest |
+| **shadcn/ui**       | 可高度客製化的 UI 組件庫   | Latest |
+| **React Hook Form** | 高效能表單管理             | Latest |
+| **Zod**             | TypeScript 優先的結構驗證  | Latest |
+| **Recharts**        | 資料視覺化圖表庫           | Latest |
+| **Axios**           | Promise 基礎的 HTTP 客戶端 | Latest |
+| **react-markdown**  | Markdown 內容渲染          | Latest |
 
 ---
 
@@ -206,7 +213,7 @@ TradingAgents/
   - 申請網址: https://console.x.ai
 - **DeepSeek API Key** - DeepSeek 系列模型
   - 申請網址: https://platform.deepseek.com
-- **Qwen API Key** - Qwen 系列模型  
+- **Qwen API Key** - Qwen 系列模型
   - 申請網址: https://www.alibabacloud.com
 - **Alpha Vantage API Key** (必需) - 股票基本面資料
   - 申請網址: https://www.alphavantage.co/support/#api-key
@@ -227,12 +234,14 @@ cd TradingAgents
 ##### 2.1 創建 Python 虛擬環境
 
 **使用 Conda (推薦)**
+
 ```bash
 conda create -n tradingagents python=3.13
 conda activate tradingagents
 ```
 
 **或使用 venv**
+
 ```bash
 python3 -m venv tradingagents
 source tradingagents/bin/activate  # macOS/Linux
@@ -301,6 +310,7 @@ python -m backend
 ```
 
 ✅ 後端服務成功啟動後，您可以訪問：
+
 - **應用根目錄**: http://localhost:8000
 - **API 互動式文檔 (Swagger UI)**: http://localhost:8000/docs
 - **API 文檔 (ReDoc)**: http://localhost:8000/redoc
@@ -339,6 +349,7 @@ npm --prefix frontend run dev
 ```
 
 ✅ 前端應用成功啟動後，訪問：
+
 - **應用首頁**: http://localhost:3000
 
 ---
@@ -350,6 +361,7 @@ npm --prefix frontend run dev
 最簡單的部署方式，一鍵啟動前後端服務：
 
 **前置要求：**
+
 - Docker Engine 20.10+
 - Docker Compose V2
 
@@ -381,6 +393,7 @@ docker compose down -v
 ```
 
 **Docker Compose 配置說明**：
+
 - 後端服務運行於: `http://localhost:8000`
 - 前端服務運行於: `http://localhost:3000`
 - 分析結果會持久化儲存在 `./results` 目錄
@@ -392,28 +405,33 @@ docker compose down -v
 
 ### 基本工作流程
 
-1. **訪問首頁** 
+1. **訪問首頁**
+
    - 開啟瀏覽器，訪問 http://localhost:3000
    - 查看系統介紹與功能說明
 
 2. **進入分析頁面**
+
    - 點擊首頁的「開始分析」按鈕
    - 或直接訪問 http://localhost:3000/analysis
 
 3. **配置分析參數**
 
    #### 📊 基本設定
-   
+
    - **選擇分析師團隊**: 勾選您需要的分析師類型
+
      - ✅ 市場分析師 (Market Analyst) - 技術分析與價格走勢
      - ✅ 情緒分析師 (Sentiment Analyst) - 社交媒體情緒評估
      - ✅ 新聞分析師 (News Analyst) - 新聞事件影響分析
      - ✅ 基本面分析師 (Fundamental Analyst) - 財務數據與估值分析
 
    - **輸入股票代碼**: 例如 `NVDA`, `AAPL`, `TSLA`, `GOOGL`
+
      - 支援美股股票代號
 
    - **選擇分析日期**: 選擇要分析的特定日期
+
      - 預設為當前日期
 
    - **設定研究深度**:
@@ -426,29 +444,33 @@ docker compose down -v
    系統提供**三個獨立的 LLM 配置選項**，每個都可使用不同的提供商：
 
    **1. 快速思維模型配置**
+
    - **模型選擇**: 從下拉選單選擇模型（OpenAI, Anthropic, Grok, DeepSeek, Qwen）
    - **Base URL**: 直接輸入自訂端點 URL（例如：`https://api.your-custom-endpoint.com/v1`）
    - **API Key**: 輸入對應的 API 金鑰
 
    **2. 深層思維模型配置**
+
    - **模型選擇**: 可選擇與快速思維不同的模型
    - **Base URL**: 支援不同的端點
    - **API Key**: 支援不同的金鑰
 
    **3. 嵌入模型配置**
+
    - **Base URL**: 下拉選擇 OpenAI 或自訂端點
    - **API Key**: 若留空則使用環境變數 `OPENAI_API_KEY`
 
    **配置示例：**
+
    ```
    快速思維模型: gpt-5-mini-2025-08-07
    快速思維 Base URL: https://api.openai.com/v1
    快速思維 API Key: sk-your-openai-key
-   
+
    深層思維模型: claude-sonnet-4-5-20250929
-   深層思維 Base URL: https://api.anthropic.com/v1/
+   深層思維 Base URL: https://api.anthropic.com/v1
    深層思維 API Key: sk-ant-your-claude-key
-   
+
    嵌入模型 Base URL: 自訂 → https://api.your-embedding-service.com/v1
    嵌入模型 API Key: your-embedding-key
    ```
@@ -461,43 +483,51 @@ docker compose down -v
    - 如未在環境變數中配置 LLM API Key，需在此填入
 
 4. **執行分析**
+
    - 檢查所有參數無誤後，點擊「執行分析」按鈕
    - 系統會顯示載入動畫，處理時間依研究深度而定（1-5 分鐘）
 
 5. **查看分析結果**
+
    - 分析完成後自動跳轉至結果頁面
    - 結果包含以下內容：
 
    **📊 交易決策摘要**
+
    - 最終決策: BUY / SELL / HOLD
    - 建議倉位大小
    - 風險等級評估
    - 核心理由總結
 
    **📈 股價走勢圖表**
-   - 互動式價格圖表（支援折線圖/K線圖切換）
+
+   - 互動式價格圖表（支援折線圖/K 線圖切換）
    - 交易量變化
    - 關鍵技術指標
 
    **📄 各分析師詳細報告**
-   
+
    系統提供 **12 個專業代理** 的完整分析報告，分為四大團隊：
-   
+
    **分析師團隊 (4)**
+
    - 市場分析師: 技術面分析與趨勢判斷
    - 社群媒體分析師: 社群媒體情緒指標
    - 新聞分析師: 最新新聞事件影響評估
    - 基本面分析師: 財務健康度與估值分析
-   
+
    **研究團隊 (3)**
+
    - 看漲研究員: 多頭觀點論證與上漲催化劑分析
    - 看跌研究員: 空頭觀點論證與下跌風險警告
    - 研究經理: 綜合看漲與看跌觀點的研究決策
-   
+
    **交易團隊 (1)**
+
    - 交易員: 整合所有報告的交易執行計劃
-   
+
    **風險管理團隊 (4)**
+
    - 激進分析師: 高風險高回報策略分析
    - 保守分析師: 穩健保守策略與風險控制
    - 中立分析師: 中立平衡策略評估
@@ -526,7 +556,7 @@ curl -X POST http://localhost:8000/api/analyze \
     "quick_think_llm": "gpt-5-mini-2025-08-07",
     "analysts": ["market", "sentiment", "news", "fundamental"],
     "quick_think_base_url": "https://api.openai.com/v1",
-    "deep_think_base_url": "https://api.anthropic.com/v1/",
+    "deep_think_base_url": "https://api.anthropic.com/v1",
     "embedding_base_url": "https://api.openai.com/v1",
     "quick_think_api_key": "sk-your-openai-key",
     "deep_think_api_key": "sk-ant-your-claude-key",
@@ -551,17 +581,17 @@ curl "http://localhost:8000/api/price-data/NVDA?start_date=2024-01-01&end_date=2
 
 TradingAgents 模擬真實交易公司的組織架構，每個代理都有其專業職責：
 
-| 代理角色 | 主要職責 | 輸出內容 |
-|---------|---------|---------|
-| **市場分析師** | 技術分析 | 技術指標（RSI, MACD, 布林通道）、價格走勢、支撐阻力位 |
-| **情緒分析師** | 情緒評估 | Reddit/Twitter 情緒指標、熱度趨勢、投資者信心指數 |
-| **新聞分析師** | 新聞分析 | 最新新聞摘要、事件影響評估、市場反應預測 |
-| **基本面分析師** | 財務分析 | 財報數據、估值指標（P/E, P/B）、盈利能力評估 |
-| **看漲研究員** | 多頭論證 | 看漲理由、上漲催化劑、目標價位 |
-| **看跌研究員** | 空頭論證 | 看跌理由、下跌風險、防守策略 |
-| **交易員** | 決策整合 | 綜合所有報告，制定交易計劃 |
-| **風險管理** | 風險控制 | 風險評估、倉位建議、止損止盈設定 |
-| **投資組合經理** | 最終決策 | 最終交易決定（批准/拒絕），執行指令 |
+| 代理角色         | 主要職責 | 輸出內容                                              |
+| ---------------- | -------- | ----------------------------------------------------- |
+| **市場分析師**   | 技術分析 | 技術指標（RSI, MACD, 布林通道）、價格走勢、支撐阻力位 |
+| **情緒分析師**   | 情緒評估 | Reddit/Twitter 情緒指標、熱度趨勢、投資者信心指數     |
+| **新聞分析師**   | 新聞分析 | 最新新聞摘要、事件影響評估、市場反應預測              |
+| **基本面分析師** | 財務分析 | 財報數據、估值指標（P/E, P/B）、盈利能力評估          |
+| **看漲研究員**   | 多頭論證 | 看漲理由、上漲催化劑、目標價位                        |
+| **看跌研究員**   | 空頭論證 | 看跌理由、下跌風險、防守策略                          |
+| **交易員**       | 決策整合 | 綜合所有報告，制定交易計劃                            |
+| **風險管理**     | 風險控制 | 風險評估、倉位建議、止損止盈設定                      |
+| **投資組合經理** | 最終決策 | 最終交易決定（批准/拒絕），執行指令                   |
 
 ### 工作流程圖
 
@@ -613,21 +643,25 @@ TradingAgents 模擬真實交易公司的組織架構，每個代理都有其專
 ### 智能特性
 
 #### 1. 動態研究深度調整
+
 - **Shallow (1)**: 每個代理進行 1 輪分析，適合快速決策
 - **Medium (2)**: 每個代理進行 2 輪分析，平衡深度與速度
 - **Deep (3+)**: 每個代理進行 3+ 輪分析，全面深入研究
 
 #### 2. 長期記憶系統
+
 - 使用 ChromaDB 向量資料庫儲存歷史決策
 - 代理可以參考過去類似情況的決策
 - 持續學習與改進分析品質
 
 #### 3. 結構化輸出
+
 - 所有報告均採用 Markdown 格式
 - 清晰的章節結構
 - 支援表格、列表、程式碼區塊等豐富格式
 
 #### 4. 實時資料整合
+
 - yfinance: 即時股價與歷史資料
 - Reddit API: 社群情緒分析
 - RSS Feeds: 財經新聞抓取
@@ -666,10 +700,9 @@ TradingAgents 模擬真實交易公司的組織架構，每個代理都有其專
 
 ---
 
-### 股價走勢圖表 (K線圖)
+### 股價走勢圖表 (K 線圖)
 
-互動式價格走勢與成交量圖表(K線圖)，清晰呈現股票歷史數據
-
+互動式價格走勢與成交量圖表(K 線圖)，清晰呈現股票歷史數據
 
 ![股價走勢圖表 - K線圖](web_screenshot/4.png)
 
@@ -770,7 +803,6 @@ TradingAgents 模擬真實交易公司的組織架構，每個代理都有其專
 ![風險經理報告](web_screenshot/16.png)
 
 ---
-
 
 ## 🙏 致謝
 
