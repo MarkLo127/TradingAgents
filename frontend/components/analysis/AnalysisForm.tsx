@@ -533,7 +533,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                         <SelectItem value="https://api.anthropic.com/">
                           Anthropic
                         </SelectItem>
-                        <SelectItem value="https://generativelanguage.googleapis.com/v1">
+                        <SelectItem value="https://generativelanguage.googleapis.com/v1beta/openai/">
                           Google (Gemini)
                         </SelectItem>
                         <SelectItem value="https://api.x.ai/v1">
@@ -552,7 +552,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                     {(![
                       "https://api.openai.com/v1",
                       "https://api.anthropic.com/",
-                      "https://generativelanguage.googleapis.com/v1",
+                      "https://generativelanguage.googleapis.com/v1beta/openai/",
                       "https://api.x.ai/v1",
                       "https://api.deepseek.com",
                       "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
@@ -632,7 +632,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                         <SelectItem value="https://api.anthropic.com/">
                           Anthropic
                         </SelectItem>
-                        <SelectItem value="https://generativelanguage.googleapis.com/v1">
+                        <SelectItem value="https://generativelanguage.googleapis.com/v1beta/openai/">
                           Google (Gemini)
                         </SelectItem>
                         <SelectItem value="https://api.x.ai/v1">
@@ -651,7 +651,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                     {(![
                       "https://api.openai.com/v1",
                       "https://api.anthropic.com/",
-                      "https://generativelanguage.googleapis.com/v1",
+                      "https://generativelanguage.googleapis.com/v1beta/openai/",
                       "https://api.x.ai/v1",
                       "https://api.deepseek.com",
                       "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
