@@ -73,7 +73,7 @@ export function DownloadReports({
 
     setIsDownloading(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/download/reports`, {
+      const response = await fetch('/api/download/reports', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -87,7 +87,9 @@ export function DownloadReports({
       });
 
       if (!response.ok) {
-        throw new Error('Download failed');
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.detail || `下載失敗 (${response.status})`;
+        throw new Error(errorMessage);
       }
 
       // Get the blob
@@ -117,9 +119,9 @@ export function DownloadReports({
       // Cleanup
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Download error:', error);
-      alert('下載失敗，請稍後再試');
+      alert(error.message || '下載失敗，請稍後再試');
     } finally {
       setIsDownloading(false);
     }

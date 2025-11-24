@@ -151,17 +151,6 @@ export default function AnalysisResultsPage() {
           </Button>
         </div>
 
-        {/* Download Reports Section */}
-        {taskId && analysisResult.reports && (
-          <DownloadReports
-            ticker={analysisResult.ticker}
-            analysisDate={analysisResult.analysis_date}
-            taskId={taskId}
-            analysts={ANALYSTS}
-            reports={analysisResult.reports}
-          />
-        )}
-
         {/* 分析師選擇 Tabs */}
         <Tabs value={selectedAnalyst} onValueChange={setSelectedAnalyst} className="w-full">
           <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-4 h-auto gap-2">
@@ -219,6 +208,17 @@ export default function AnalysisResultsPage() {
             </TabsContent>
           ))}
         </Tabs>
+
+        {/* Download Reports Section - 放在分析報告下方 */}
+        {taskId && analysisResult.reports && (
+          <DownloadReports
+            ticker={analysisResult.ticker}
+            analysisDate={analysisResult.analysis_date}
+            taskId={taskId}
+            analysts={ANALYSTS}
+            reports={analysisResult.reports}
+          />
+        )}
       </div>
     </div>
   );
