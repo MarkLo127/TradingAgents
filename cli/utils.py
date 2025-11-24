@@ -187,21 +187,24 @@ def select_shallow_thinking_agent(provider=None) -> str:
             ("GPT-5-nano","gpt-5-nano-2025-08-07"),
             ("GPT-4.1-mini", "gpt-4.1-mini"),
             ("GPT-4.1-nano", "gpt-4.1-nano"),
-            ("o4-mini", "o4-mini-2025-04-16")
+            ("o4-mini", "o4-mini-2025-04-16"),
+            ("其他", "custom")
         ],
         "Anthropic": [
             ("Claude Haiku 4.5", "claude-haiku-4-5-20251001"),
             ("Claude Sonnet 4.5", "claude-sonnet-4-5-20250929"),
             ("Claude Sonnet 4", "claude-sonnet-4-0"),
             ("Claude Haiku 3.5", "claude-3-5-haiku-20241022"),
-            ("Claude Haiku 3", "claude-3-haiku-20240307")
+            ("Claude Haiku 3", "claude-3-haiku-20240307"),
+            ("其他", "custom")
         ],
         "Google": [
             ("Gemini 2.5 Pro", "gemini-2.5-pro"),
             ("Gemini 2.5 Flash", "gemini-2.5-flash"),
             ("Gemini 2.5 Flash Lite", "gemini-2.5-flash-lite"),
             ("Gemini 2.0 Flash", "gemini-2.0-flash"),
-            ("Gemini 2.0 Flash-Lite", "gemini-2.0-flash-lite")
+            ("Gemini 2.0 Flash-Lite", "gemini-2.0-flash-lite"),
+            ("其他", "custom")
         ],
         "Grok":[
             ("Grok 4.1 Fast Reasoning","grok-4-1-fast-reasoning"),
@@ -210,15 +213,18 @@ def select_shallow_thinking_agent(provider=None) -> str:
             ("Grok 4 Fast Non Reasoning","grok-4-fast-non-reasoning"),
             ("Grok 4","grok-4-0709"),
             ("Grok 3","grok-3"),
-            ("Grok 3 Mini","grok-3-mini")           
+            ("Grok 3 Mini","grok-3-mini"),
+            ("其他", "custom")
         ],
         "DeepSeek": [
             ("DeepSeek Reasoner","deepseek-reasoner"),
-            ("DeepSeek Chat","deepseek-chat")
+            ("DeepSeek Chat","deepseek-chat"),
+            ("其他", "custom")
         ],
         "Qwen":[
             ("Qwen 3 Max", "qwen3-max"),
-            ("Qwen Plus", "qwen-plus")
+            ("Qwen Plus", "qwen-plus"),
+            ("其他", "custom")
         ]
     }
     
@@ -310,21 +316,24 @@ def select_deep_thinking_agent(provider=None) -> str:
             ("GPT-5-nano","gpt-5-nano-2025-08-07"),
             ("GPT-4.1-mini", "gpt-4.1-mini"),
             ("GPT-4.1-nano", "gpt-4.1-nano"),
-            ("o4-mini", "o4-mini-2025-04-16")
+            ("o4-mini", "o4-mini-2025-04-16"),
+            ("其他", "custom")
         ],
         "Anthropic": [
             ("Claude Haiku 4.5", "claude-haiku-4-5-20251001"),
             ("Claude Sonnet 4.5", "claude-sonnet-4-5-20250929"),
             ("Claude Sonnet 4", "claude-sonnet-4-0"),
             ("Claude Haiku 3.5", "claude-3-5-haiku-20241022"),
-            ("Claude Haiku 3", "claude-3-haiku-20240307")
+            ("Claude Haiku 3", "claude-3-haiku-20240307"),
+            ("其他", "custom")
         ],
         "Google": [
             ("Gemini 2.5 Pro", "gemini-2.5-pro"),
             ("Gemini 2.5 Flash", "gemini-2.5-flash"),
             ("Gemini 2.5 Flash Lite", "gemini-2.5-flash-lite"),
             ("Gemini 2.0 Flash", "gemini-2.0-flash"),
-            ("Gemini 2.0 Flash-Lite", "gemini-2.0-flash-lite")
+            ("Gemini 2.0 Flash-Lite", "gemini-2.0-flash-lite"),
+            ("其他", "custom")
         ],
         "Grok":[
             ("Grok 4.1 Fast Reasoning","grok-4-1-fast-reasoning"),
@@ -333,15 +342,18 @@ def select_deep_thinking_agent(provider=None) -> str:
             ("Grok 4 Fast Non Reasoning","grok-4-fast-non-reasoning"),
             ("Grok 4","grok-4-0709"),
             ("Grok 3","grok-3"),
-            ("Grok 3 Mini","grok-3-mini")           
+            ("Grok 3 Mini","grok-3-mini"),
+            ("其他", "custom")
         ],
         "DeepSeek":[
             ("DeepSeek Reasoner","deepseek-reasoner"),
-            ("DeepSeek Chat","deepseek-chat")
+            ("DeepSeek Chat","deepseek-chat"),
+            ("其他", "custom")
         ],
         "Qwen":[
             ("Qwen 3 Max", "qwen3-max"),
-            ("Qwen Plus", "qwen-plus")
+            ("Qwen Plus", "qwen-plus"),
+            ("其他", "custom")
         ]
     }
     
