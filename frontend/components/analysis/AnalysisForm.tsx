@@ -324,6 +324,23 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                             Anthropic: Claude 3 Haiku
                           </SelectItem>
 
+                          {/* Google */}
+                          <SelectItem value="gemini-2.5-pro">
+                            Google: Gemini 2.5 Pro
+                          </SelectItem>
+                          <SelectItem value="gemini-2.5-flash">
+                            Google: Gemini 2.5 Flash
+                          </SelectItem>
+                          <SelectItem value="gemini-2.5-flash-lite">
+                            Google: Gemini 2.5 Flash Lite
+                          </SelectItem>
+                          <SelectItem value="gemini-2.0-flash">
+                            Google: Gemini 2.0 Flash
+                          </SelectItem>
+                          <SelectItem value="gemini-2.0-flash-lite">
+                            Google: Gemini 2.0 Flash Lite
+                          </SelectItem>
+
                           {/* Grok */}
                           <SelectItem value="grok-4-1-fast-reasoning">
                             Grok: 4.1 Fast Reasoning
@@ -415,6 +432,23 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                             Anthropic: Claude 3 Haiku
                           </SelectItem>
 
+                          {/* Google */}
+                          <SelectItem value="gemini-2.5-pro">
+                            Google: Gemini 2.5 Pro
+                          </SelectItem>
+                          <SelectItem value="gemini-2.5-flash">
+                            Google: Gemini 2.5 Flash
+                          </SelectItem>
+                          <SelectItem value="gemini-2.5-flash-lite">
+                            Google: Gemini 2.5 Flash Lite
+                          </SelectItem>
+                          <SelectItem value="gemini-2.0-flash">
+                            Google: Gemini 2.0 Flash
+                          </SelectItem>
+                          <SelectItem value="gemini-2.0-flash-lite">
+                            Google: Gemini 2.0 Flash Lite
+                          </SelectItem>
+
                           {/* Grok */}
                           <SelectItem value="grok-4-1-fast-reasoning">
                             Grok: 4.1 Fast Reasoning
@@ -496,6 +530,9 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                         </SelectItem>
                         <SelectItem value="https://api.anthropic.com/">
                           Anthropic
+                        </SelectItem>
+                        <SelectItem value="https://generativelanguage.googleapis.com/v1">
+                          Google (Gemini)
                         </SelectItem>
                         <SelectItem value="https://api.x.ai/v1">
                           Grok (xAI)
@@ -592,6 +629,9 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                         </SelectItem>
                         <SelectItem value="https://api.anthropic.com/">
                           Anthropic
+                        </SelectItem>
+                        <SelectItem value="https://generativelanguage.googleapis.com/v1">
+                          Google (Gemini)
                         </SelectItem>
                         <SelectItem value="https://api.x.ai/v1">
                           Grok (xAI)

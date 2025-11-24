@@ -2,9 +2,14 @@
 import questionary
 # 匯入類型提示，用於更清晰地定義函式簽名
 from typing import List, Optional, Tuple, Dict
+# 匯入 rich.console 用於美化輸出
+from rich.console import Console
 
 # 從 cli.models 模組匯入 AnalystType 列舉
 from cli.models import AnalystType
+
+# 初始化 console
+console = Console()
 
 # 定義分析師的順序和對應的類型
 ANALYST_ORDER = [
@@ -188,7 +193,6 @@ def select_shallow_thinking_agent(provider=None) -> str:
             ("GPT-4.1-mini", "gpt-4.1-mini"),
             ("GPT-4.1-nano", "gpt-4.1-nano"),
             ("o4-mini", "o4-mini-2025-04-16"),
-            ("其他", "custom")
         ],
         "Anthropic": [
             ("Claude Haiku 4.5", "claude-haiku-4-5-20251001"),
@@ -196,7 +200,6 @@ def select_shallow_thinking_agent(provider=None) -> str:
             ("Claude Sonnet 4", "claude-sonnet-4-0"),
             ("Claude Haiku 3.5", "claude-3-5-haiku-20241022"),
             ("Claude Haiku 3", "claude-3-haiku-20240307"),
-            ("其他", "custom")
         ],
         "Google": [
             ("Gemini 2.5 Pro", "gemini-2.5-pro"),
@@ -204,7 +207,6 @@ def select_shallow_thinking_agent(provider=None) -> str:
             ("Gemini 2.5 Flash Lite", "gemini-2.5-flash-lite"),
             ("Gemini 2.0 Flash", "gemini-2.0-flash"),
             ("Gemini 2.0 Flash-Lite", "gemini-2.0-flash-lite"),
-            ("其他", "custom")
         ],
         "Grok":[
             ("Grok 4.1 Fast Reasoning","grok-4-1-fast-reasoning"),
@@ -214,17 +216,15 @@ def select_shallow_thinking_agent(provider=None) -> str:
             ("Grok 4","grok-4-0709"),
             ("Grok 3","grok-3"),
             ("Grok 3 Mini","grok-3-mini"),
-            ("其他", "custom")
         ],
         "DeepSeek": [
             ("DeepSeek Reasoner","deepseek-reasoner"),
             ("DeepSeek Chat","deepseek-chat"),
-            ("其他", "custom")
         ],
         "Qwen":[
             ("Qwen 3 Max", "qwen3-max"),
             ("Qwen Plus", "qwen-plus"),
-            ("其他", "custom")
+            ("Qwen Flash", "qwen-flash"),
         ]
     }
     
@@ -317,7 +317,6 @@ def select_deep_thinking_agent(provider=None) -> str:
             ("GPT-4.1-mini", "gpt-4.1-mini"),
             ("GPT-4.1-nano", "gpt-4.1-nano"),
             ("o4-mini", "o4-mini-2025-04-16"),
-            ("其他", "custom")
         ],
         "Anthropic": [
             ("Claude Haiku 4.5", "claude-haiku-4-5-20251001"),
@@ -325,7 +324,6 @@ def select_deep_thinking_agent(provider=None) -> str:
             ("Claude Sonnet 4", "claude-sonnet-4-0"),
             ("Claude Haiku 3.5", "claude-3-5-haiku-20241022"),
             ("Claude Haiku 3", "claude-3-haiku-20240307"),
-            ("其他", "custom")
         ],
         "Google": [
             ("Gemini 2.5 Pro", "gemini-2.5-pro"),
@@ -333,7 +331,6 @@ def select_deep_thinking_agent(provider=None) -> str:
             ("Gemini 2.5 Flash Lite", "gemini-2.5-flash-lite"),
             ("Gemini 2.0 Flash", "gemini-2.0-flash"),
             ("Gemini 2.0 Flash-Lite", "gemini-2.0-flash-lite"),
-            ("其他", "custom")
         ],
         "Grok":[
             ("Grok 4.1 Fast Reasoning","grok-4-1-fast-reasoning"),
@@ -343,17 +340,15 @@ def select_deep_thinking_agent(provider=None) -> str:
             ("Grok 4","grok-4-0709"),
             ("Grok 3","grok-3"),
             ("Grok 3 Mini","grok-3-mini"),
-            ("其他", "custom")
         ],
         "DeepSeek":[
             ("DeepSeek Reasoner","deepseek-reasoner"),
             ("DeepSeek Chat","deepseek-chat"),
-            ("其他", "custom")
         ],
         "Qwen":[
             ("Qwen 3 Max", "qwen3-max"),
             ("Qwen Plus", "qwen-plus"),
-            ("其他", "custom")
+            ("Qwen Flash", "qwen-flash"),
         ]
     }
     
