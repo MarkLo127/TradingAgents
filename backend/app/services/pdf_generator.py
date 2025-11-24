@@ -22,15 +22,30 @@ class PDFGenerator:
     
     def __init__(self):
         """Initialize PDF generator with Chinese font support"""
-        # Try to register Chinese fonts (fallback to default if not available)
+        # Register Chinese fonts using reportlab's built-in CID fonts
+        # These fonts support Chinese characters without requiring external font files
+        from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+        
         try:
-            # Try common Chinese font paths on different systems
-            # macOS: /System/Library/Fonts/PingFang.ttc
-            # Linux: /usr/share/fonts/truetype/
-            # For now, we'll use built-in fonts and handle Chinese with Unicode
-            pass
-        except Exception:
-            pass
+            # Register Chinese font (Traditional Chinese support)
+            # 'STSong-Light' is a built-in CID font that supports Chinese characters
+            pdfmetrics.registerFont(UnicodeCIDFont('STSong-Light'))
+            self.chinese_font = 'STSong-Light'
+        except Exception as e:
+            # If CID font registration fails, try alternative method
+            try:
+                # Try STHeiti for better Traditional Chinese support
+                pdfmetrics.registerFont(UnicodeCIDFont('STHeiti-Light'))
+                self.chinese_font = 'STHeiti-Light'
+            except Exception:
+                # Last resort: use MSung for Traditional Chinese
+                try:
+                    pdfmetrics.registerFont(UnicodeCIDFont('MSung-Light'))
+                    self.chinese_font = 'MSung-Light'
+                except Exception:
+                    # Fallback to basic font
+                    self.chinese_font = 'Helvetica'
+                    print("Warning: Could not register Chinese font, Chinese characters may not display correctly")
     
     def generate_analyst_report_pdf(
         self,
@@ -69,10 +84,11 @@ class PDFGenerator:
         # Define styles
         styles = getSampleStyleSheet()
         
-        # Custom styles with better Chinese support
+        # Custom styles with Chinese font support
         title_style = ParagraphStyle(
             'CustomTitle',
             parent=styles['Heading1'],
+            fontName=self.chinese_font,
             fontSize=24,
             textColor=HexColor('#1a1a1a'),
             spaceAfter=30,
@@ -82,6 +98,7 @@ class PDFGenerator:
         subtitle_style = ParagraphStyle(
             'CustomSubtitle',
             parent=styles['Normal'],
+            fontName=self.chinese_font,
             fontSize=12,
             textColor=HexColor('#666666'),
             spaceAfter=20,
@@ -91,6 +108,7 @@ class PDFGenerator:
         heading_style = ParagraphStyle(
             'CustomHeading',
             parent=styles['Heading2'],
+            fontName=self.chinese_font,
             fontSize=16,
             textColor=HexColor('#2c3e50'),
             spaceAfter=12,
@@ -100,6 +118,7 @@ class PDFGenerator:
         body_style = ParagraphStyle(
             'CustomBody',
             parent=styles['Normal'],
+            fontName=self.chinese_font,
             fontSize=10,
             leading=14,
             textColor=HexColor('#333333'),
