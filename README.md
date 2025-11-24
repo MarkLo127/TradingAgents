@@ -23,7 +23,7 @@
 ### 🎯 核心特色
 
 - 🤖 **多代理協作架構** - 專業化的 AI 代理團隊協同工作
-- 🌐 **多模型靈活支援** - 支援 OpenAI、Anthropic、Grok、DeepSeek、Qwen 等多家 LLM 提供商
+- 🌐 **多模型靈活支援** - 支援 OpenAI、Anthropic、Gemini、Grok、DeepSeek、Qwen 等多家 LLM 提供商
 - 🔧 **自訂端點配置** - 完整支援自訂 API 端點，可連接任何 OpenAI 兼容的服務
 - 📊 **全方位市場分析** - 整合技術面、基本面、情緒面、新聞面分析
 - 🔄 **結構化決策流程** - 透過看漲/看跌辯論機制減少偏見
