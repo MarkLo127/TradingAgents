@@ -429,7 +429,7 @@ def select_llm_provider() -> tuple[str, str]:
     BASE_URLS = [
         ("OpenAI", "https://api.openai.com/v1"),
         ("Anthropic", "https://api.anthropic.com/"),
-        ("Google", "https://generativelanguage.googleapis.com/v1"),
+        ("Google", "https://generativelanguage.googleapis.com/v1beta"),
         ("Grok", "https://api.x.ai/v1"),
         ("DeepSeek", "https://api.deepseek.com"),
         ("Qwen", "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"),

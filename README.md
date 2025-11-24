@@ -45,10 +45,11 @@ TradingAgents 支援業界領先的多家 LLM 提供商，並為每個模型配�
 |--------|---------|----------|----------------|
 | **OpenAI** | GPT-5.1, GPT-5 Mini/Nano, GPT-4.1 Mini/Nano, o4-mini | `https://api.openai.com/v1` | ✅ 是 |
 | **Anthropic** | Claude Haiku 4.5, Claude Sonnet 4.5/4.0, Claude 3.5 Haiku, Claude 3 Haiku | `https://api.anthropic.com/` | ✅ 是 |
+| **Gemini** | Gemini 2.5 Pro, Gemini 2.5 Flash, Gemini 2.5 Flash Lite, Gemini 2.0 Flash, Gemini 2.0 Flash Lite | `https://generativelanguage.googleapis.com/v1beta` | ✅ 是 |
 | **Grok (xAI)** | Grok-4.1 Fast, Grok-4 Fast, Grok-4, Grok-3, Grok-3 Mini | `https://api.x.ai/v1` | ✅ 是 |
 | **DeepSeek** | DeepSeek Reasoner, DeepSeek Chat | `https://api.deepseek.com` | ✅ 是 |
 | **Qwen (Alibaba)** | Qwen3-Max, Qwen-Plus, Qwen Flash | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1` | ✅ 是 |
-| **自訂端點** | 任何 OpenAI 兼容的 API | 使用者自訂 | ✅ 完全支援 |
+| **自訂端點** | 上述列表中的模型 | 使用者自訂 | ✅ 完全支援 |
 
 ### 🔧 三層獨立配置
 
