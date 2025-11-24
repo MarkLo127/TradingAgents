@@ -22,19 +22,33 @@ class PDFGenerator:
     
     def __init__(self):
         """Initialize PDF generator with Chinese font support"""
-        # Register Chinese fonts using reportlab's built-in CID fonts
-        # These fonts support Chinese characters without requiring external font files
+        import os
         from reportlab.pdfbase.cidfonts import UnicodeCIDFont
         
+        # Try to register custom Cactus Classical Serif font first
+        self.custom_font = None
+        custom_font_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
+            'Cactus_Classical_Serif',
+            'CactusClassicalSerif-Regular.ttf'
+        )
+        
+        if os.path.exists(custom_font_path):
+            try:
+                pdfmetrics.registerFont(TTFont('CactusClassicalSerif', custom_font_path))
+                self.custom_font = 'CactusClassicalSerif'
+                print(f"Successfully registered Cactus Classical Serif font")
+            except Exception as e:
+                print(f"Error registering custom font: {e}")
+        
+        # Register Chinese font as fallback for CJK characters
         try:
             # Register Chinese font (Traditional Chinese support)
-            # 'STSong-Light' is a built-in CID font that supports Chinese characters
             pdfmetrics.registerFont(UnicodeCIDFont('STSong-Light'))
             self.chinese_font = 'STSong-Light'
         except Exception as e:
             # If CID font registration fails, try alternative method
             try:
-                # Try STHeiti for better Traditional Chinese support
                 pdfmetrics.registerFont(UnicodeCIDFont('STHeiti-Light'))
                 self.chinese_font = 'STHeiti-Light'
             except Exception:
@@ -45,7 +59,10 @@ class PDFGenerator:
                 except Exception:
                     # Fallback to basic font
                     self.chinese_font = 'Helvetica'
-                    print("Warning: Could not register Chinese font, Chinese characters may not display correctly")
+                    print("Warning: Could not register Chinese font")
+        
+        # Set primary font: use custom font if available, otherwise Chinese font
+        self.primary_font = self.custom_font if self.custom_font else self.chinese_font
     
     def generate_analyst_report_pdf(
         self,
@@ -84,11 +101,11 @@ class PDFGenerator:
         # Define styles
         styles = getSampleStyleSheet()
         
-        # Custom styles with Chinese font support
+        # Custom styles with Cactus Classical Serif font
         title_style = ParagraphStyle(
             'CustomTitle',
             parent=styles['Heading1'],
-            fontName=self.chinese_font,
+            fontName=self.primary_font,
             fontSize=24,
             textColor=HexColor('#1a1a1a'),
             spaceAfter=30,
@@ -98,7 +115,7 @@ class PDFGenerator:
         subtitle_style = ParagraphStyle(
             'CustomSubtitle',
             parent=styles['Normal'],
-            fontName=self.chinese_font,
+            fontName=self.primary_font,
             fontSize=12,
             textColor=HexColor('#666666'),
             spaceAfter=20,
@@ -108,7 +125,7 @@ class PDFGenerator:
         heading_style = ParagraphStyle(
             'CustomHeading',
             parent=styles['Heading2'],
-            fontName=self.chinese_font,
+            fontName=self.primary_font,
             fontSize=16,
             textColor=HexColor('#2c3e50'),
             spaceAfter=12,
@@ -118,7 +135,7 @@ class PDFGenerator:
         body_style = ParagraphStyle(
             'CustomBody',
             parent=styles['Normal'],
-            fontName=self.chinese_font,
+            fontName=self.primary_font,
             fontSize=10,
             leading=14,
             textColor=HexColor('#333333'),
