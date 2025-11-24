@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 PDF Generation Service for Analyst Reports
 Converts markdown reports to PDF format with Chinese character support
@@ -101,7 +102,7 @@ class PDFGenerator:
         # Define styles
         styles = getSampleStyleSheet()
         
-        # Custom styles with Cactus Classical Serif font
+        # Custom styles with proper spacing and wrapping
         title_style = ParagraphStyle(
             'CustomTitle',
             parent=styles['Heading1'],
@@ -110,6 +111,7 @@ class PDFGenerator:
             textColor=HexColor('#1a1a1a'),
             spaceAfter=30,
             alignment=TA_CENTER,
+            wordWrap='CJK',
         )
         
         subtitle_style = ParagraphStyle(
@@ -118,8 +120,9 @@ class PDFGenerator:
             fontName=self.primary_font,
             fontSize=12,
             textColor=HexColor('#666666'),
-            spaceAfter=20,
+            spaceAfter=12,
             alignment=TA_CENTER,
+            wordWrap='CJK',
         )
         
         heading_style = ParagraphStyle(
@@ -129,7 +132,8 @@ class PDFGenerator:
             fontSize=16,
             textColor=HexColor('#2c3e50'),
             spaceAfter=12,
-            spaceBefore=12,
+            spaceBefore=16,
+            wordWrap='CJK',
         )
         
         body_style = ParagraphStyle(
@@ -137,9 +141,11 @@ class PDFGenerator:
             parent=styles['Normal'],
             fontName=self.primary_font,
             fontSize=10,
-            leading=14,
+            leading=16,  # Increased from 14 for better readability
             textColor=HexColor('#333333'),
-            spaceAfter=8,
+            spaceAfter=10,
+            wordWrap='CJK',
+            splitLongWords=True,
         )
         
         # Add title
@@ -178,11 +184,8 @@ class PDFGenerator:
             else:
                 # Regular paragraph - escape HTML chars and handle special characters
                 text = self._escape_html(para)
-                try:
-                    elements.append(Paragraph(text, body_style))
-                except Exception as e:
-                    # If paragraph fails, add as plain text
-                    elements.append(Paragraph(text.encode('ascii', 'xmlcharrefreplace').decode(), body_style))
+                # Ensure proper UTF-8 handling
+                elements.append(Paragraph(text, body_style))
         
         # Build PDF
         doc.build(elements)
@@ -206,14 +209,14 @@ class PDFGenerator:
         # Remove markdown links but keep text
         text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', text)
         
-        # Remove bold/italic markers
+        # Remove bold/italic markers carefully to avoid orphan characters
         text = re.sub(r'\*\*([^\*]+)\*\*', r'\1', text)
-        text = re.sub(r'\*([^\*]+)\*', r'\1', text)
+        text = re.sub(r'(?<!\*)\*([^\*]+)\*(?!\*)', r'\1', text)  # Avoid double asterisks
         text = re.sub(r'__([^_]+)__', r'\1', text)
-        text = re.sub(r'_([^_]+)_', r'\1', text)
+        text = re.sub(r'(?<!_)_([^_]+)_(?!_)', r'\1', text)  # Avoid double underscores
         
         # Remove code blocks
-        text = re.sub(r'```[^`]*```', '', text, flags=re.DOTALL)
+        text = re.sub(r'```[^`]*```', ' ', text, flags=re.DOTALL)  # Replace with space not empty
         text = re.sub(r'`([^`]+)`', r'\1', text)
         
         # Clean up bullet points
@@ -221,6 +224,12 @@ class PDFGenerator:
         
         # Remove horizontal rules
         text = re.sub(r'^[\-\*\_]{3,}\s*$', '', text, flags=re.MULTILINE)
+        
+        # Remove multiple consecutive spaces
+        text = re.sub(r' {2,}', ' ', text)
+        
+        # Remove orphaned single characters that might be markdown artifacts
+        text = re.sub(r'(?<=[^\w])([*_`~#])(?=[^\w])', '', text)
         
         return text
     

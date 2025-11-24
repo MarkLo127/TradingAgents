@@ -47,10 +47,16 @@ def create_bear_researcher(llm, memory):
         # 目標：將每個報告限制在合理的字符數內，總共不超過約 15000 字符（約 20000-30000 tokens）
         
         def truncate_text(text, max_chars):
-            """截斷文本到指定字符數"""
+            """智能截斷文本到指定字符數，在句子邊界處截斷"""
             if len(text) <= max_chars:
                 return text
-            return text[:max_chars] + "\n...(內容已截斷)"
+            
+            truncated = text[:max_chars]
+            for delimiter in ['。', '\n', '，', '、', ' ']:
+                last_pos = truncated.rfind(delimiter)
+                if last_pos > max_chars * 0.8:
+                    return text[:last_pos + 1] + "\n\n...(為控制長度已精簡)"
+            return truncated + "...(為控制長度已精簡)"
         
         # 為每個報告設置合理的字符限制
         # 模型 gpt-4.1-mini 的限制是 8192 tokens

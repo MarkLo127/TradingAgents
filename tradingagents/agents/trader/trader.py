@@ -41,10 +41,21 @@ def create_trader(llm, memory):
 
         # 定義文本截斷函數以避免超過 token 限制
         def truncate_text(text, max_chars):
-            """截斷文本到指定字符數"""
+            """智能截斷文本到指定字符數，在句子邊界處截斷"""
             if len(text) <= max_chars:
                 return text
-            return text[:max_chars] + "\n...(內容已截斷)"
+            
+            # 在max_chars附近尋找句子結束標記
+            truncated = text[:max_chars]
+            
+            # 尋找最後一個句號、換行或逗號
+            for delimiter in ['。', '\n', '，', '、', ' ']:
+                last_pos = truncated.rfind(delimiter)
+                if last_pos > max_chars * 0.8:  # 至少保留80%的內容
+                    return text[:last_pos + 1] + "\n\n...(為控制長度已精簡)"
+            
+            # 如果找不到合適的分隔符，直接在字符處截斷
+            return truncated + "...(為控制長度已精簡)"
         
         # 截斷各類報告以控制 token 使用量
         # 這些報告將用於記憶檢索（embedding）和 LLM prompt
