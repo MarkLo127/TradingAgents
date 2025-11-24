@@ -371,6 +371,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                           {/* Qwen */}
                           <SelectItem value="qwen3-max">Qwen: 3 Max</SelectItem>
                           <SelectItem value="qwen-plus">Qwen: Plus</SelectItem>
+                          <SelectItem value="qwen-flash">Qwen: Flash</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormDescription>快速回應模型</FormDescription>
@@ -479,6 +480,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                           {/* Qwen */}
                           <SelectItem value="qwen3-max">Qwen: 3 Max</SelectItem>
                           <SelectItem value="qwen-plus">Qwen: Plus</SelectItem>
+                          <SelectItem value="qwen-flash">Qwen: Flash</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormDescription>複雜推理模型</FormDescription>

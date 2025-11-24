@@ -229,6 +229,7 @@ class TradingService:
             # Qwen
             "qwen3-max",
             "qwen-plus",
+            "qwen-flash",
         ]
     
     def get_default_config(self) -> Dict[str, Any]:
