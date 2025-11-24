@@ -90,10 +90,7 @@ def create_safe_debator(llm):
 5. 反駁過度樂觀：指出激進觀點忽略的風險
 
 交易員計畫：
-{trader_plan}
-
-過去反思：
-{past_memory_str}
+{trader_decision}
 
 請提出保守謹慎的風險論證，強調資本保護！
 
