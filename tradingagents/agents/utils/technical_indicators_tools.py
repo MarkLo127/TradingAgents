@@ -30,6 +30,11 @@ def get_indicators(
         normalized_indicator = "close_200_sma"
     elif "10" in indicator_lower and "ema" in indicator_lower:
         normalized_indicator = "close_10_ema"
+    # 處理通用指標名稱，使用 look_back_days
+    elif indicator_lower in ["sma", "ma"]:
+        normalized_indicator = f"close_{look_back_days}_sma"
+    elif indicator_lower == "ema":
+        normalized_indicator = f"close_{look_back_days}_ema"
     else:
         # 常見指標名稱映射
         mapping = {
