@@ -23,22 +23,35 @@ def get_indicators(
     # 規範化指標名稱以匹配供應商的預期格式
     indicator_lower = indicator.lower().strip()
     
-    # 常見指標名稱映射
-    mapping = {
-        "sma50": "close_50_sma",
-        "sma200": "close_200_sma",
-        "ema10": "close_10_ema",
-        "bbands": "boll",
-        "bollinger": "boll",
-        "macd_signal": "macds",
-        "macd_hist": "macdh",
-    }
-    
-    # 如果在映射中，使用映射名稱
-    if indicator_lower in mapping:
-        normalized_indicator = mapping[indicator_lower]
-    # 如果已經是正確的格式（例如 rsi, macd, atr），則保持原樣（轉小寫）
+    # 處理常見的變體
+    if "50" in indicator_lower and ("ma" in indicator_lower or "avg" in indicator_lower):
+        normalized_indicator = "close_50_sma"
+    elif "200" in indicator_lower and ("ma" in indicator_lower or "avg" in indicator_lower):
+        normalized_indicator = "close_200_sma"
+    elif "10" in indicator_lower and "ema" in indicator_lower:
+        normalized_indicator = "close_10_ema"
     else:
-        normalized_indicator = indicator_lower
+        # 常見指標名稱映射
+        mapping = {
+            "sma50": "close_50_sma",
+            "sma200": "close_200_sma",
+            "ema10": "close_10_ema",
+            "bbands": "boll",
+            "bollinger": "boll",
+            "bollinger bands": "boll",
+            "macd_signal": "macds",
+            "macd_hist": "macdh",
+            "50-day ma": "close_50_sma",
+            "200-day ma": "close_200_sma",
+            "50 day ma": "close_50_sma",
+            "200 day ma": "close_200_sma",
+        }
+        
+        # 如果在映射中，使用映射名稱
+        if indicator_lower in mapping:
+            normalized_indicator = mapping[indicator_lower]
+        # 如果已經是正確的格式（例如 rsi, macd, atr），則保持原樣（轉小寫）
+        else:
+            normalized_indicator = indicator_lower
         
     return route_to_vendor("get_indicators", symbol, normalized_indicator, curr_date, look_back_days)
