@@ -20,4 +20,25 @@ def get_indicators(
     Returns:
         str: 一個格式化的數據框，包含指定股票代碼和指標的技術指標。
     """
-    return route_to_vendor("get_indicators", symbol, indicator, curr_date, look_back_days)
+    # 規範化指標名稱以匹配供應商的預期格式
+    indicator_lower = indicator.lower().strip()
+    
+    # 常見指標名稱映射
+    mapping = {
+        "sma50": "close_50_sma",
+        "sma200": "close_200_sma",
+        "ema10": "close_10_ema",
+        "bbands": "boll",
+        "bollinger": "boll",
+        "macd_signal": "macds",
+        "macd_hist": "macdh",
+    }
+    
+    # 如果在映射中，使用映射名稱
+    if indicator_lower in mapping:
+        normalized_indicator = mapping[indicator_lower]
+    # 如果已經是正確的格式（例如 rsi, macd, atr），則保持原樣（轉小寫）
+    else:
+        normalized_indicator = indicator_lower
+        
+    return route_to_vendor("get_indicators", symbol, normalized_indicator, curr_date, look_back_days)

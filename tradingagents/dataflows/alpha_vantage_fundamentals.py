@@ -88,7 +88,7 @@ def get_fundamentals(ticker: str, curr_date: str = None, use_toon: bool = None) 
         return response
 
 
-def get_balance_sheet(ticker: str, freq: str = "quarterly", curr_date: str = None) -> str:
+def get_balance_sheet(ticker: str, freq: str = "quarterly", curr_date: str = None, use_toon: bool = None) -> str:
     """
     使用 Alpha Vantage 檢索給定股票代碼的資產負債表數據。
 
@@ -96,10 +96,15 @@ def get_balance_sheet(ticker: str, freq: str = "quarterly", curr_date: str = Non
         ticker (str): 公司的股票代碼
         freq (str): 報告頻率：年度/季度 (預設為季度) - Alpha Vantage 未使用
         curr_date (str): 您正在交易的當前日期，格式為 yyyy-mm-dd (Alpha Vantage 未使用)
+        use_toon (bool): 是否使用toon格式（減少token消耗）。默認從環境變量讀取
 
     Returns:
-        str: 具有標準化欄位的資產負債表數據
+        str: 具有標準化欄位的資產負債表數據（JSON或toon格式）
     """
+    # 從環境變量或參數決定是否使用toon
+    if use_toon is None:
+        use_toon = os.getenv("USE_TOON_FORMAT", "true").lower() == "true"
+
     params = {
         "symbol": ticker,
     }
@@ -117,7 +122,17 @@ def get_balance_sheet(ticker: str, freq: str = "quarterly", curr_date: str = Non
             if "annualReports" in data and isinstance(data["annualReports"], list):
                 data["annualReports"] = data["annualReports"][:2]
             
-            return json.dumps(data, ensure_ascii=False, indent=2)
+            # 使用toon格式或JSON格式返回
+            if use_toon:
+                try:
+                    from tradingagents.utils.toon_converter import convert_json_to_toon
+                    toon_data = convert_json_to_toon(data)
+                    return toon_data
+                except Exception as e:
+                    print(f"警告：toon轉換失敗：{e}，使用JSON格式")
+                    return json.dumps(data, ensure_ascii=False, indent=2)
+            else:
+                return json.dumps(data, ensure_ascii=False, indent=2)
         
         return response
         
@@ -126,7 +141,7 @@ def get_balance_sheet(ticker: str, freq: str = "quarterly", curr_date: str = Non
         return response
 
 
-def get_cashflow(ticker: str, freq: str = "quarterly", curr_date: str = None) -> str:
+def get_cashflow(ticker: str, freq: str = "quarterly", curr_date: str = None, use_toon: bool = None) -> str:
     """
     使用 Alpha Vantage 檢索給定股票代碼的現金流量表數據。
 
@@ -134,10 +149,15 @@ def get_cashflow(ticker: str, freq: str = "quarterly", curr_date: str = None) ->
         ticker (str): 公司的股票代碼
         freq (str): 報告頻率：年度/季度 (預設為季度) - Alpha Vantage 未使用
         curr_date (str): 您正在交易的當前日期，格式為 yyyy-mm-dd (Alpha Vantage 未使用)
+        use_toon (bool): 是否使用toon格式（減少token消耗）。默認從環境變量讀取
 
     Returns:
-        str: 具有標準化欄位的現金流量表數據
+        str: 具有標準化欄位的現金流量表數據（JSON或toon格式）
     """
+    # 從環境變量或參數決定是否使用toon
+    if use_toon is None:
+        use_toon = os.getenv("USE_TOON_FORMAT", "true").lower() == "true"
+
     params = {
         "symbol": ticker,
     }
@@ -155,7 +175,17 @@ def get_cashflow(ticker: str, freq: str = "quarterly", curr_date: str = None) ->
             if "annualReports" in data and isinstance(data["annualReports"], list):
                 data["annualReports"] = data["annualReports"][:2]
             
-            return json.dumps(data, ensure_ascii=False, indent=2)
+            # 使用toon格式或JSON格式返回
+            if use_toon:
+                try:
+                    from tradingagents.utils.toon_converter import convert_json_to_toon
+                    toon_data = convert_json_to_toon(data)
+                    return toon_data
+                except Exception as e:
+                    print(f"警告：toon轉換失敗：{e}，使用JSON格式")
+                    return json.dumps(data, ensure_ascii=False, indent=2)
+            else:
+                return json.dumps(data, ensure_ascii=False, indent=2)
         
         return response
         
@@ -164,7 +194,7 @@ def get_cashflow(ticker: str, freq: str = "quarterly", curr_date: str = None) ->
         return response
 
 
-def get_income_statement(ticker: str, freq: str = "quarterly", curr_date: str = None) -> str:
+def get_income_statement(ticker: str, freq: str = "quarterly", curr_date: str = None, use_toon: bool = None) -> str:
     """
     使用 Alpha Vantage 檢索給定股票代碼的損益表數據。
 
@@ -172,10 +202,15 @@ def get_income_statement(ticker: str, freq: str = "quarterly", curr_date: str = 
         ticker (str): 公司的股票代碼
         freq (str): 報告頻率：年度/季度 (預設為季度) - Alpha Vantage 未使用
         curr_date (str): 您正在交易的當前日期，格式為 yyyy-mm-dd (Alpha Vantage 未使用)
+        use_toon (bool): 是否使用toon格式（減少token消耗）。默認從環境變量讀取
 
     Returns:
-        str: 具有標準化欄位的損益表數據
+        str: 具有標準化欄位的損益表數據（JSON或toon格式）
     """
+    # 從環境變量或參數決定是否使用toon
+    if use_toon is None:
+        use_toon = os.getenv("USE_TOON_FORMAT", "true").lower() == "true"
+
     params = {
         "symbol": ticker,
     }
@@ -193,7 +228,17 @@ def get_income_statement(ticker: str, freq: str = "quarterly", curr_date: str = 
             if "annualReports" in data and isinstance(data["annualReports"], list):
                 data["annualReports"] = data["annualReports"][:2]
             
-            return json.dumps(data, ensure_ascii=False, indent=2)
+            # 使用toon格式或JSON格式返回
+            if use_toon:
+                try:
+                    from tradingagents.utils.toon_converter import convert_json_to_toon
+                    toon_data = convert_json_to_toon(data)
+                    return toon_data
+                except Exception as e:
+                    print(f"警告：toon轉換失敗：{e}，使用JSON格式")
+                    return json.dumps(data, ensure_ascii=False, indent=2)
+            else:
+                return json.dumps(data, ensure_ascii=False, indent=2)
         
         return response
         
