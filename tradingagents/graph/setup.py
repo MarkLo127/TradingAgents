@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# TradingAgents/graph/setup.py
+# TradingAgentsX/graph/setup.py
 
 from typing import Dict, Any
 from langchain_openai import ChatOpenAI

@@ -1,18 +1,24 @@
 from .alpha_vantage_common import _make_api_request
 import json
+import os
 
 
-def get_fundamentals(ticker: str, curr_date: str = None) -> str:
+def get_fundamentals(ticker: str, curr_date: str = None, use_toon: bool = None) -> str:
     """
     使用 Alpha Vantage 檢索給定股票代碼的綜合基本面數據。
 
     Args:
         ticker (str): 公司的股票代碼
         curr_date (str): 您正在交易的當前日期，格式為 yyyy-mm-dd (Alpha Vantage 未使用)
+        use_toon (bool): 是否使用toon格式（減少token消耗）。默認從環境變量讀取
 
     Returns:
-        str: 公司概覽數據，包括財務比率和關鍵指標
+        str: 公司概覽數據，包括財務比率和關鍵指標（JSON或toon格式）
     """
+    # 從環境變量或參數決定是否使用toon
+    if use_toon is None:
+        use_toon = os.getenv("USE_TOON_FORMAT", "true").lower() == "true"
+    
     params = {
         "symbol": ticker,
     }
@@ -63,7 +69,17 @@ def get_fundamentals(ticker: str, curr_date: str = None) -> str:
                 "Beta": data.get("Beta", ""),
             }
             
-            return json.dumps(summarized_data, ensure_ascii=False, indent=2)
+            # 使用toon格式或JSON格式返回
+            if use_toon:
+                try:
+                    from tradingagents.utils.toon_converter import convert_json_to_toon
+                    toon_data = convert_json_to_toon(summarized_data)
+                    return toon_data
+                except Exception as e:
+                    print(f"警告：toon轉換失敗：{e}，使用JSON格式")
+                    return json.dumps(summarized_data, ensure_ascii=False, indent=2)
+            else:
+                return json.dumps(summarized_data, ensure_ascii=False, indent=2)
         
         return response
         

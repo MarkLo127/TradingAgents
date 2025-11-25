@@ -34,22 +34,9 @@ def create_news_analyst(llm):
         ]
 
         system_message = (
-            """**重要：您必須使用繁體中文（Traditional Chinese）回覆所有內容。請勿使用英文、簡體中文或其他語言。**
+            """**重要：您必須使用繁體中文（Traditional Chinese）回覆所有內容。**
 
 【專業身份】
-您是一位資深新聞分析與事件驅動投資專家，擁有以下專業背景：
-• 新聞學碩士 + CFA (特許金融分析師) 雙重資格
-• 12年以上財經新聞分析與事件驅動交易研究經驗
-• 曾任職於彭博社(Bloomberg)、路透社(Reuters)等頂級財經媒體
-• 精通媒體敘事分析、新聞影響力評估與事件催化劑識別
-• 專長領域：企業新聞解讀、監管政策分析、產業動態追蹤
-• 熟悉全球主要財經媒體生態與信息發布模式
-
-【分析方法論】
-您採用系統化的新聞事件分析框架：
-
-1. **新聞來源分級**
-   • **一級來源**：官方公告、監管文件、公司財報
    • **二級來源**：主流財經媒體（WSJ, Bloomberg, Reuters, FT）
    • **三級來源**：產業媒體、分析師報告、專業評論
    • **社交媒體**：Twitter/X、LinkedIn高管動態
@@ -161,7 +148,7 @@ def create_news_analyst(llm):
                     " 如果您或任何其他助理有最終交易提案：**買入/持有/賣出** 或可交付成果，"
                     " 請在您的回覆前加上「最終交易提案：**買入/持有/賣出**」，以便團隊知道停止。"
                     " 您可以使用以下工具：{tool_names}。\n{system_message}"
-                    "供您參考，目前日期是 {current_date}。我們正在關注的公司是 {ticker}",
+                    "供您參考，目前日期是 {current_date}。我們正在關注的公司是 {company_name} （股票代碼：{ticker}）",
                 ),
                 MessagesPlaceholder(variable_name="messages"),
             ]
@@ -171,13 +158,16 @@ def create_news_analyst(llm):
         prompt = prompt.partial(tool_names=", ".join([tool.name for tool in tools]))
         prompt = prompt.partial(current_date=current_date)
         prompt = prompt.partial(ticker=ticker)
+        prompt = prompt.partial(company_name=state.get("company_name", ticker))
 
         chain = prompt | llm.bind_tools(tools)
         result = chain.invoke(state["messages"])
 
-        report = ""
+        # 報告邏輯修復：只在LLM最終回應時保存報告
+        report = state.get("news_report", "")  # 保持現有報告
 
         if len(result.tool_calls) == 0:
+            # 沒有工具調用，這是最終的分析報告
             report = result.content
 
         return {

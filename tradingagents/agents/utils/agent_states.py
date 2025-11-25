@@ -48,7 +48,8 @@ class RiskDebateState(TypedDict):
 
 
 class AgentState(MessagesState):
-    company_of_interest: Annotated[str, "我們感興趣的交易公司"]
+    company_of_interest: Annotated[str, "我們感興趣的交易公司（股票代碼）"]
+    company_name: Annotated[str, "公司的真實全名"]
     trade_date: Annotated[str, "我們的交易日期"]
 
     sender: Annotated[str, "發送此訊息的代理人"]

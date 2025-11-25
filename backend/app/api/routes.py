@@ -1,5 +1,5 @@
 """
-API route definitions for TradingAgents Backend
+API route definitions for TradingAgentsX Backend
 """
 from fastapi import APIRouter, Depends, HTTPException
 from datetime import datetime
@@ -24,7 +24,7 @@ from backend.app.core.config import settings
 logger = logging.getLogger(__name__)
 
 # Create API router
-router = APIRouter(prefix="/api", tags=["TradingAgents"])
+router = APIRouter(prefix="/api", tags=["TradingAgentsX"])
 
 
 @router.get("/health", response_model=HealthResponse)

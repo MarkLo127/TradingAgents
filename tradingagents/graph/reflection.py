@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# TradingAgents/graph/reflection.py
+# TradingAgentsX/graph/reflection.py
 
 from typing import Dict, Any
 from langchain_openai import ChatOpenAI

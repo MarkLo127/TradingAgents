@@ -10,7 +10,7 @@ export function Header() {
       <div className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="text-3xl font-bold">TradingAgents</div>
+            <div className="text-3xl font-bold">TradingAgentsX</div>
             <div className="hidden md:block text-sm font-light opacity-90">
               多代理 LLM 金融交易框架
             </div>

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# TradingAgents/graph/__init__.py
+# TradingAgentsX/graph/__init__.py
 
 """
 這個 `__init__.py` 檔案將 `graph` 目錄標記為一個 Python 套件。
@@ -8,7 +8,7 @@
 而不需要知道每個類別所在的具體模組檔案。
 
 匯出的類別包括：
-- TradingAgentsGraph: 整個交易代理圖的主要協調器。
+- TradingAgentsXGraph: 整個交易代理圖的主要協調器。
 - ConditionalLogic: 處理圖中條件分支邏輯的類別。
 - GraphSetup: 負責設定和建立圖結構的類別。
 - Propagator: 管理狀態在圖中節點之間傳播的類別。
@@ -17,7 +17,7 @@
 """
 
 # 從同層級的模組中匯入類別
-from .trading_graph import TradingAgentsGraph
+from .trading_graph import TradingAgentsXGraph
 from .conditional_logic import ConditionalLogic
 from .setup import GraphSetup
 from .propagation import Propagator
@@ -27,7 +27,7 @@ from .signal_processing import SignalProcessor
 # `__all__` 變數定義了當 `from tradingagents.graph import *` 被執行時，
 # 哪些名稱會被匯入。這是一種控制命名空間的良好實踐。
 __all__ = [
-    "TradingAgentsGraph",
+    "TradingAgentsXGraph",
     "ConditionalLogic",
     "GraphSetup",
     "Propagator",

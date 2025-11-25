@@ -1,5 +1,5 @@
 /**
- * API client for TradingAgents backend
+ * API client for TradingAgentsX backend
  */
 import axios from "axios";
 import type {
@@ -50,7 +50,9 @@ export const api = {
    * Get task status
    */
   async getTaskStatus(taskId: string): Promise<TaskStatusResponse> {
-    const response = await apiClient.get<TaskStatusResponse>(`/api/task/${taskId}`);
+    const response = await apiClient.get<TaskStatusResponse>(
+      `/api/task/${taskId}`
+    );
     return response.data;
   },
 

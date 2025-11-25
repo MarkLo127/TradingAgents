@@ -1,5 +1,5 @@
 /**
- * TypeScript type definitions for TradingAgents API
+ * TypeScript type definitions for TradingAgentsX API
  */
 
 export interface AnalysisRequest {
@@ -9,7 +9,7 @@ export interface AnalysisRequest {
   research_depth?: number;
   quick_think_llm?: string;
   deep_think_llm?: string;
-  
+
   // API Configuration
   openai_api_key?: string;
   openai_base_url?: string;
@@ -118,4 +118,3 @@ export interface TaskStatusResponse {
   error?: string;
   completed_at?: string;
 }
-

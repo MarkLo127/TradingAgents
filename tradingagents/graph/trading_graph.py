@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# TradingAgents/graph/trading_graph.py
+# TradingAgentsX/graph/trading_graph.py
 
 import os
 from pathlib import Path
@@ -48,7 +48,7 @@ from .reflection import Reflector
 from .signal_processing import SignalProcessor
 
 
-class TradingAgentsGraph:
+class TradingAgentsXGraph:
     """
     協調交易代理框架的主要類別。
     這個類別整合了所有組件，包括 LLM、記憶體、工具和圖的邏輯，
@@ -271,11 +271,11 @@ class TradingAgentsGraph:
         }
 
         # 儲存到檔案
-        directory = Path(f"eval_results/{self.ticker}/TradingAgentsStrategy_logs/")
+        directory = Path(f"eval_results/{self.ticker}/TradingAgentsXStrategy_logs/")
         directory.mkdir(parents=True, exist_ok=True)
 
         with open(
-            f"eval_results/{self.ticker}/TradingAgentsStrategy_logs/full_states_log_{trade_date}.json",
+            f"eval_results/{self.ticker}/TradingAgentsXStrategy_logs/full_states_log_{trade_date}.json",
             "w",
         ) as f:
             json.dump(self.log_states_dict, f, indent=4)

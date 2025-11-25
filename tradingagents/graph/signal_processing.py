@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# TradingAgents/graph/signal_processing.py
+# TradingAgentsX/graph/signal_processing.py
 
 from langchain_openai import ChatOpenAI
 

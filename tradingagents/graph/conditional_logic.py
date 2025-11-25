@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# TradingAgents/graph/conditional_logic.py
+# TradingAgentsX/graph/conditional_logic.py
 
 from tradingagents.agents.utils.agent_states import AgentState
 

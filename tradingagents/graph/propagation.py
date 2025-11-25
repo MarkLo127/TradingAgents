@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
-# TradingAgents/graph/propagation.py
+# TradingAgentsX/graph/propagation.py
 
 from typing import Dict, Any
+import json
 from tradingagents.agents.utils.agent_states import (
     AgentState,
     InvestDebateState,
     RiskDebateState,
 )
+from tradingagents.dataflows.interface import route_to_vendor
+
 
 
 class Propagator:
@@ -38,9 +41,28 @@ class Propagator:
         Returns:
             Dict[str, Any]: 初始狀態的字典。
         """
+        # 獲取真實公司名稱（從Alpha Vantage獲取公司概況）
+        ticker = company_name  # company_name實際上是ticker
+        actual_company_name = ticker  # 預設值為ticker
+        
+        try:
+            # 嘗試從fundamentals數據中獲取公司全名
+            fundamentals_data = route_to_vendor("get_fundamentals", ticker, trade_date)
+            if fundamentals_data:
+                # 解析JSON數據
+                data = json.loads(fundamentals_data) if isinstance(fundamentals_data, str) else fundamentals_data
+                if isinstance(data, dict) and "Name" in data:
+                    actual_company_name = data["Name"]
+                    print(f"成功獲取公司名稱：{ticker} -> {actual_company_name}")
+                else:
+                    print(f"警告：無法從fundamentals數據中提取公司名稱，使用ticker: {ticker}")
+        except Exception as e:
+            print(f"警告：獲取公司名稱時發生錯誤：{e}，使用ticker: {ticker}")
+        
         return {
-            "messages": [("human", company_name)],  # 初始訊息，觸發第一個代理
-            "company_of_interest": company_name,  # 感興趣的公司
+            "messages": [("human", ticker)],  # 初始訊息，觸發第一個代理
+            "company_of_interest": ticker,  # 股票代碼
+            "company_name": actual_company_name,  # 真實公司全名
             "trade_date": str(trade_date),  # 交易日期
             "investment_debate_state": InvestDebateState(
                 {"history": "", "current_response": "", "count": 0}
@@ -59,6 +81,7 @@ class Propagator:
             "sentiment_report": "",  # 情緒報告的初始值
             "news_report": "",  # 新聞報告的初始值
         }
+
 
     def get_graph_args(self) -> Dict[str, Any]:
         """

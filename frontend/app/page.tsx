@@ -1,6 +1,12 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function HomePage() {
   return (
@@ -8,19 +14,22 @@ export default function HomePage() {
       {/* Hero Section */}
       <div className="text-center mb-16">
         <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          TradingAgents
+          TradingAgentsX
         </h1>
         <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
           多代理 LLM 金融交易框架
         </p>
         <div className="flex gap-4 justify-center">
           <Link href="/analysis">
-            <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            >
               開始分析
             </Button>
           </Link>
           <a
-            href="https://github.com/MarkLo127/TradingAgents"
+            href="https://github.com/MarkLo127/TradingAgentsX"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -60,7 +69,7 @@ export default function HomePage() {
         <CardHeader>
           <CardTitle>運作方式</CardTitle>
           <CardDescription>
-            TradingAgents 模擬真實交易公司，配備專業化的 LLM 代理
+            TradingAgentsX 模擬真實交易公司，配備專業化的 LLM 代理
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -97,7 +106,15 @@ export default function HomePage() {
   );
 }
 
-function FeatureCard({ title, description, icon }: { title: string; description: string; icon: string }) {
+function FeatureCard({
+  title,
+  description,
+  icon,
+}: {
+  title: string;
+  description: string;
+  icon: string;
+}) {
   return (
     <Card className="hover:shadow-lg transition-shadow">
       <CardHeader>
@@ -105,13 +122,23 @@ function FeatureCard({ title, description, icon }: { title: string; description:
         <CardTitle className="text-lg">{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-gray-600 dark:text-gray-400">{description}</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {description}
+        </p>
       </CardContent>
     </Card>
   );
 }
 
-function WorkflowStep({ number, title, description }: { number: number; title: string; description: string }) {
+function WorkflowStep({
+  number,
+  title,
+  description,
+}: {
+  number: number;
+  title: string;
+  description: string;
+}) {
   return (
     <div className="flex gap-4 items-start">
       <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white flex items-center justify-center font-bold">
@@ -119,7 +146,9 @@ function WorkflowStep({ number, title, description }: { number: number; title: s
       </div>
       <div>
         <h4 className="font-semibold mb-1">{title}</h4>
-        <p className="text-sm text-gray-600 dark:text-gray-400">{description}</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {description}
+        </p>
       </div>
     </div>
   );

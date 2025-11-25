@@ -1,10 +1,10 @@
-# TradingAgents - 多代理交易分析系統
+# TradingAgentsX - 多代理交易分析系統
 
 <div align="center">
 
 **基於 LangGraph 的智能股票交易分析平台，結合多個 AI 代理進行協作決策**
 
-[![GitHub](https://img.shields.io/badge/GitHub-MarkLo127/TradingAgents-blue?logo=github)](https://github.com/MarkLo127/TradingAgents)
+[![GitHub](https://img.shields.io/badge/GitHub-MarkLo127/TradingAgentsX-blue?logo=github)](https://github.com/MarkLo127/TradingAgentsX)
 [![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)](https://www.python.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-Latest-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
@@ -16,9 +16,9 @@
 
 ## 📖 簡介
 
-**TradingAgents** 是一個先進的多代理 AI 交易分析系統，模擬真實世界的交易公司運作模式。透過 LangGraph 編排多個專業化的 AI 代理（分析師、研究員、交易員、風險管理者），系統能夠從不同角度分析股票市場，並通過結構化的辯論與協作流程產生高質量的交易決策。
+**TradingAgentsX** 是一個先進的多代理 AI 交易分析系統，模擬真實世界的交易公司運作模式。透過 LangGraph 編排多個專業化的 AI 代理（分析師、研究員、交易員、風險管理者），系統能夠從不同角度分析股票市場，並通過結構化的辯論與協作流程產生高質量的交易決策。
 
-> 💡 **致敬原作**: 本專案基於 [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents) 進行改進和擴展，加入了完整的 Web 前端介面、RESTful API、Docker 部署支援等功能。感謝原作者的卓越工作和開源貢獻！
+> 💡 **致敬原作**: 本專案基於 [TauricResearch/TradingAgentsX](https://github.com/TauricResearch/TradingAgentsX) 進行改進和擴展，加入了完整的 Web 前端介面、RESTful API、Docker 部署支援等功能。感謝原作者的卓越工作和開源貢獻！
 
 ### 🎯 核心特色
 
@@ -37,7 +37,7 @@
 
 ## 🤖 LLM 模型支援
 
-TradingAgents 支援業界領先的多家 LLM 提供商，並為每個模型配置**獨立的 API Key 和 Base URL**，實現最大靈活性。
+TradingAgentsX 支援業界領先的多家 LLM 提供商，並為每個模型配置**獨立的 API Key 和 Base URL**，實現最大靈活性。
 
 ### 📋 支援的 LLM 提供商矩陣
 
@@ -96,12 +96,12 @@ TradingAgents 支援業界領先的多家 LLM 提供商，並為每個模型配�
 
 ## 🏗️ 系統架構
 
-TradingAgents 採用前後端分離架構，後端使用 FastAPI 提供 RESTful API，前端使用 Next.js 打造現代化的使用者介面。
+TradingAgentsX 採用前後端分離架構，後端使用 FastAPI 提供 RESTful API，前端使用 Next.js 打造現代化的使用者介面。
 
 ### 📂 專案結構概覽
 
 ```
-TradingAgents/
+TradingAgentsX/
 ├── backend/                   # FastAPI 後端服務
 │   ├── __main__.py           # 後端應用入口
 │   ├── requirements.txt      # Python 依賴列表
@@ -116,7 +116,7 @@ TradingAgents/
 │       ├── models/           # 資料模型
 │       │   └── schemas.py    # Pydantic 資料結構
 │       └── services/         # 業務邏輯層
-│           ├── trading_service.py  # TradingAgents 核心整合
+│           ├── trading_service.py  # TradingAgentsX 核心整合
 │           └── task_manager.py    # 異步任務管理
 
 ├── frontend/                  # Next.js 前端應用
@@ -225,8 +225,8 @@ TradingAgents/
 #### 1️⃣ 克隆專案
 
 ```bash
-git clone https://github.com/MarkLo127/TradingAgents.git
-cd TradingAgents
+git clone https://github.com/MarkLo127/TradingAgentsX.git
+cd TradingAgentsX
 ```
 
 #### 2️⃣ 後端設置
@@ -252,7 +252,7 @@ tradingagents\Scripts\activate  # Windows
 ##### 2.2 安裝 Python 依賴
 
 ```bash
-# 安裝 TradingAgents 核心套件
+# 安裝 TradingAgentsX 核心套件
 pip install -e .
 
 # 安裝後端 API 依賴
@@ -535,7 +535,7 @@ docker compose down -v
 
 ### API 使用範例
 
-如果您想要透過 API 整合 TradingAgents，可以參考以下範例：
+如果您想要透過 API 整合 TradingAgentsX，可以參考以下範例：
 
 #### 健康檢查
 
@@ -579,7 +579,7 @@ curl "http://localhost:8000/api/price-data/NVDA?start_date=2024-01-01&end_date=2
 
 ### 多代理協作系統
 
-TradingAgents 模擬真實交易公司的組織架構，每個代理都有其專業職責：
+TradingAgentsX 模擬真實交易公司的組織架構，每個代理都有其專業職責：
 
 | 代理角色         | 主要職責 | 輸出內容                                              |
 | ---------------- | -------- | ----------------------------------------------------- |
@@ -673,7 +673,7 @@ TradingAgents 模擬真實交易公司的組織架構，每個代理都有其專
 
 ### 首頁 - 系統介紹
 
-展示 TradingAgents 的核心功能與多代理協作工作流程
+展示 TradingAgentsX 的核心功能與多代理協作工作流程
 
 ![首頁](web_screenshot/1.png)
 
@@ -814,7 +814,7 @@ TradingAgents 模擬真實交易公司的組織架構，每個代理都有其專
 
 ### 特別感謝
 
-本專案基於 [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents) 的原始專案進行改進和擴展。衷心感謝原作者創建了如此優秀的多代理交易分析框架，為我們提供了堅實的基礎。
+本專案基於 [TauricResearch/TradingAgentsX](https://github.com/TauricResearch/TradingAgentsX) 的原始專案進行改進和擴展。衷心感謝原作者創建了如此優秀的多代理交易分析框架，為我們提供了堅實的基礎。
 
 ### 使用的開源專案
 

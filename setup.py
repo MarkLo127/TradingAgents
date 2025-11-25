@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-TradingAgents 套件的安裝腳本。
+TradingAgentsX 套件的安裝腳本。
 
 這個檔案包含了套件的元數據，例如名稱、版本、依賴項等，
 setuptools 會使用這些資訊來建構和安裝套件。
@@ -18,7 +18,7 @@ setup(
     # 套件的簡短描述
     description="多代理 LLM 金融交易框架",
     # 作者名稱
-    author="TradingAgents 團隊",
+    author="TradingAgentsX 團隊",
     # 作者的電子郵件地址
     author_email="yijia.xiao@cs.ucla.edu",
     # 專案的首頁 URL

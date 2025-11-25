@@ -9,7 +9,7 @@ import { ThemeProvider } from "@/components/theme/ThemeProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "TradingAgents - 多代理 LLM 金融交易",
+  title: "TradingAgentsX - 多代理 LLM 金融交易",
   description: "由 AI 驅動的多代理 LLM 金融交易框架",
 };
 
@@ -25,9 +25,7 @@ export default function RootLayout({
           <AnalysisProvider>
             <div className="flex flex-col min-h-screen">
               <Header />
-              <main className="flex-1">
-                {children}
-              </main>
+              <main className="flex-1">{children}</main>
               <Footer />
             </div>
           </AnalysisProvider>

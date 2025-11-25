@@ -1,5 +1,5 @@
 """
-FastAPI application entry point for TradingAgents Backend
+FastAPI application entry point for TradingAgentsX Backend
 """
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
@@ -38,7 +38,7 @@ app.include_router(router)
 async def root():
     """Root endpoint"""
     return {
-        "message": "Welcome to TradingAgents API",
+        "message": "Welcome to TradingAgentsX API",
         "version": settings.app_version,
         "docs": "/docs",
         "health": "/api/health",

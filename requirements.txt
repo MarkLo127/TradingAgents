@@ -24,3 +24,4 @@ rich
 questionary
 langchain_anthropic
 langchain-google-genai
+git+https://github.com/toon-format/toon-python.git

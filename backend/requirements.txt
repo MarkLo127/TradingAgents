@@ -1,4 +1,4 @@
-# Backend requirements for FastAPI TradingAgents API
+# Backend requirements for FastAPI TradingAgentsX API
 
 # Core Framework
 fastapi>=0.104.0
@@ -12,7 +12,7 @@ python-multipart==0.0.6
 # Environment and configuration
 python-dotenv==1.0.0
 
-# Existing TradingAgents dependencies
+# Existing TradingAgentsX dependencies
 typing-extensions
 langchain-openai
 langchain-experimental
@@ -41,3 +41,6 @@ tenacity>=8.2.0
 # PDF and document generation
 reportlab>=4.0.0
 markdown>=3.5.0
+
+# Toon format for token optimization
+git+https://github.com/toon-format/toon-python.git

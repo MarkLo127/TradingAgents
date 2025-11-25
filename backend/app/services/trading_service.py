@@ -1,5 +1,5 @@
 """
-TradingAgents service integration
+TradingAgentsX service integration
 """
 import sys
 import os
@@ -10,7 +10,7 @@ import logging
 # Add parent directory to path to import tradingagents
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
-from tradingagents.graph.trading_graph import TradingAgentsGraph
+from tradingagents.graph.trading_graph import TradingAgentsXGraph
 from tradingagents.default_config import DEFAULT_CONFIG
 from backend.app.core.config import settings
 
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class TradingService:
-    """Service class for interacting with TradingAgents"""
+    """Service class for interacting with TradingAgentsX"""
     
     def __init__(self):
         self.default_config = DEFAULT_CONFIG.copy()
@@ -29,7 +29,7 @@ class TradingService:
         deep_think_llm: str = "gpt-5-mini-2025-08-07",
         quick_think_llm: str = "gpt-5-mini-2025-08-07",
     ) -> Dict[str, Any]:
-        """Create configuration for TradingAgents"""
+        """Create configuration for TradingAgentsX"""
         config = self.default_config.copy()
         config["max_debate_rounds"] = research_depth
         config["max_risk_discuss_rounds"] = research_depth
@@ -91,7 +91,7 @@ class TradingService:
                     os.environ["ALPHA_VANTAGE_API_KEY"] = alpha_vantage_api_key
                 
                 # Create configuration
-                logger.info(f"Initializing TradingAgents for {ticker} on {analysis_date}")
+                logger.info(f"Initializing TradingAgentsX for {ticker} on {analysis_date}")
                 config = self.create_config(research_depth, deep_think_llm, quick_think_llm)
                 
                 # Normalize base URLs (ensure lowercase paths, common issue with custom endpoints)
@@ -122,8 +122,8 @@ class TradingService:
                 config["embedding_base_url"] = normalize_base_url(embedding_base_url)
                 config["embedding_api_key"] = embedding_api_key if embedding_api_key else openai_api_key
                 
-                # Initialize TradingAgents graph
-                graph = TradingAgentsGraph(analysts, config=config, debug=True)
+                # Initialize TradingAgentsX graph
+                graph = TradingAgentsXGraph(analysts, config=config, debug=True)
                 
                 # Run analysis
                 logger.info(f"Running analysis for {ticker}")

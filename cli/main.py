@@ -25,7 +25,7 @@ from rich.align import Align
 from rich.rule import Rule
 
 # 匯入專案內的模組
-from tradingagents.graph.trading_graph import TradingAgentsGraph
+from tradingagents.graph.trading_graph import TradingAgentsXGraph
 from tradingagents.default_config import DEFAULT_CONFIG
 from cli.models import AnalystType
 from cli.utils import *
@@ -35,8 +35,8 @@ console = Console()
 
 # 建立 Typer 應用程式
 app = typer.Typer(
-    name="TradingAgents",
-    help="TradingAgents CLI：多代理 LLM 金融交易框架",
+    name="TradingAgentsX",
+    help="TradingAgentsX CLI：多代理 LLM 金融交易框架",
     add_completion=True,  # 啟用 shell 自動補全
 )
 
@@ -212,9 +212,9 @@ def update_display(layout, spinner_text=None):
     # 包含歡迎訊息的頁首
     layout["header"].update(
         Panel(
-            "[bold green]歡迎使用 TradingAgents CLI[/bold green]\n"
+            "[bold green]歡迎使用 TradingAgentsX CLI[/bold green]\n"
             "[dim]© [Tauric Research](https://github.com/TauricResearch)[/dim]",
-            title="歡迎使用 TradingAgents",
+            title="歡迎使用 TradingAgentsX",
             border_style="green",
             padding=(1, 2),
             expand=True,
@@ -421,7 +421,7 @@ def get_user_selections():
 
     # 建立歡迎框內容
     welcome_content = f"{welcome_ascii}\n"
-    welcome_content += "[bold green]TradingAgents：多代理 LLM 金融交易框架 - CLI[/bold green]\n\n"
+    welcome_content += "[bold green]TradingAgentsX：多代理 LLM 金融交易框架 - CLI[/bold green]\n\n"
     welcome_content += "[bold]工作流程步驟：[/bold]\n"
     welcome_content += "I. 分析師團隊 → II. 研究團隊 → III. 交易員 → IV. 風險管理 → V. 投資組合管理\n\n"
     welcome_content += (
@@ -433,7 +433,7 @@ def get_user_selections():
         welcome_content,
         border_style="green",
         padding=(1, 2),
-        title="歡迎使用 TradingAgents",
+        title="歡迎使用 TradingAgentsX",
         subtitle="多代理 LLM 金融交易框架",
     )
     console.print(Align.center(welcome_box))
@@ -822,7 +822,7 @@ def run_analysis():
     os.environ["ALPHA_VANTAGE_API_KEY"] = selections["alpha_vantage_api_key"]
 
     # 初始化圖
-    graph = TradingAgentsGraph(
+    graph = TradingAgentsXGraph(
         [analyst.value for analyst in selections["analysts"]], config=config, debug=True
     )
 

@@ -20,7 +20,7 @@ def main():
     port = int(os.getenv("BACKEND_PORT", "8000"))
     reload = os.getenv("BACKEND_RELOAD", "true").lower() == "true"
     
-    print(f"🚀 Starting TradingAgents Backend Server...")
+    print(f"🚀 Starting TradingAgentsX Backend Server...")
     print(f"📍 Host: {host}")
     print(f"🔌 Port: {port}")
     print(f"🔄 Reload: {reload}")

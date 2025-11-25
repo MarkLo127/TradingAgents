@@ -7,9 +7,9 @@ export function Footer() {
       <div className="container mx-auto px-4 py-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-sm text-gray-600 dark:text-gray-400">
-            © 2025 TradingAgents. 技術支援：{" "}
+            © 2025 TradingAgentsX. 技術支援：{" "}
             <a
-              href="https://github.com/MarkLo127/TradingAgents"
+              href="https://github.com/MarkLo127/TradingAgentsX"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 hover:underline"
@@ -19,7 +19,7 @@ export function Footer() {
           </div>
           <div className="flex gap-4 text-sm">
             <a
-              href="https://github.com/MarkLo127/TradingAgents"
+              href="https://github.com/MarkLo127/TradingAgentsX"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"

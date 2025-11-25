@@ -1,5 +1,5 @@
 """
-Configuration management for TradingAgents Backend API
+Configuration management for TradingAgentsX Backend API
 """
 from pydantic_settings import BaseSettings
 from typing import Optional
@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables"""
     
     # Application settings
-    app_name: str = "TradingAgents API"
+    app_name: str = "TradingAgentsX API"
     app_version: str = "1.0.0"
     debug: bool = Field(default=False)
     results_dir: str = Field(default="./results")
@@ -29,7 +29,7 @@ class Settings(BaseSettings):
         "https://*.railway.app",  # Railway deployments
     ]
     
-    # TradingAgents Configuration
+    # TradingAgentsX Configuration
     results_dir: str = "./results"
     max_debate_rounds: int = 1
     max_risk_discuss_rounds: int = 1

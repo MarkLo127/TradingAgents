@@ -1,7 +1,10 @@
 from .alpha_vantage_common import _make_api_request, format_datetime_for_api
 import json
 
-def get_news(ticker, start_date, end_date) -> dict[str, str] | str:
+import os
+
+
+def get_news(ticker, start_date, end_date, use_toon: bool = None) -> dict[str, str] | str:
     """
     返回全球主要新聞機構的即時和歷史市場新聞與情緒數據。
 
@@ -11,10 +14,14 @@ def get_news(ticker, start_date, end_date) -> dict[str, str] | str:
         ticker: 新聞文章的股票代碼。
         start_date: 新聞搜索的開始日期。
         end_date: 新聞搜索的結束日期。
+        use_toon (bool): 是否使用toon格式（減少token消耗）。默認從環境變量讀取
 
     Returns:
-        包含新聞情緒數據的字典或 JSON 字串。
+        包含新聞情緒數據的字典或 JSON/Toon 字串。
     """
+    # 從環境變量或參數決定是否使用toon
+    if use_toon is None:
+        use_toon = os.getenv("USE_TOON_FORMAT", "true").lower() == "true"
 
     params = {
         "tickers": ticker,
@@ -70,7 +77,17 @@ def get_news(ticker, start_date, end_date) -> dict[str, str] | str:
                 "feed": summarized_feed
             }
             
-            return json.dumps(summarized_data, ensure_ascii=False, indent=2)
+            # 使用toon格式或JSON格式返回
+            if use_toon:
+                try:
+                    from tradingagents.utils.toon_converter import convert_json_to_toon
+                    toon_data = convert_json_to_toon(summarized_data)
+                    return toon_data
+                except Exception as e:
+                    print(f"警告：toon轉換失敗：{e}，使用JSON格式")
+                    return json.dumps(summarized_data, ensure_ascii=False, indent=2)
+            else:
+                return json.dumps(summarized_data, ensure_ascii=False, indent=2)
         
         # 如果格式不如預期，返回原始回應
         return response
