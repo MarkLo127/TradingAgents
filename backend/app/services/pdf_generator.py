@@ -28,11 +28,19 @@ class PDFGenerator:
         
         # Try to register custom Cactus Classical Serif font first
         self.custom_font = None
+        
+        # Ensure we have the absolute path to the current file
+        current_file = os.path.abspath(__file__)
+        # backend/app/services/pdf_generator.py -> backend/app/services -> backend/app -> backend -> root
+        root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(current_file))))
+        
         custom_font_path = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
+            root_dir,
             'Cactus_Classical_Serif',
             'CactusClassicalSerif-Regular.ttf'
         )
+        
+        print(f"Attempting to load font from: {custom_font_path}")
         
         if os.path.exists(custom_font_path):
             try:
@@ -41,26 +49,41 @@ class PDFGenerator:
                 print(f"Successfully registered Cactus Classical Serif font")
             except Exception as e:
                 print(f"Error registering custom font: {e}")
-        
+        else:
+            print(f"Custom font file not found at {custom_font_path}")
+            # Try looking in current working directory as fallback
+            cwd_path = os.path.join(os.getcwd(), 'Cactus_Classical_Serif', 'CactusClassicalSerif-Regular.ttf')
+            if os.path.exists(cwd_path):
+                 try:
+                    pdfmetrics.registerFont(TTFont('CactusClassicalSerif', cwd_path))
+                    self.custom_font = 'CactusClassicalSerif'
+                    print(f"Successfully registered Cactus Classical Serif font from CWD")
+                 except Exception as e:
+                    print(f"Error registering custom font from CWD: {e}")
+
         # Register Chinese font as fallback for CJK characters
-        try:
-            # Register Chinese font (Traditional Chinese support)
-            pdfmetrics.registerFont(UnicodeCIDFont('STSong-Light'))
-            self.chinese_font = 'STSong-Light'
-        except Exception as e:
-            # If CID font registration fails, try alternative method
+        if not self.custom_font:
             try:
-                pdfmetrics.registerFont(UnicodeCIDFont('STHeiti-Light'))
-                self.chinese_font = 'STHeiti-Light'
-            except Exception:
-                # Last resort: use MSung for Traditional Chinese
+                # Register Chinese font (Traditional Chinese support)
+                pdfmetrics.registerFont(UnicodeCIDFont('STSong-Light'))
+                self.chinese_font = 'STSong-Light'
+                print("Registered STSong-Light as fallback (Warning: May not be visible in all viewers)")
+            except Exception as e:
+                # If CID font registration fails, try alternative method
                 try:
-                    pdfmetrics.registerFont(UnicodeCIDFont('MSung-Light'))
-                    self.chinese_font = 'MSung-Light'
+                    pdfmetrics.registerFont(UnicodeCIDFont('STHeiti-Light'))
+                    self.chinese_font = 'STHeiti-Light'
                 except Exception:
-                    # Fallback to basic font
-                    self.chinese_font = 'Helvetica'
-                    print("Warning: Could not register Chinese font")
+                    # Last resort: use MSung for Traditional Chinese
+                    try:
+                        pdfmetrics.registerFont(UnicodeCIDFont('MSung-Light'))
+                        self.chinese_font = 'MSung-Light'
+                    except Exception:
+                        # Fallback to basic font
+                        self.chinese_font = 'Helvetica'
+                        print("Warning: Could not register Chinese font")
+        else:
+            self.chinese_font = self.custom_font
         
         # Set primary font: use custom font if available, otherwise Chinese font
         self.primary_font = self.custom_font if self.custom_font else self.chinese_font
