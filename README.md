@@ -32,8 +32,9 @@
 - 🔌 **RESTful API** - 完整的後端 API 支援
 - 🐳 **一鍵部署** - 支援 Docker Compose 部署
 - 🔑 **BYOK (Bring Your Own Key)** - 使用者自帶 API 金鑰，保障隱私與成本控制
-- 📄 **JSON 格式報告** - 完整的 JSON 結構化分析報告，便於程式化處理與整合
+- 💰 **JSON 轉 Token 優化** - 將 JSON 數據轉換為 Token 格式，大幅降低 API 調用開支
 - ⬇️ **一鍵下載報告** - 支援將分析結果匯出為 JSON 檔案，方便保存與分享
+
 
 ---
 
