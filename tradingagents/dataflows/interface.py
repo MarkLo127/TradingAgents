@@ -200,6 +200,8 @@ def route_to_vendor(method: str, *args, **kwargs):
         for impl_func, vendor_name in vendor_methods:
             try:
                 print(f"調試：正在從供應商 '{vendor_name}' 調用 {impl_func.__name__}...")
+                
+                # 執行函數（已由各供應商內部處理timeout）
                 result = impl_func(*args, **kwargs)
                 vendor_results.append(result)
                 print(f"成功：來自供應商 '{vendor_name}' 的 {impl_func.__name__} 成功完成")
@@ -211,8 +213,9 @@ def route_to_vendor(method: str, *args, **kwargs):
                 # 繼續到下一個供應商進行備援
                 continue
             except Exception as e:
-                # 記錄錯誤但繼續其他實現
-                print(f"失敗：來自供應商 '{vendor_name}' 的 {impl_func.__name__} 失敗：{e}")
+                # 記錄詳細錯誤但繼續其他實現
+                error_type = type(e).__name__
+                print(f"失敗：來自供應商 '{vendor_name}' 的 {impl_func.__name__} 失敗 ({error_type}): {e}")
                 continue
 
         # 新增此供應商的結果
