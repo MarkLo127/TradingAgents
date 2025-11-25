@@ -45,6 +45,7 @@ def get_indicators(
             "200-day ma": "close_200_sma",
             "50 day ma": "close_50_sma",
             "200 day ma": "close_200_sma",
+            "bb": "boll",
         }
         
         # 如果在映射中，使用映射名稱
