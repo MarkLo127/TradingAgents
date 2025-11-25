@@ -18,7 +18,7 @@
 
 **TradingAgentsX** 是一個先進的多代理 AI 交易分析系統，模擬真實世界的交易公司運作模式。透過 LangGraph 編排多個專業化的 AI 代理（分析師、研究員、交易員、風險管理者），系統能夠從不同角度分析股票市場，並通過結構化的辯論與協作流程產生高質量的交易決策。
 
-> 💡 **致敬原作**: 本專案基於 [TauricResearch/TradingAgentsX](https://github.com/TauricResearch/TradingAgentsX) 進行改進和擴展，加入了完整的 Web 前端介面、RESTful API、Docker 部署支援等功能。感謝原作者的卓越工作和開源貢獻！
+> 💡 **致敬原作**: 本專案基於 [TauricResearch/TradingAgentsX](https://github.com/TauricResearch/TradingAgents) 進行改進和擴展，加入了完整的 Web 前端介面、RESTful API、Docker 部署支援等功能。感謝原作者的卓越工作和開源貢獻！
 
 ### 🎯 核心特色
 
@@ -814,7 +814,7 @@ TradingAgentsX 模擬真實交易公司的組織架構，每個代理都有其�
 
 ### 特別感謝
 
-本專案基於 [TauricResearch/TradingAgentsX](https://github.com/TauricResearch/TradingAgentsX) 的原始專案進行改進和擴展。衷心感謝原作者創建了如此優秀的多代理交易分析框架，為我們提供了堅實的基礎。
+本專案基於 [TauricResearch/TradingAgentsX](https://github.com/TauricResearch/TradingAgents) 的原始專案進行改進和擴展。衷心感謝原作者創建了如此優秀的多代理交易分析框架，為我們提供了堅實的基礎。
 
 ### 使用的開源專案
 
