@@ -123,6 +123,17 @@ class TradingService:
                 config["embedding_api_key"] = embedding_api_key if embedding_api_key else openai_api_key
                 
                 # Initialize TradingAgentsX graph
+                # Validate model compatibility with provider
+                for model_type, url_key, model_key in [
+                    ("Quick Thinking", "quick_think_base_url", "quick_think_llm"),
+                    ("Deep Thinking", "deep_think_base_url", "deep_think_llm")
+                ]:
+                    base_url = config.get(url_key, "")
+                    model = config.get(model_key, "")
+                    
+                    if "googleapis.com" in base_url and not model.lower().startswith("gemini"):
+                        raise ValueError(f"Google Gemini API (detected in {model_type} Base URL) only supports 'gemini' models. You selected '{model}'. Please select a Gemini model.")
+
                 graph = TradingAgentsXGraph(analysts, config=config, debug=True)
                 
                 # Run analysis
