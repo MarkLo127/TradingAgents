@@ -14,7 +14,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="text-blue-600 hover:underline"
             >
-              Tauric Research
+              TradingAgentsX
             </a>
           </div>
           <div className="flex gap-4 text-sm">
