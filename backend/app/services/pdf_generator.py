@@ -33,69 +33,32 @@ class PDFGenerator:
         # Ensure we have the absolute path to the current file
         current_file = os.path.abspath(__file__)
         # backend/app/services/pdf_generator.py -> backend/app/services -> backend/app -> backend -> root
-        root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(current_file))))
-        
-        # Try Noto Serif TC first (best Chinese support)
-        # Use static font instead of variable font for better ReportLab compatibility
-        noto_font_path = os.path.join(
-            root_dir,
-            'Cactus_Classical_Serif,Noto_Serif_TC',
-            'Noto_Serif_TC',
-            'static',
-            'NotoSerifTC-Regular.ttf'  # Use static Regular instead of Variable font
-        )
-        
-        print(f"Attempting to load Noto Serif TC from: {noto_font_path}")
-        
-        if os.path.exists(noto_font_path):
-            try:
-                pdfmetrics.registerFont(TTFont('NotoSerifTC', noto_font_path))
-                self.custom_font = 'NotoSerifTC'
-                self.chinese_font = 'NotoSerifTC'
-                print(f"✅ Successfully registered Noto Serif TC font")
-            except Exception as e:
-                print(f"❌ Error registering Noto Serif TC: {e}")
-        else:
-            print(f"⚠️  Noto Serif TC font not found at {noto_font_path}")
-        
-        # Try Cactus font as fallback
-        if not self.custom_font:
-            custom_font_path = os.path.join(
-                root_dir,
-                'Cactus_Classical_Serif',
-                'CactusClassicalSerif-Regular.ttf'
-            )
+        # CRITICAL FIX: Use system fonts for maximum compatibility
+        # Arial Unicode MS supports: Chinese, English, Math symbols, Emoji
+        # This avoids font file loading issues with ReportLab
+        try:
+            # Try to use Arial Unicode MS (best for all characters)
+            from reportlab.pdfbase import pdfmetrics
+            from reportlab.pdfbase.ttfonts import TTFont
             
-            print(f"Attempting to load Cactus font from: {custom_font_path}")
-            
-            if os.path.exists(custom_font_path):
-                try:
-                    pdfmetrics.registerFont(TTFont('CactusClassicalSerif', custom_font_path))
-                    self.custom_font = 'CactusClassicalSerif'
-                    print(f"✅ Successfully registered Cactus Classical Serif font")
-                except Exception as e:
-                    print(f"❌ Error registering custom font: {e}")
+            # macOS system font path
+            arial_unicode_path = '/System/Library/Fonts/Supplemental/Arial Unicode.ttf'
+            if os.path.exists(arial_unicode_path):
+                pdfmetrics.registerFont(TTFont('ArialUnicode', arial_unicode_path))
+                self.custom_font = 'ArialUnicode'
+                self.chinese_font = 'ArialUnicode'
+                print(f"✅ Successfully registered Arial Unicode MS (supports Chinese, English, Math, Emoji)")
             else:
-                print(f"⚠️  Custom font file not found at {custom_font_path}")
-                # Try looking in current working directory as fallback
-                cwd_path = os.path.join(os.getcwd(), 'Cactus_Classical_Serif', 'CactusClassicalSerif-Regular.ttf')
-                if os.path.exists(cwd_path):
-                     try:
-                        pdfmetrics.registerFont(TTFont('CactusClassicalSerif', cwd_path))
-                        self.custom_font = 'CactusClassicalSerif'
-                        print(f"✅ Successfully registered Cactus Classical Serif font from CWD")
-                     except Exception as e:
-                        print(f"❌ Error registering custom font from CWD: {e}")
-        
-        # Register Chinese font as fallback for CJK characters
-        if not self.custom_font:
-            # Use standard Helvetica if no custom fonts available
+                # Fallback: Use built-in Helvetica (limited Chinese support)
+                self.custom_font = 'Helvetica'
+                self.chinese_font = 'Helvetica'
+                print(f"⚠️  Using Helvetica (limited Chinese character support)")
+        except Exception as e:
+            print(f"❌ Font registration error: {e}")
+            self.custom_font = 'Helvetica'
             self.chinese_font = 'Helvetica'
-            print("⚠️  Using Helvetica as fallback (limited Chinese support)")
-        elif not self.chinese_font:
-            self.chinese_font = self.custom_font
         
-        # Set primary font: use custom font if available, otherwise Chinese font
+        # Set primary font
         self.primary_font = self.custom_font if self.custom_font else self.chinese_font
     
     def generate_analyst_report_pdf(

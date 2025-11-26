@@ -43,7 +43,7 @@ def get_stock_news_openai(query, start_date, end_date):
             }
         ],
         temperature=0.5,  # Reduced to 0.5 for maximum accuracy and consistency
-        max_output_tokens=4096,
+        max_output_tokens=8192,  # Increased from 4096 to prevent truncation
         top_p=1,
         store=True,
     )
@@ -91,7 +91,7 @@ def get_global_news_openai(curr_date, look_back_days=7, limit=5):
             }
         ],
         temperature=0.5,  # Reduced to 0.5 for maximum accuracy and consistency
-        max_output_tokens=4096,
+        max_output_tokens=8192,  # Increased from 4096 to prevent truncation
         top_p=1,
         store=True,
     )
@@ -138,7 +138,7 @@ def get_fundamentals_openai(ticker, curr_date):
             }
         ],
         temperature=0.5,  # Reduced to 0.5 for maximum accuracy and consistency
-        max_output_tokens=4096,
+        max_output_tokens=8192,  # Increased from 4096 to prevent truncation
         top_p=1,
         store=True,
     )
