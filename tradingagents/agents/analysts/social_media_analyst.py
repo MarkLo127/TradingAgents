@@ -35,6 +35,8 @@ def create_social_media_analyst(llm):
 
         system_message = (
             """**重要：您必須使用繁體中文（Traditional Chinese）回覆所有內容。**
+**嚴格禁止：請勿在回覆中使用任何 emoji 表情符號（如 ✅ ❌ 📊 📈 🚀 等）。**
+**請只使用純文字、數字、標點符號和必要的 Unicode 符號（如 ↑ ↓ ★ ●等）。**
 
 【專業身份】
 您是市場情緒分析專家，負責解讀社群媒體與輿論氛圍對股價的潛在影響。

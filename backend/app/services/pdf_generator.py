@@ -24,6 +24,7 @@ class PDFGenerator:
     # Emoji to Unicode symbol mapping for PDF compatibility
     # Emojis don't render well in PDFs, so we replace them with Unicode text symbols
     # NOTE: Use ASCII brackets [] not full-width ［］ for better font compatibility
+    # NOTE: Avoid [文字] formats - use pure symbols only
     EMOJI_TO_UNICODE = {
         # Status & Indicators
         '✅': '✓',
@@ -38,21 +39,21 @@ class PDFGenerator:
         '💎': '◆',
         '🏆': '◈',
         
-        # Charts & Analytics
-        '📊': '[圖表]',
+        # Charts & Analytics - pure symbols only
+        '📊': '▓',
         '📈': '↑',
         '📉': '↓',
-        '📋': '[清單]',
+        '📋': '▪',
         '📌': '◆',
         
-        # Money & Business
+        # Money & Business - symbols only
         '💰': '$',
         '💵': '$',
         '💴': '¥',
         '💶': '€',
         '💷': '£',
-        '💸': '[支出]',  # Fixed: was ［支出］ (full-width brackets)
-        '💹': '[增長]',
+        '💸': '$',
+        '💹': '↑',
         
         # Direction & Movement
         '🚀': '↑↑',
@@ -67,37 +68,36 @@ class PDFGenerator:
         '🎯': '◎',
         '🔥': '※',
         '💡': '◐',
-        '🔔': '◉',
         '⚙️': '⚙',
-        '🔧': '[工具]',
-        '🔨': '[工具]',
+        '🔧': '►',
+        '🔨': '►',
         
-        # AI & Tech
-        '🤖': '[AI]',
-        '💻': '[電腦]',
-        '📱': '[手機]',
-        '🖥️': '[系統]',
+        # AI & Tech - symbols only
+        '🤖': '▣',
+        '💻': '▣',
+        '📱': '▣',
+        '🖥️': '▣',
         
-        # People & Roles
-        '👤': '[用戶]',
-        '👥': '[團隊]',
-        '🔬': '[研究]',
-        '📚': '[資料]',
+        # People & Roles - symbols only
+        '👤': '◇',
+        '👥': '◇◇',
+        '🔬': '◈',
+        '📚': '▪',
         
-        # Time
-        '⏰': '[時間]',
-        '📅': '[日期]',
-        '⏱️': '[計時]',
+        # Time - symbols only
+        '⏰': '◷',
+        '📅': '▪',
+        '⏱️': '◷',
         
-        # Other common emojis
+        # Other common emojis - symbols only
         '✨': '‧',
-        '🎨': '[設計]',
-        '📝': '[筆記]',
-        '📄': '[文件]',
-        '🗂️': '[資料夾]',
-        '🌐': '[網路]',
-        '🔗': '[連結]',
-        '💼': '[業務]',
+        '🎨': '◈',
+        '📝': '▪',
+        '📄': '▪',
+        '🗂️': '▪',
+        '🌐': '◎',
+        '🔗': '∞',
+        '💼': '▣',
     }
     """Generate PDF reports from markdown content"""
     
