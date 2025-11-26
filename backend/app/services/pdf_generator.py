@@ -330,8 +330,9 @@ class PDFGenerator:
         text = re.sub(r'```[^`]*?```', '', text, flags=re.DOTALL)
         text = re.sub(r'`([^`]+?)`', r'\1', text)
         
-        # 5. Clean up bullet points
-        text = re.sub(r'^\s*[\*\-\+]\s+', '• ', text, flags=re.MULTILINE)
+        # 5. Clean up bullet points - USE ASCII DASH, NOT UNICODE BULLET
+        # Unicode bullet • (U+2022) renders as '煉' in STSong-Light font!
+        text = re.sub(r'^\s*[\*\-\+]\s+', '- ', text, flags=re.MULTILINE)
         
         # 6. Remove horizontal rules
         text = re.sub(r'^[\-\*_]{3,}\s*$', '', text, flags=re.MULTILINE)

@@ -330,6 +330,22 @@ export default function HomePage() {
           />
         </div>
       </div>
+
+      {/* Call to Action Section */}
+      <div className="text-center py-16">
+        <h2 className="text-3xl font-bold mb-4">準備好開始智能交易分析了嗎？</h2>
+        <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+          立即體驗 12 位專業 AI 代理協同工作，為您提供全方位的股票分析報告
+        </p>
+        <Link href="/analysis">
+          <Button
+            size="lg"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg px-8 py-6"
+          >
+            開始分析 →
+          </Button>
+        </Link>
+      </div>
     </div>
   );
 }
