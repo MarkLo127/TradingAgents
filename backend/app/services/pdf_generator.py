@@ -26,64 +26,71 @@ class PDFGenerator:
         import os
         from reportlab.pdfbase.cidfonts import UnicodeCIDFont
         
-        # Try to register custom Cactus Classical Serif font first
+        # Initialize font variables
         self.custom_font = None
+        self.chinese_font = None
         
         # Ensure we have the absolute path to the current file
         current_file = os.path.abspath(__file__)
         # backend/app/services/pdf_generator.py -> backend/app/services -> backend/app -> backend -> root
         root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(current_file))))
         
-        custom_font_path = os.path.join(
+        # Try Noto Serif TC first (best Chinese support)
+        noto_font_path = os.path.join(
             root_dir,
-            'Cactus_Classical_Serif',
-            'CactusClassicalSerif-Regular.ttf'
+            'Cactus_Classical_Serif,Noto_Serif_TC',
+            'Noto_Serif_TC',
+            'NotoSerifTC-VariableFont_wght.ttf'
         )
         
-        print(f"Attempting to load font from: {custom_font_path}")
+        print(f"Attempting to load Noto Serif TC from: {noto_font_path}")
         
-        if os.path.exists(custom_font_path):
+        if os.path.exists(noto_font_path):
             try:
-                pdfmetrics.registerFont(TTFont('CactusClassicalSerif', custom_font_path))
-                self.custom_font = 'CactusClassicalSerif'
-                print(f"Successfully registered Cactus Classical Serif font")
+                pdfmetrics.registerFont(TTFont('NotoSerifTC', noto_font_path))
+                self.custom_font = 'NotoSerifTC'
+                self.chinese_font = 'NotoSerifTC'
+                print(f"✅ Successfully registered Noto Serif TC font")
             except Exception as e:
-                print(f"Error registering custom font: {e}")
+                print(f"❌ Error registering Noto Serif TC: {e}")
         else:
-            print(f"Custom font file not found at {custom_font_path}")
-            # Try looking in current working directory as fallback
-            cwd_path = os.path.join(os.getcwd(), 'Cactus_Classical_Serif', 'CactusClassicalSerif-Regular.ttf')
-            if os.path.exists(cwd_path):
-                 try:
-                    pdfmetrics.registerFont(TTFont('CactusClassicalSerif', cwd_path))
+            print(f"⚠️  Noto Serif TC font not found at {noto_font_path}")
+        
+        # Try Cactus font as fallback
+        if not self.custom_font:
+            custom_font_path = os.path.join(
+                root_dir,
+                'Cactus_Classical_Serif',
+                'CactusClassicalSerif-Regular.ttf'
+            )
+            
+            print(f"Attempting to load Cactus font from: {custom_font_path}")
+            
+            if os.path.exists(custom_font_path):
+                try:
+                    pdfmetrics.registerFont(TTFont('CactusClassicalSerif', custom_font_path))
                     self.custom_font = 'CactusClassicalSerif'
-                    print(f"Successfully registered Cactus Classical Serif font from CWD")
-                 except Exception as e:
-                    print(f"Error registering custom font from CWD: {e}")
-
+                    print(f"✅ Successfully registered Cactus Classical Serif font")
+                except Exception as e:
+                    print(f"❌ Error registering custom font: {e}")
+            else:
+                print(f"⚠️  Custom font file not found at {custom_font_path}")
+                # Try looking in current working directory as fallback
+                cwd_path = os.path.join(os.getcwd(), 'Cactus_Classical_Serif', 'CactusClassicalSerif-Regular.ttf')
+                if os.path.exists(cwd_path):
+                     try:
+                        pdfmetrics.registerFont(TTFont('CactusClassicalSerif', cwd_path))
+                        self.custom_font = 'CactusClassicalSerif'
+                        print(f"✅ Successfully registered Cactus Classical Serif font from CWD")
+                     except Exception as e:
+                        print(f"❌ Error registering custom font from CWD: {e}")
+        
         # Register Chinese font as fallback for CJK characters
         if not self.custom_font:
-            try:
-                # CRITICAL FIX: Use Helvetica instead of STSong-Light to avoid font mapping issues
-                # STSong-Light may have character mapping bugs causing '練' to render as '煉'
-                self.chinese_font = 'Helvetica'
-                print("Using Helvetica for Chinese characters (may have better Unicode support)")
-            except Exception as e:
-                print(f"Error setting Chinese font: {e}")
-                # If setting Helvetica fails (unlikely), try alternative CID fonts
-                try:
-                    pdfmetrics.registerFont(UnicodeCIDFont('STHeiti-Light'))
-                    self.chinese_font = 'STHeiti-Light'
-                except Exception:
-                    # Last resort: use MSung for Traditional Chinese
-                    try:
-                        pdfmetrics.registerFont(UnicodeCIDFont('MSung-Light'))
-                        self.chinese_font = 'MSung-Light'
-                    except Exception:
-                        # Fallback to basic font
-                        self.chinese_font = 'Helvetica'
-                        print("Warning: Could not register Chinese font")
-        else:
+            # Use standard Helvetica if no custom fonts available
+            self.chinese_font = 'Helvetica'
+            print("⚠️  Using Helvetica as fallback (limited Chinese support)")
+        elif not self.chinese_font:
             self.chinese_font = self.custom_font
         
         # Set primary font: use custom font if available, otherwise Chinese font
