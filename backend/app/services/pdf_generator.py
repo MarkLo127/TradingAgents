@@ -277,9 +277,10 @@ class PDFGenerator:
         # Remove lines that only contain markdown symbols
         text = re.sub(r'^[\*_`~#\-\+]+\s*$', '', text, flags=re.MULTILINE)
         
-        # 12. Final Unicode check - remove any characters that might cause PDF encoding issues
-        # Keep only printable characters and common Chinese characters
-        text = ''.join(char for char in text if char.isprintable() or char in '\n\r\t' or '\u4e00' <= char <= '\u9fff')
+        # 12. REMOVED problematic Unicode filter that was corrupting Chinese characters
+        # The string comparison '\u4e00' <= char <= '\u9fff' was comparing UTF-8 bytes,
+        # not Unicode code points, causing characters like '經' to be corrupted.
+        # Unicode normalization at the start (line 237) is sufficient.
         
         return text.strip()
     

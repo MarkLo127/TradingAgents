@@ -46,24 +46,7 @@ def create_neutral_debator(llm):
         # 獲取交易員的決策
         trader_decision = state["trader_investment_plan"]
 
-        # 定義文本截斷函數以避免超過 token 限制
-        def truncate_text(text, max_chars):
-            """截斷文本到指定字符數"""
-            if len(text) <= max_chars:
-                return text
-            return text[:max_chars] + "\n...(內容已截斷)"
-        
-        
-        # 截斷各類輸入以控制 token 使用量
-        # 增加限制以確保 800+ 字的報告不被截斷
-        market_research_report = truncate_text(market_research_report, 2000)
-        sentiment_report = truncate_text(sentiment_report, 2000)
-        news_report = truncate_text(news_report, 2500)
-        fundamentals_report = truncate_text(fundamentals_report, 2000)
-        trader_decision = truncate_text(trader_decision, 2000)
-        history = truncate_text(history, 1500)
-        current_risky_response = truncate_text(current_risky_response, 1000)
-        current_safe_response = truncate_text(current_safe_response, 1000)
+        # 移除截斷邏輯以保留完整報告內容
 
         # 建立提示 (prompt)
         prompt = f"""**重要：您必須使用繁體中文（Traditional Chinese）回覆所有內容。**
