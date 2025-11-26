@@ -41,21 +41,7 @@ def create_risk_manager(llm, memory):
         sentiment_report = state["sentiment_report"]
         trader_plan = state["investment_plan"]
 
-        # 定義文本截斷函數以避免超過 token 限制
-        def truncate_text(text, max_chars):
-            """截斷文本到指定字符數"""
-            if len(text) <= max_chars:
-                return text
-            return text[:max_chars] + "\n...(內容已截斷)"
-        
-        
-        # 為每個報告設置合理的字符限制
-        # 增加限制以確保 800+ 字的報告不被截斷
-        market_research_report = truncate_text(market_research_report, 2000)
-        sentiment_report = truncate_text(sentiment_report, 2000)
-        news_report = truncate_text(news_report, 2500)
-        fundamentals_report = truncate_text(fundamentals_report, 2000)
-        trader_plan = truncate_text(trader_plan, 2000)
+        # 移除截斷邏輯以保留完整報告內容
         
         # 整合當前情況
         curr_situation = f"{market_research_report}\n\n{sentiment_report}\n\n{news_report}\n\n{fundamentals_report}"
@@ -74,7 +60,7 @@ def create_risk_manager(llm, memory):
         
         # 截斷辯論歷史 - 這是最容易超過限制的部分
         # 增加限制以容納更長的辯論內容（風險辯論通常有3方，比投資辯論更長）
-        history = truncate_text(history, 3000)
+        history = history # 移除截斷，保留完整歷史
 
         
         # 建立提示 (prompt)
@@ -96,7 +82,8 @@ def create_risk_manager(llm, memory):
 - 辯論歷史：{history}
 
 【輸出要求】
-**字數要求**：**至少800字以上**
+**字數要求**：**800-1500字**
+**嚴格遵守字數限制，少於800字或超過1500字的報告將被退回**
 **內容結構**：
 1. 風控結論（150字以上）：風險評級與最終決策的明確陳述
 2. 論證評估（200字以上）：三方風險觀點的綜合評估，公正分析

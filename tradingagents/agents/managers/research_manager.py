@@ -39,20 +39,8 @@ def create_research_manager(llm, memory):
         news_report = state["news_report"]
         fundamentals_report = state["fundamentals_report"]
 
-        # 定義文本截斷函數以避免超過 token 限制
-        def truncate_text(text, max_chars):
-            """截斷文本到指定字符數"""
-            if len(text) <= max_chars:
-                return text
-            return text[:max_chars] + "\n...(內容已截斷)"
-        
-        
-        # 為每個報告設置合理的字符限制
-        # 增加限制以確保 800+ 字的報告不被截斷
-        market_research_report = truncate_text(market_research_report, 2000)
-        sentiment_report = truncate_text(sentiment_report, 2000)
-        news_report = truncate_text(news_report, 2500)
-        fundamentals_report = truncate_text(fundamentals_report, 2000)
+        # 定義文本截斷函數以避免超過 token 限制 - 移除截斷邏輯以保留完整報告內容
+        # 為每個報告設置合理的字符限制 - 移除，保留完整報告
         
         # 整合當前情況
         curr_situation = f"{market_research_report}\n\n{sentiment_report}\n\n{news_report}\n\n{fundamentals_report}"
@@ -60,18 +48,13 @@ def create_research_manager(llm, memory):
         # 從記憶體中獲取過去相似情況的經驗
         past_memories = memory.get_memories(curr_situation, n_matches=2)
 
-        # 將過去的經驗格式化為字串（限制長度）
+        # 將過去的經驗格式化為字串
         past_memory_str = ""
         for i, rec in enumerate(past_memories, 1):
             recommendation = rec["recommendation"]
-            # 限制每條記憶的長度
-            if len(recommendation) > 200:
-                recommendation = recommendation[:200] + "...(已截斷)"
             past_memory_str += recommendation + "\n\n"
         
-        # 截斷辯論歷史 - 這是最容易超過限制的部分
-        # 增加限制以容納更長的辯論內容
-        history = truncate_text(history, 3000)
+        # 截斷辯論歷史 - 這是最容易超過限制的部分 - 移除截斷以保留完整內容
 
         # 建立提示 (prompt)
         prompt = f"""**重要：您必須使用繁體中文（Traditional Chinese）回覆所有內容。**
@@ -90,7 +73,8 @@ def create_research_manager(llm, memory):
 - 辯論歷史：{history}
 
 【輸出要求】
-**字數要求**：**至少800字以上**
+**字數要求**：**800-1500字**
+**嚴格遵守字數限制，少於800字或超過1500字的報告將被退回**
 **內容結構**：
 1. 決策摘要（150字以上）：明確的買入/賣出/持有決策與核心理由
 2. 論證評估（200字以上）：公正評估雙方最強論點與分歧點，不偏袒任何一方

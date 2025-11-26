@@ -224,7 +224,7 @@ class PDFGenerator:
     def _clean_markdown(self, text: str) -> str:
         """
         Clean markdown formatting for PDF - IMPROVED VERSION
-        Fixes spurious character issues and improves cleaning logic
+        Simplified regex patterns to prevent encoding artifacts
         
         Args:
             text: Markdown text
@@ -232,47 +232,54 @@ class PDFGenerator:
         Returns:
             Cleaned text
         """
+        import unicodedata
+        
+        # 0. Normalize Unicode to prevent encoding issues
+        text = unicodedata.normalize('NFKC', text)
+        
         # 1. Remove markdown links but keep text
         text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', text)
         
-        # 2. Remove bold markers (improved version)
+        # 2. Remove bold markers (simplified version)
         text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)
-        
-        # 3. Remove italic markers (more precise to avoid side effects)
-        text = re.sub(r'(?<![\*_])\*([^\*\n]+?)\*(?![\*_])', r'\1', text)
-        text = re.sub(r'(?<![\*_])_([^_\n]+?)_(?![\*_])', r'\1', text)
-        
-        # 4. Remove underscore bold
         text = re.sub(r'__(.+?)__', r'\1', text)
         
-        # 5. Remove code blocks
+        # 3. Remove italic markers (SIMPLIFIED - avoid complex lookahead/lookbehind)
+        # Only match single * or _ that are NOT part of ** or __
+        text = re.sub(r'(?<![\*])\*([^\*]+?)\*(?![\*])', r'\1', text)
+        text = re.sub(r'(?<![_])_([^_]+?)_(?![_])', r'\1', text)
+        
+        # 4. Remove code blocks
         text = re.sub(r'```[^`]*?```', '', text, flags=re.DOTALL)
         text = re.sub(r'`([^`]+?)`', r'\1', text)
         
-        # 6. Clean up bullet points
+        # 5. Clean up bullet points
         text = re.sub(r'^\s*[\*\-\+]\s+', '• ', text, flags=re.MULTILINE)
         
-        # 7. Remove horizontal rules
+        # 6. Remove horizontal rules
         text = re.sub(r'^[\-\*_]{3,}\s*$', '', text, flags=re.MULTILINE)
         
-        # 8. Clean table separators
+        # 7. Clean table separators (simplified)
         text = re.sub(r'^\s*\|?\s*:?-+:?\s*\|?\s*$', '', text, flags=re.MULTILINE)
         
-        # 9. Remove table | symbols (keep content)
+        # 8. Remove table | symbols (keep content)
         text = re.sub(r'^\s*\|', '', text, flags=re.MULTILINE)
         text = re.sub(r'\|\s*$', '', text, flags=re.MULTILINE)
         text = re.sub(r'\|', ' | ', text)
         
-        # 10. Clean excess spaces
+        # 9. Clean excess spaces
         text = re.sub(r' {2,}', ' ', text)
         
-        # 11. Clean excess blank lines
+        # 10. Clean excess blank lines
         text = re.sub(r'\n{3,}', '\n\n', text)
         
-        # 12. Remove isolated markdown symbols (more cautious to avoid spurious chars)
-        text = re.sub(r'(?<=\s)[\*_`~#]+(?=\s)', '', text)
-        text = re.sub(r'^[\*_`~#]+(?=\s)', '', text, flags=re.MULTILINE)
-        text = re.sub(r'(?<=\s)[\*_`~#]+$', '', text, flags=re.MULTILINE)
+        # 11. Remove isolated markdown symbols (SIMPLIFIED - no complex patterns)
+        # Remove lines that only contain markdown symbols
+        text = re.sub(r'^[\*_`~#\-\+]+\s*$', '', text, flags=re.MULTILINE)
+        
+        # 12. Final Unicode check - remove any characters that might cause PDF encoding issues
+        # Keep only printable characters and common Chinese characters
+        text = ''.join(char for char in text if char.isprintable() or char in '\n\r\t' or '\u4e00' <= char <= '\u9fff')
         
         return text.strip()
     
