@@ -127,3 +127,29 @@ def post_process_agent_output(content: str, agent_name: str, retry_callback=None
         # This is optional and should be implemented in the calling code
     
     return content
+
+
+def ensure_min_length(content: str, min_words: int = 800, agent_name: str = "Agent") -> tuple:
+    """
+    確保報告達到最小字數，如果不夠則返回False觸發重試
+    
+    Args:
+        content: The report content to check
+        min_words: Minimum required word count (default: 800)
+        agent_name: Name of the agent for logging
+        
+    Returns:
+        tuple: (content, is_valid: bool)
+    """
+    word_count = count_chinese_words(content)
+    
+    if word_count < min_words:
+        print(f"⚠️  [{agent_name}] 報告字數不足: {word_count}字 < {min_words}字最低要求")
+        return content, False
+    elif word_count > 1500:
+        print(f"⚠️  [{agent_name}] 報告字數過多: {word_count}字 > 1500字上限")
+        return content, False
+    else:
+        print(f"✅ [{agent_name}] 報告字數符合要求: {word_count}字")
+        return content, True
+
