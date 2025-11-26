@@ -97,13 +97,19 @@ class TradingAgentsXGraph:
         def _create_llm(model: str, base_url: str, api_key: str):
             # Determine provider based on Base URL
             if "anthropic.com" in base_url:
-                return ChatAnthropic(model=model, base_url=base_url, api_key=api_key)
+                return ChatAnthropic(
+                    model=model, 
+                    base_url=base_url, 
+                    api_key=api_key,
+                    max_tokens=16000  # Prevent report truncation
+                )
             else:
                 # Default to ChatOpenAI for OpenAI, Grok, DeepSeek, Qwen, and other OpenAI-compatible APIs
                 return ChatOpenAI(
                     model=model,
                     base_url=base_url,
-                    openai_api_key=api_key
+                    openai_api_key=api_key,
+                    max_tokens=16000  # Prevent report truncation
                 )
 
         # Initialize LLMs independently

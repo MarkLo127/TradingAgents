@@ -21,42 +21,144 @@ import markdown
 class PDFGenerator:
     """Generate PDF reports from markdown content"""
     
+    # Emoji to Unicode symbol mapping for PDF compatibility
+    # Emojis don't render well in PDFs, so we replace them with Unicode text symbols
+    # NOTE: Use ASCII brackets [] not full-width ［］ for better font compatibility
+    EMOJI_TO_UNICODE = {
+        # Status & Indicators
+        '✅': '✓',
+        '❌': '✗',
+        '⚠️': '⚠',
+        '⚡': '⚡',
+        '🔔': '◉',
+        
+        # Rating & Quality
+        '⭐': '★',
+        '🌟': '☆',
+        '💎': '◆',
+        '🏆': '◈',
+        
+        # Charts & Analytics
+        '📊': '[圖表]',
+        '📈': '↑',
+        '📉': '↓',
+        '📋': '[清單]',
+        '📌': '◆',
+        
+        # Money & Business
+        '💰': '$',
+        '💵': '$',
+        '💴': '¥',
+        '💶': '€',
+        '💷': '£',
+        '💸': '[支出]',  # Fixed: was ［支出］ (full-width brackets)
+        '💹': '[增長]',
+        
+        # Direction & Movement
+        '🚀': '↑↑',
+        '⬆️': '↑',
+        '⬇️': '↓',
+        '➡️': '→',
+        '⬅️': '←',
+        '🔼': '▲',
+        '🔽': '▼',
+        
+        # Symbols
+        '🎯': '◎',
+        '🔥': '※',
+        '💡': '◐',
+        '🔔': '◉',
+        '⚙️': '⚙',
+        '🔧': '[工具]',
+        '🔨': '[工具]',
+        
+        # AI & Tech
+        '🤖': '[AI]',
+        '💻': '[電腦]',
+        '📱': '[手機]',
+        '🖥️': '[系統]',
+        
+        # People & Roles
+        '👤': '[用戶]',
+        '👥': '[團隊]',
+        '🔬': '[研究]',
+        '📚': '[資料]',
+        
+        # Time
+        '⏰': '[時間]',
+        '📅': '[日期]',
+        '⏱️': '[計時]',
+        
+        # Other common emojis
+        '✨': '‧',
+        '🎨': '[設計]',
+        '📝': '[筆記]',
+        '📄': '[文件]',
+        '🗂️': '[資料夾]',
+        '🌐': '[網路]',
+        '🔗': '[連結]',
+        '💼': '[業務]',
+    }
+    """Generate PDF reports from markdown content"""
+    
     def __init__(self):
         """Initialize PDF generator with Chinese font support"""
         import os
         from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+        from reportlab.pdfbase import pdfmetrics
+        from reportlab.pdfbase.ttfonts import TTFont
         
         # Initialize font variables
         self.custom_font = None
         self.chinese_font = None
         
-        # Ensure we have the absolute path to the current file
-        current_file = os.path.abspath(__file__)
-        # backend/app/services/pdf_generator.py -> backend/app/services -> backend/app -> backend -> root
-        # CRITICAL FIX: Use system fonts for maximum compatibility
-        # Arial Unicode MS supports: Chinese, English, Math symbols, Emoji
-        # This avoids font file loading issues with ReportLab
+        # CRITICAL FIX: Use ReportLab's built-in CID fonts for proper character spacing
+        # CID fonts (Adobe-GB1, Adobe-CNS1) are specifically designed for PDF rendering
+        # and don't have the character spacing issues that TTC files have
         try:
-            # Try to use Arial Unicode MS (best for all characters)
-            from reportlab.pdfbase import pdfmetrics
-            from reportlab.pdfbase.ttfonts import TTFont
-            
-            # macOS system font path
-            arial_unicode_path = '/System/Library/Fonts/Supplemental/Arial Unicode.ttf'
-            if os.path.exists(arial_unicode_path):
-                pdfmetrics.registerFont(TTFont('ArialUnicode', arial_unicode_path))
-                self.custom_font = 'ArialUnicode'
-                self.chinese_font = 'ArialUnicode'
-                print(f"✅ Successfully registered Arial Unicode MS (supports Chinese, English, Math, Emoji)")
-            else:
-                # Fallback: Use built-in Helvetica (limited Chinese support)
+            # Method 1: Try using built-in CID fonts (best for Chinese PDFs)
+            # These fonts have PERFECT character spacing without gaps
+            try:
+                # Try STSong-Light (for Traditional + Simplified Chinese)
+                pdfmetrics.registerFont(UnicodeCIDFont('STSong-Light'))
+                self.custom_font = 'STSong-Light'
+                self.chinese_font = 'STSong-Light'
+                print(f"✅ Using STSong-Light CID font - Perfect Chinese character spacing")
+            except:
+                # Fallback to MSung-Light (Traditional Chinese)
+                try:
+                    pdfmetrics.registerFont(UnicodeCIDFont('MSung-Light'))
+                    self.custom_font = 'MSung-Light'
+                    self.chinese_font = 'MSung-Light'
+                    print(f"✅ Using MSung-Light CID font - Perfect Traditional Chinese spacing")
+                except:
+                    # Last CID font attempt: STSongStd-Light
+                    try:
+                        pdfmetrics.registerFont(UnicodeCIDFont('STSongStd-Light'))
+                        self.custom_font = 'STSongStd-Light'
+                        self.chinese_font = 'STSongStd-Light'
+                        print(f"✅ Using STSongStd-Light CID font")
+                    except:
+                        raise Exception("No CID fonts available")
+        except:
+            # Method 2: Fallback to TTF fonts if CID fonts fail
+            print("⚠️  CID fonts not available, trying TTF fonts...")
+            try:
+                # Try Arial Unicode MS (TTF file, not TTC)
+                arial_unicode_path = '/System/Library/Fonts/Supplemental/Arial Unicode.ttf'
+                if os.path.exists(arial_unicode_path):
+                    pdfmetrics.registerFont(TTFont('ArialUnicode', arial_unicode_path))
+                    self.custom_font = 'ArialUnicode'
+                    self.chinese_font = 'ArialUnicode'
+                    print(f"✅ Using Arial Unicode MS (TTF) - Good Chinese support")
+                else:
+                    raise Exception("Arial Unicode not found")
+            except Exception as e:
+                # Final fallback: Use built-in Helvetica
+                print(f"❌ Font registration failed: {e}")
+                print(f"⚠️  Using Helvetica (limited Chinese character support)")
                 self.custom_font = 'Helvetica'
                 self.chinese_font = 'Helvetica'
-                print(f"⚠️  Using Helvetica (limited Chinese character support)")
-        except Exception as e:
-            print(f"❌ Font registration error: {e}")
-            self.custom_font = 'Helvetica'
-            self.chinese_font = 'Helvetica'
         
         # Set primary font
         self.primary_font = self.custom_font if self.custom_font else self.chinese_font
@@ -156,23 +258,12 @@ class PDFGenerator:
         elements.append(Paragraph(metadata, subtitle_style))
         elements.append(Spacer(1, 0.5*cm))
         
-        # Convert markdown to simple text (basic conversion)
-        # Clean markdown formatting
-        # DEBUG: Log content before PDF conversion
-        print(f"\n[PDF DEBUG] Content BEFORE _clean_markdown:")
-        if '煉' in report_content:
-            print(f"  ⚠️  Found '煉' in original content")
-        if '練' in report_content:
-            print(f"  ✅ Found '練' in original content")
+        # STEP 1: Replace emojis with Unicode symbols BEFORE markdown cleaning
+        report_content = self._replace_emojis(report_content)
+        analyst_name = self._replace_emojis(analyst_name)
         
+        # STEP 2: Clean markdown formatting
         content = self._clean_markdown(report_content)
-        
-        # DEBUG: Log content after cleaning
-        print(f"[PDF DEBUG] Content AFTER _clean_markdown:")
-        if '煉' in content:
-            print(f"  ⚠️  Found '煉' AFTER cleaning")
-        if '練' in content:
-            print(f"  ✅ Found '練' AFTER cleaning")
         
         # Split content into paragraphs
         paragraphs = content.split('\n')
@@ -292,5 +383,28 @@ class PDFGenerator:
         
         for old, new in replacements:
             text = text.replace(old, new)
+        
+        return text
+    
+    def _replace_emojis(self, text: str) -> str:
+        """
+        Replace emoji characters with Unicode text symbols for PDF compatibility
+        
+        Emojis don't render well in PDFs, especially with CID fonts.
+        This method replaces common emojis with Unicode text symbols that
+        display reliably across all PDF viewers.
+        
+        Args:
+            text: Text containing potential emoji characters
+            
+        Returns:
+            Text with emojis replaced by Unicode symbols
+        """
+        if not text:
+            return text
+        
+        # Replace each emoji with its Unicode symbol equivalent
+        for emoji, unicode_symbol in self.EMOJI_TO_UNICODE.items():
+            text = text.replace(emoji, unicode_symbol)
         
         return text
