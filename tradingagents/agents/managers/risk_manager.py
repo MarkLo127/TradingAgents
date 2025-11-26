@@ -48,15 +48,14 @@ def create_risk_manager(llm, memory):
                 return text
             return text[:max_chars] + "\n...(內容已截斷)"
         
+        
         # 為每個報告設置合理的字符限制
-        # 模型 gpt-5-mini 的限制是 8192 tokens
-        # 混合中英文估算: 1 字符 ≈ 1.5-2 tokens (取保守值)
-        # 目標: 總字符數 < 3500 字符 (約 5250-7000 tokens，留足夠 tokens 給 completion)
-        market_research_report = truncate_text(market_research_report, 500)
-        sentiment_report = truncate_text(sentiment_report, 500)
-        news_report = truncate_text(news_report, 600)
-        fundamentals_report = truncate_text(fundamentals_report, 600)
-        trader_plan = truncate_text(trader_plan, 800)
+        # 增加限制以確保 800+ 字的報告不被截斷
+        market_research_report = truncate_text(market_research_report, 2000)
+        sentiment_report = truncate_text(sentiment_report, 2000)
+        news_report = truncate_text(news_report, 2500)
+        fundamentals_report = truncate_text(fundamentals_report, 2000)
+        trader_plan = truncate_text(trader_plan, 2000)
         
         # 整合當前情況
         curr_situation = f"{market_research_report}\n\n{sentiment_report}\n\n{news_report}\n\n{fundamentals_report}"
@@ -74,8 +73,8 @@ def create_risk_manager(llm, memory):
             past_memory_str += recommendation + "\n\n"
         
         # 截斷辯論歷史 - 這是最容易超過限制的部分
-        # 限制辯論歷史在 1000 字符以內（風險辯論通常有3方，比投資辯論更長）
-        history = truncate_text(history, 1000)
+        # 增加限制以容納更長的辯論內容（風險辯論通常有3方，比投資辯論更長）
+        history = truncate_text(history, 3000)
 
         
         # 建立提示 (prompt)

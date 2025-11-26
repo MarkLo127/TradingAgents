@@ -57,13 +57,14 @@ def create_trader(llm, memory):
             # 如果找不到合適的分隔符，直接在字符處截斷
             return truncated + "...(為控制長度已精簡)"
         
+        
         # 截斷各類報告以控制 token 使用量
-        # 這些報告將用於記憶檢索（embedding）和 LLM prompt
-        market_research_report_truncated = truncate_text(market_research_report, 500)
-        sentiment_report_truncated = truncate_text(sentiment_report, 500)
-        news_report_truncated = truncate_text(news_report, 600)
-        fundamentals_report_truncated = truncate_text(fundamentals_report, 600)
-        investment_plan_truncated = truncate_text(investment_plan, 800)
+        # 增加限制以確保 800+ 字的報告不被截斷
+        market_research_report_truncated = truncate_text(market_research_report, 2000)
+        sentiment_report_truncated = truncate_text(sentiment_report, 2000)
+        news_report_truncated = truncate_text(news_report, 2500)
+        fundamentals_report_truncated = truncate_text(fundamentals_report, 2000)
+        investment_plan_truncated = truncate_text(investment_plan, 2000)
 
         # 整合當前情況（用於記憶檢索）
         curr_situation = f"{market_research_report_truncated}\n\n{sentiment_report_truncated}\n\n{news_report_truncated}\n\n{fundamentals_report_truncated}"

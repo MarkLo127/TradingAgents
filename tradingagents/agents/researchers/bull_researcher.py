@@ -64,13 +64,11 @@ def create_bull_researcher(llm, memory):
             return truncated + "...(為控制長度已精簡)"
         
         # 為每個報告設置合理的字符限制
-        # 模型 gpt-4.1-mini 的限制是 8192 tokens
-        # 混合中英文估算: 1 字符 ≈ 1.5-2 tokens (取保守值)
-        # 目標: 總字符數 < 3000 字符 (約 4500-6000 tokens，留 2000+ tokens 給 completion)
-        market_research_report = truncate_text(market_research_report, 500)
-        sentiment_report = truncate_text(sentiment_report, 500)
-        news_report = truncate_text(news_report, 800)  # 新聞通常較長但也需要控制
-        fundamentals_report = truncate_text(fundamentals_report, 600)
+        # 增加限制以確保 800+ 字的報告不被截斷
+        market_research_report = truncate_text(market_research_report, 2000)
+        sentiment_report = truncate_text(sentiment_report, 2000)
+        news_report = truncate_text(news_report, 2500)
+        fundamentals_report = truncate_text(fundamentals_report, 2000)
         
         curr_situation = f"{market_research_report}\n\n{sentiment_report}\n\n{news_report}\n\n{fundamentals_report}"
         
