@@ -36,11 +36,13 @@ class PDFGenerator:
         root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(current_file))))
         
         # Try Noto Serif TC first (best Chinese support)
+        # Use static font instead of variable font for better ReportLab compatibility
         noto_font_path = os.path.join(
             root_dir,
             'Cactus_Classical_Serif,Noto_Serif_TC',
             'Noto_Serif_TC',
-            'NotoSerifTC-VariableFont_wght.ttf'
+            'static',
+            'NotoSerifTC-Regular.ttf'  # Use static Regular instead of Variable font
         )
         
         print(f"Attempting to load Noto Serif TC from: {noto_font_path}")
