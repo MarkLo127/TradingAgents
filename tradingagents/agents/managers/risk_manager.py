@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 import json
+from tradingagents.agents.utils.output_filter import fix_common_llm_errors, validate_and_warn
 
 
 def create_risk_manager(llm, memory):
@@ -49,13 +50,10 @@ def create_risk_manager(llm, memory):
         # 從記憶體中獲取過去相似情況的經驗
         past_memories = memory.get_memories(curr_situation, n_matches=2)
 
-        # 將過去的經驗格式化為字串（限制長度）
+        # 將過去的經驗格式化為字串
         past_memory_str = ""
         for i, rec in enumerate(past_memories, 1):
             recommendation = rec["recommendation"]
-            # 限制每條記憶的長度
-            if len(recommendation) > 200:
-                recommendation = recommendation[:200] + "...(已截斷)"
             past_memory_str += recommendation + "\n\n"
         
         # 截斷辯論歷史 - 這是最容易超過限制的部分
@@ -108,6 +106,10 @@ def create_risk_manager(llm, memory):
 
         # 呼叫 LLM 生成決策
         response = llm.invoke(prompt)
+        
+        # CRITICAL FIX: Apply output filtering to fix common LLM errors
+        response.content = fix_common_llm_errors(response.content)
+        validate_and_warn(response.content, "Risk_Manager")
 
         # 更新風險辯論狀態
         new_risk_debate_state = {

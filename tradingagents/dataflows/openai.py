@@ -42,7 +42,7 @@ def get_stock_news_openai(query, start_date, end_date):
                 "search_context_size": "low",
             }
         ],
-        temperature=1,
+        temperature=0.7,  # Reduced from 1.0 to prevent character errors like '煉' and stabilize output
         max_output_tokens=4096,
         top_p=1,
         store=True,
@@ -90,7 +90,7 @@ def get_global_news_openai(curr_date, look_back_days=7, limit=5):
                 "search_context_size": "low",
             }
         ],
-        temperature=1,
+        temperature=0.7,  # Reduced from 1.0 to prevent character errors and stabilize output
         max_output_tokens=4096,
         top_p=1,
         store=True,
@@ -137,7 +137,7 @@ def get_fundamentals_openai(ticker, curr_date):
                 "search_context_size": "low",
             }
         ],
-        temperature=1,
+        temperature=0.7,  # Reduced from 1.0 to prevent character errors and stabilize output
         max_output_tokens=4096,
         top_p=1,
         store=True,
