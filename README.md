@@ -678,7 +678,7 @@ TradingAgentsX 模擬真實交易公司的組織架構，每個代理都有其�
 
 展示 TradingAgentsX 的核心功能與多代理協作工作流程
 
-![首頁](web_screenshot/1.png)
+![首頁](web_screenshot/homepage.png)
 
 ---
 
