@@ -109,14 +109,14 @@ class PDFGenerator:
         """
         buffer = io.BytesIO()
         
-        # Create PDF document
+        # Create PDF document with reduced margins for more content space
         doc = SimpleDocTemplate(
             buffer,
             pagesize=A4,
-            rightMargin=2*cm,
-            leftMargin=2*cm,
-            topMargin=2*cm,
-            bottomMargin=2*cm,
+            rightMargin=1.5*cm,
+            leftMargin=1.5*cm,
+            topMargin=1.5*cm,
+            bottomMargin=1.5*cm,
         )
         
         # Container for the 'Flowable' objects
@@ -163,12 +163,14 @@ class PDFGenerator:
             'CustomBody',
             parent=styles['Normal'],
             fontName=self.primary_font,
-            fontSize=10,
-            leading=16,  # Increased from 14 for better readability
+            fontSize=9,
+            leading=14,
             textColor=HexColor('#333333'),
-            spaceAfter=10,
+            spaceAfter=8,
             wordWrap='CJK',
             splitLongWords=True,
+            allowOrphans=0,
+            allowWidows=0,
         )
         
         # Add title
@@ -221,7 +223,8 @@ class PDFGenerator:
     
     def _clean_markdown(self, text: str) -> str:
         """
-        Clean markdown formatting for PDF
+        Clean markdown formatting for PDF - IMPROVED VERSION
+        Fixes spurious character issues and improves cleaning logic
         
         Args:
             text: Markdown text
@@ -229,36 +232,53 @@ class PDFGenerator:
         Returns:
             Cleaned text
         """
-        # Remove markdown links but keep text
+        # 1. Remove markdown links but keep text
         text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', text)
         
-        # Remove bold/italic markers carefully to avoid orphan characters
-        text = re.sub(r'\*\*([^\*]+)\*\*', r'\1', text)
-        text = re.sub(r'(?<!\*)\*([^\*]+)\*(?!\*)', r'\1', text)  # Avoid double asterisks
-        text = re.sub(r'__([^_]+)__', r'\1', text)
-        text = re.sub(r'(?<!_)_([^_]+)_(?!_)', r'\1', text)  # Avoid double underscores
+        # 2. Remove bold markers (improved version)
+        text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)
         
-        # Remove code blocks
-        text = re.sub(r'```[^`]*```', ' ', text, flags=re.DOTALL)  # Replace with space not empty
-        text = re.sub(r'`([^`]+)`', r'\1', text)
+        # 3. Remove italic markers (more precise to avoid side effects)
+        text = re.sub(r'(?<![\*_])\*([^\*\n]+?)\*(?![\*_])', r'\1', text)
+        text = re.sub(r'(?<![\*_])_([^_\n]+?)_(?![\*_])', r'\1', text)
         
-        # Clean up bullet points
+        # 4. Remove underscore bold
+        text = re.sub(r'__(.+?)__', r'\1', text)
+        
+        # 5. Remove code blocks
+        text = re.sub(r'```[^`]*?```', '', text, flags=re.DOTALL)
+        text = re.sub(r'`([^`]+?)`', r'\1', text)
+        
+        # 6. Clean up bullet points
         text = re.sub(r'^\s*[\*\-\+]\s+', '• ', text, flags=re.MULTILINE)
         
-        # Remove horizontal rules
-        text = re.sub(r'^[\-\*\_]{3,}\s*$', '', text, flags=re.MULTILINE)
+        # 7. Remove horizontal rules
+        text = re.sub(r'^[\-\*_]{3,}\s*$', '', text, flags=re.MULTILINE)
         
-        # Remove multiple consecutive spaces
+        # 8. Clean table separators
+        text = re.sub(r'^\s*\|?\s*:?-+:?\s*\|?\s*$', '', text, flags=re.MULTILINE)
+        
+        # 9. Remove table | symbols (keep content)
+        text = re.sub(r'^\s*\|', '', text, flags=re.MULTILINE)
+        text = re.sub(r'\|\s*$', '', text, flags=re.MULTILINE)
+        text = re.sub(r'\|', ' | ', text)
+        
+        # 10. Clean excess spaces
         text = re.sub(r' {2,}', ' ', text)
         
-        # Remove orphaned single characters that might be markdown artifacts
-        text = re.sub(r'(?<=[^\w])([*_`~#])(?=[^\w])', '', text)
+        # 11. Clean excess blank lines
+        text = re.sub(r'\n{3,}', '\n\n', text)
         
-        return text
+        # 12. Remove isolated markdown symbols (more cautious to avoid spurious chars)
+        text = re.sub(r'(?<=\s)[\*_`~#]+(?=\s)', '', text)
+        text = re.sub(r'^[\*_`~#]+(?=\s)', '', text, flags=re.MULTILINE)
+        text = re.sub(r'(?<=\s)[\*_`~#]+$', '', text, flags=re.MULTILINE)
+        
+        return text.strip()
     
     def _escape_html(self, text: str) -> str:
         """
-        Escape HTML special characters for PDF
+        Escape HTML special characters for PDF - IMPROVED VERSION
         
         Args:
             text: Text to escape
@@ -266,7 +286,16 @@ class PDFGenerator:
         Returns:
             Escaped text
         """
-        text = text.replace('&', '&amp;')
-        text = text.replace('<', '&lt;')
-        text = text.replace('>', '&gt;')
+        # Escape in order to avoid double-escaping
+        replacements = [
+            ('&', '&amp;'),
+            ('<', '&lt;'),
+            ('>', '&gt;'),
+            ('"', '&quot;'),
+            ("'", '&apos;'),
+        ]
+        
+        for old, new in replacements:
+            text = text.replace(old, new)
+        
         return text
