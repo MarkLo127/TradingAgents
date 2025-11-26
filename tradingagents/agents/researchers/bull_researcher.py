@@ -1,4 +1,3 @@
-```python
 # -*- coding: utf-8 -*-
 from langchain_core.messages import AIMessage
 import time
