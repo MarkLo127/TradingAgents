@@ -21,83 +21,82 @@ import markdown
 class PDFGenerator:
     """Generate PDF reports from markdown content"""
     
-    # Emoji to Unicode symbol mapping for PDF compatibility
-    # Emojis don't render well in PDFs, so we replace them with Unicode text symbols
-    # NOTE: Use ASCII brackets [] not full-width ［］ for better font compatibility
-    # NOTE: Avoid [文字] formats - use pure symbols only
+    # Emoji to safe ASCII character mapping for PDF compatibility
+    # STSong-Light font has issues with certain Unicode symbols
+    # Using ONLY ASCII characters to ensure perfect rendering
     EMOJI_TO_UNICODE = {
-        # Status & Indicators
-        '✅': '✓',
-        '❌': '✗',
-        '⚠️': '⚠',
-        '⚡': '⚡',
-        '🔔': '◉',
+        # Status & Indicators - ASCII only
+        '✅': '[OK]',
+        '❌': '[X]',
+        '⚠️': '[!]',
+        '⚡': '*',
+        '🔔': 'o',
         
-        # Rating & Quality
-        '⭐': '★',
-        '🌟': '☆',
-        '💎': '◆',
-        '🏆': '◈',
+        # Rating & Quality - ASCII only
+        '⭐': '*',
+        '🌟': '*',
+        '💎': '+',
+        '🏆': '#',
         
-        # Charts & Analytics - pure symbols only
-        '📊': '▓',
-        '📈': '↑',
-        '📉': '↓',
-        '📋': '▪',
-        '📌': '◆',
+        # Charts & Analytics - ASCII or empty
+        '📊': '',
+        '📈': '^',
+        '📉': 'v',
+        '📋': '-',
+        '📌': '*',
         
-        # Money & Business - symbols only
+        # Money & Business - ASCII currency letters
         '💰': '$',
         '💵': '$',
-        '💴': '¥',
-        '💶': '€',
-        '💷': '£',
+        '💴': 'Y',  # 日元
+        '💶': 'E',  # 歐元
+        '💷': 'P',  # 英鎊  
         '💸': '$',
-        '💹': '↑',
+        '💹': '^',
         
-        # Direction & Movement
-        '🚀': '↑↑',
-        '⬆️': '↑',
-        '⬇️': '↓',
-        '➡️': '→',
-        '⬅️': '←',
-        '🔼': '▲',
-        '🔽': '▼',
+        # Direction & Movement - ASCII arrows
+        '🚀': '^^',
+        '⬆️': '^',
+        '⬇️': 'v',
+        '➡️': '>',
+        '⬅️': '<',
+        '🔼': '^',
+        '🔽': 'v',
         
-        # Symbols
-        '🎯': '◎',
-        '🔥': '※',
-        '💡': '◐',
-        '⚙️': '⚙',
-        '🔧': '►',
-        '🔨': '►',
+        # Symbols - ASCII only
+        '🎯': 'o',
+        '🔥': '*',
+        '💡': '*',
+        '⚙️': '*',
+        '🔧': '>',
+        '🔨': '>',
         
-        # AI & Tech - symbols only
-        '🤖': '▣',
-        '💻': '▣',
-        '📱': '▣',
-        '🖥️': '▣',
+        # AI & Tech - remove or simple ASCII
+        '🤖': '',
+        '💻': '',
+        '📱': '',
+        '🖥️': '',
         
-        # People & Roles - symbols only
-        '👤': '◇',
-        '👥': '◇◇',
-        '🔬': '◈',
-        '📚': '▪',
+        # People & Roles - remove
+        '👤': '',
+        '👥': '',
+        '🔬': '',
+        '📚': '',
         
-        # Time - symbols only
-        '⏰': '◷',
-        '📅': '▪',
-        '⏱️': '◷',
+        # Time - simple ASCII
+        '⏰': 'o',
+        '📅': '-',
+        '⏱️': 'o',
         
-        # Other common emojis - symbols only
-        '✨': '‧',
-        '🎨': '◈',
-        '📝': '▪',
-        '📄': '▪',
-        '🗂️': '▪',
-        '🌐': '◎',
-        '🔗': '∞',
-        '💼': '▣',
+        # Other common emojis - ASCII or remove
+        '✨': '*',
+        '🎨': '',
+        '📝': '-',
+        '📄': '-',
+        '🗂️': '=',
+        '🌐': 'o',
+        '🔗': '~',
+        '💼': '',
     }
     """Generate PDF reports from markdown content"""
     
