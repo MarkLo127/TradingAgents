@@ -2,6 +2,7 @@
 from langchain_core.messages import AIMessage
 import time
 import json
+from tradingagents.agents.utils.output_filter import fix_common_llm_errors, validate_and_warn
 
 
 def create_safe_debator(llm):
@@ -93,6 +94,10 @@ def create_safe_debator(llm):
 
         # 呼叫 LLM 生成回應
         response = llm.invoke(prompt)
+        
+        # CRITICAL FIX: Apply output filtering
+        response.content = fix_common_llm_errors(response.content)
+        validate_and_warn(response.content, "Conservative_Debator")
 
         # 格式化論點
         argument = f"安全分析師：{response.content}"
