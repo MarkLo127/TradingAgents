@@ -64,12 +64,13 @@ class PDFGenerator:
         # Register Chinese font as fallback for CJK characters
         if not self.custom_font:
             try:
-                # Register Chinese font (Traditional Chinese support)
-                pdfmetrics.registerFont(UnicodeCIDFont('STSong-Light'))
-                self.chinese_font = 'STSong-Light'
-                print("Registered STSong-Light as fallback (Warning: May not be visible in all viewers)")
+                # CRITICAL FIX: Use Helvetica instead of STSong-Light to avoid font mapping issues
+                # STSong-Light may have character mapping bugs causing '練' to render as '煉'
+                self.chinese_font = 'Helvetica'
+                print("Using Helvetica for Chinese characters (may have better Unicode support)")
             except Exception as e:
-                # If CID font registration fails, try alternative method
+                print(f"Error setting Chinese font: {e}")
+                # If setting Helvetica fails (unlikely), try alternative CID fonts
                 try:
                     pdfmetrics.registerFont(UnicodeCIDFont('STHeiti-Light'))
                     self.chinese_font = 'STHeiti-Light'
@@ -185,7 +186,21 @@ class PDFGenerator:
         
         # Convert markdown to simple text (basic conversion)
         # Clean markdown formatting
+        # DEBUG: Log content before PDF conversion
+        print(f"\n[PDF DEBUG] Content BEFORE _clean_markdown:")
+        if '煉' in report_content:
+            print(f"  ⚠️  Found '煉' in original content")
+        if '練' in report_content:
+            print(f"  ✅ Found '練' in original content")
+        
         content = self._clean_markdown(report_content)
+        
+        # DEBUG: Log content after cleaning
+        print(f"[PDF DEBUG] Content AFTER _clean_markdown:")
+        if '煉' in content:
+            print(f"  ⚠️  Found '煉' AFTER cleaning")
+        if '練' in content:
+            print(f"  ✅ Found '練' AFTER cleaning")
         
         # Split content into paragraphs
         paragraphs = content.split('\n')
