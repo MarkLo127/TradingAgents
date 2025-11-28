@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,7 +13,7 @@ export default function HomePage() {
   return (
     <div className="container mx-auto px-4 py-12">
       {/* Hero Section */}
-      <div className="text-center mb-16">
+      <div className="text-center mb-16 animate-fade-in">
         <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
           TradingAgentsX
         </h1>
@@ -28,20 +29,11 @@ export default function HomePage() {
               開始分析
             </Button>
           </Link>
-          <a
-            href="https://github.com/MarkLo127/TradingAgentsX"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Button size="lg" variant="outline">
-              前往 GitHub
-            </Button>
-          </a>
         </div>
       </div>
 
       {/* Core Features Section */}
-      <div className="mb-16">
+      <div className="mb-16 animate-slide-up animate-delay-200">
         <h2 className="text-3xl font-bold text-center mb-4">🎯 核心特色</h2>
         <p className="text-center text-gray-600 dark:text-gray-400 mb-8 max-w-3xl mx-auto">
           基於 LangGraph 的智能股票交易分析平台，結合多個 AI 代理進行協作決策
@@ -360,7 +352,7 @@ function FeatureCard({
   icon: string;
 }) {
   return (
-    <Card className="hover:shadow-lg transition-shadow">
+    <Card className="hover-lift animate-slide-up">
       <CardHeader>
         <div className="text-4xl mb-2">{icon}</div>
         <CardTitle className="text-lg">{title}</CardTitle>
@@ -384,7 +376,7 @@ function AgentCard({
   responsibilities: string[];
 }) {
   return (
-    <Card className="hover:shadow-lg transition-shadow">
+    <Card className="hover-lift animate-scale-up">
       <CardHeader>
         <CardTitle className="text-base">{name}</CardTitle>
         <CardDescription className="text-xs">{role}</CardDescription>
@@ -412,11 +404,35 @@ function LLMProviderCard({
   models: string[];
   icon: string;
 }) {
+  // Map provider names to logo filenames
+  const logoMap: Record<string, string> = {
+    "OpenAI": "/logos/openai.svg",
+    "Anthropic": "/logos/claude-color.svg",
+    "Google Gemini": "/logos/gemini-color.svg",
+    "Grok (xAI)": "/logos/grok.svg",
+    "DeepSeek": "/logos/deepseek-color.svg",
+    "Qwen (Alibaba)": "/logos/qwen-color.svg",
+  };
+
+  const logoSrc = logoMap[name];
+
   return (
-    <Card className="hover:shadow-lg transition-shadow">
+    <Card className="hover-lift animate-slide-up animate-delay-100">
       <CardHeader>
-        <div className="flex items-center gap-2">
-          <span className="text-2xl">{icon}</span>
+        <div className="flex items-center gap-3">
+          {logoSrc ? (
+            <div className="relative w-8 h-8 flex-shrink-0 transition-transform duration-300 hover:scale-110">
+              <Image
+                src={logoSrc}
+                alt={`${name} logo`}
+                width={32}
+                height={32}
+                className="object-contain"
+              />
+            </div>
+          ) : (
+            <span className="text-2xl">{icon}</span>
+          )}
           <CardTitle className="text-lg">{name}</CardTitle>
         </div>
       </CardHeader>
@@ -442,7 +458,7 @@ function TechnicalCard({
   features: string[];
 }) {
   return (
-    <Card className="hover:shadow-lg transition-shadow">
+    <Card className="hover-lift animate-slide-up animate-delay-300">
       <CardHeader>
         <CardTitle className="text-lg">{title}</CardTitle>
       </CardHeader>

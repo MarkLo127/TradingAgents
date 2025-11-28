@@ -132,7 +132,7 @@ export default function AnalysisResultsPage() {
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 animate-fade-in">
           <div>
             <h1 className="text-4xl font-bold mb-2">
               {analysisResult.ticker} 詳細分析結果
@@ -144,7 +144,7 @@ export default function AnalysisResultsPage() {
           <Button 
             variant="outline" 
             onClick={() => router.push("/analysis")}
-            className="gap-2"
+            className="gap-2 hover-lift"
           >
             <ChevronLeft className="h-4 w-4" />
             返回分析
@@ -152,13 +152,13 @@ export default function AnalysisResultsPage() {
         </div>
 
         {/* 分析師選擇 Tabs */}
-        <Tabs value={selectedAnalyst} onValueChange={setSelectedAnalyst} className="w-full">
+        <Tabs value={selectedAnalyst} onValueChange={setSelectedAnalyst} className="w-full animate-slide-up animate-delay-200">
           <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-4 h-auto gap-2">
             {ANALYSTS.map(analyst => (
               <TabsTrigger 
                 key={analyst.key} 
                 value={analyst.key}
-                className="text-sm md:text-base py-2"
+                className="text-sm md:text-base py-2 transition-all duration-300 hover:scale-105"
               >
                 {analyst.label}
               </TabsTrigger>
@@ -178,7 +178,7 @@ export default function AnalysisResultsPage() {
                 )}
 
                 {/* 分析師報告 */}
-                <Card>
+                <Card className="animate-scale-up hover-lift">
                   <CardHeader>
                     <CardTitle>{analyst.label} 報告</CardTitle>
                     <CardDescription>
@@ -187,7 +187,7 @@ export default function AnalysisResultsPage() {
                   </CardHeader>
                   <CardContent>
                     {currentReport ? (
-                      <div className="prose prose-sm max-w-none dark:prose-invert">
+                      <div className="prose prose-sm max-w-none dark:prose-invert animate-fade-in">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
                           {currentReport}
                         </ReactMarkdown>

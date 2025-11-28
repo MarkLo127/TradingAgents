@@ -42,6 +42,21 @@
 
 TradingAgentsX 支援業界領先的多家 LLM 提供商，並為每個模型配置**獨立的 API Key 和 Base URL**，實現最大靈活性。
 
+<div align="center">
+  
+### 支援的 LLM 提供商
+
+<p>
+  <img src="llm_logo/openai.svg" alt="OpenAI" height="50" style="margin: 10px;"/>
+  <img src="llm_logo/claude-color.svg" alt="Anthropic Claude" height="50" style="margin: 10px;"/>
+  <img src="llm_logo/gemini-color.svg" alt="Google Gemini" height="50" style="margin: 10px;"/>
+  <img src="llm_logo/grok.svg" alt="xAI Grok" height="50" style="margin: 10px;"/>
+  <img src="llm_logo/deepseek-color.svg" alt="DeepSeek" height="50" style="margin: 10px;"/>
+  <img src="llm_logo/qwen-color.svg" alt="Alibaba Qwen" height="50" style="margin: 10px;"/>
+</p>
+
+</div>
+
 ### 📋 支援的 LLM 提供商矩陣
 
 | 提供商             | 支援模型                                                                                         | Base URL                                                  | 是否支援自訂端點 |
@@ -53,6 +68,7 @@ TradingAgentsX 支援業界領先的多家 LLM 提供商，並為每個模型配
 | **DeepSeek**       | DeepSeek Reasoner, DeepSeek Chat                                                                 | `https://api.deepseek.com/v1`                                | ✅ 是            |
 | **Qwen (Alibaba)** | Qwen3-Max, Qwen-Plus, Qwen Flash                                                                 | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1`  | ✅ 是            |
 | **自訂端點**       | 上述列表中的模型                                                                                 | 使用者自訂                                                | ✅ 完全支援      |
+
 
 ### 🔧 三層獨立配置
 
