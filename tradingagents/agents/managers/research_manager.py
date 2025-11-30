@@ -1,7 +1,19 @@
 # -*- coding: utf-8 -*-
 import time
 import json
+import logging
+from tenacity import (
+    retry,
+    stop_after_attempt,
+    wait_exponential,
+    retry_if_exception_type,
+    before_sleep_log
+)
+from anthropic._exceptions import OverloadedError
 from tradingagents.agents.utils.output_filter import fix_common_llm_errors, validate_and_warn
+
+# 設置日誌記錄器
+logger = logging.getLogger(__name__)
 
 
 def create_research_manager(llm, memory):
@@ -99,9 +111,34 @@ def create_research_manager(llm, memory):
 
 請提供專業且可執行的投資決策報告。"""
         
+        # 定義帶重試機制的 LLM 調用函數
+        # 只針對 Anthropic OverloadedError (529) 進行重試
+        # 配置：最多 3 次重試，指數退避（2、4、8 秒）
+        @retry(
+            retry=retry_if_exception_type(OverloadedError),
+            wait=wait_exponential(multiplier=1, min=2, max=10),
+            stop=stop_after_attempt(3),
+            before_sleep=before_sleep_log(logger, logging.WARNING)
+        )
+        def invoke_llm_with_retry(llm_instance, prompt_text):
+            """
+            調用 LLM 並在遇到 529 錯誤時自動重試。
+            
+            Args:
+                llm_instance: LLM 實例
+                prompt_text: 提示文本
+            
+            Returns:
+                LLM 的回應
+            
+            Raises:
+                OverloadedError: 如果 3 次重試後仍然失敗
+            """
+            logger.info("正在調用 Research Manager LLM...")
+            return llm_instance.invoke(prompt_text)
         
-        # 呼叫 LLM 生成回應
-        response = llm.invoke(prompt)
+        # 使用帶重試機制的函數調用 LLM
+        response = invoke_llm_with_retry(llm, prompt)
         
         # CRITICAL FIX: Apply output filtering
         response.content = fix_common_llm_errors(response.content)
