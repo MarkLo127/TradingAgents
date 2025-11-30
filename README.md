@@ -43,8 +43,6 @@
 TradingAgentsX 支援業界領先的多家 LLM 提供商，並為每個模型配置**獨立的 API Key 和 Base URL**，實現最大靈活性。
 
 <div align="center">
-  
-### 支援的 LLM 提供商
 
 <p>
   <img src="llm_logo/openai.svg" alt="OpenAI" height="50" style="margin: 10px;"/>
