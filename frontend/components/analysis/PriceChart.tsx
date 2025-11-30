@@ -109,6 +109,7 @@ export function PriceChart({ priceData, priceStats, ticker }: PriceChartProps) {
                 />
               </LineChart>
             ) : (
+              // 真正的K線圖（蠟燭圖）
               <ComposedChart data={priceData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
@@ -121,41 +122,89 @@ export function PriceChart({ priceData, priceStats, ticker }: PriceChartProps) {
                   tickFormatter={(value) => `$${value.toFixed(0)}`}
                 />
                 <Tooltip 
-                  formatter={(value: number, name: string) => [`$${formatNumber(value)}`, name]}
-                  labelFormatter={(label) => `日期: ${label}`}
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      const data = payload[0].payload;
+                      return (
+                        <div className="bg-background border border-border p-3 rounded-lg shadow-lg">
+                          <p className="text-sm font-semibold mb-2">日期: {data.Date}</p>
+                          <div className="space-y-1 text-sm">
+                            <p className="text-green-600">開: ${formatNumber(data.Open)}</p>
+                            <p className="text-red-600">收: ${formatNumber(data.Close)}</p>
+                            <p className="text-blue-600">高: ${formatNumber(data.High)}</p>
+                            <p className="text-orange-600">低: ${formatNumber(data.Low)}</p>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
                 />
-                <Legend />
-                <Area 
-                  type="monotone" 
-                  dataKey="High" 
-                  stroke="#86efac" 
-                  fill="#86efac"
-                  fillOpacity={0.3}
-                  name="最高價"
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="Low" 
-                  stroke="#fca5a5" 
-                  fill="#fca5a5"
-                  fillOpacity={0.3}
-                  name="最低價"
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="Open" 
-                  stroke="#f59e0b" 
-                  strokeWidth={2}
-                  name="開盤價"
-                  dot={false}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="Close" 
-                  stroke="#2563eb" 
-                  strokeWidth={2}
-                  name="收盤價"
-                  dot={false}
+                <Bar
+                  dataKey="Close"
+                  shape={(props: any) => {
+                    const { x, y, width, payload } = props;
+                    const { Open, Close, High, Low } = payload;
+                    
+                    // 計算Y軸的比例尺
+                    const yAxis = props.yAxis;
+                    const yScale = (value: number) => {
+                      const { domain, height } = yAxis;
+                      const [min, max] = domain;
+                      return height - ((value - min) / (max - min)) * height;
+                    };
+
+                    const openY = yScale(Open);
+                    const closeY = yScale(Close);
+                    const highY = yScale(High);
+                    const lowY = yScale(Low);
+                    
+                    // 判斷漲跌
+                    const isUp = Close >= Open;
+                    const color = isUp ? '#22c55e' : '#ef4444'; // 綠色上漲，紅色下跌
+                    const fillColor = isUp ? '#22c55e' : '#ef4444';
+                    
+                    // K線寬度
+                    const candleWidth = Math.min(width * 0.6, 8);
+                    const centerX = x + width / 2;
+                    
+                    // 實體高度
+                    const bodyHeight = Math.abs(closeY - openY);
+                    const bodyY = Math.min(openY, closeY);
+                    
+                    return (
+                      <g>
+                        {/* 上影線 */}
+                        <line
+                          x1={centerX}
+                          y1={highY}
+                          x2={centerX}
+                          y2={Math.min(openY, closeY)}
+                          stroke={color}
+                          strokeWidth={1}
+                        />
+                        {/* 下影線 */}
+                        <line
+                          x1={centerX}
+                          y1={Math.max(openY, closeY)}
+                          x2={centerX}
+                          y2={lowY}
+                          stroke={color}
+                          strokeWidth={1}
+                        />
+                        {/* K線實體 */}
+                        <rect
+                          x={centerX - candleWidth / 2}
+                          y={bodyY}
+                          width={candleWidth}
+                          height={bodyHeight || 1} // 至少1px高度避免十字星消失
+                          fill={fillColor}
+                          stroke={color}
+                          strokeWidth={1}
+                        />
+                      </g>
+                    );
+                  }}
                 />
               </ComposedChart>
             )}

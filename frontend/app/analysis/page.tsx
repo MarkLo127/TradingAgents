@@ -44,11 +44,13 @@ export default function AnalysisPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="max-w-6xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-6xl mx-auto space-y-8">
         {/* 標題區域 - 置中對齊 */}
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-2">交易分析</h1>
+        <div className="text-center relative">
+          <div className="absolute inset-0 gradient-bg-radial opacity-40 -z-10" />
+          <h1 className="text-4xl font-bold mb-2 gradient-text-primary">交易分析</h1>
           <p className="text-gray-600 dark:text-gray-400">
             配置並執行全面的多代理交易分析
           </p>
@@ -66,6 +68,7 @@ export default function AnalysisPage() {
             <p className="text-red-600 dark:text-red-400">{error}</p>
           </div>
         )}
+        </div>
       </div>
     </div>
   );

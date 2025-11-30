@@ -252,3 +252,282 @@
   background-size: 200% auto;
   animation: shimmer 3s linear infinite;
 }
+
+/* ========================================
+   GRADIENT UTILITIES
+   ======================================== */
+
+/* Gradient Backgrounds */
+.gradient-bg-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.dark .gradient-bg-primary {
+  background: linear-gradient(135deg, #4c51bf 0%, #553c9a 100%);
+}
+
+.gradient-bg-secondary {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.dark .gradient-bg-secondary {
+  background: linear-gradient(135deg, #c471ed 0%, #c94b4b 100%);
+}
+
+.gradient-bg-accent {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.dark .gradient-bg-accent {
+  background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+}
+
+.gradient-bg-radial {
+  background: radial-gradient(
+      circle at top right,
+      rgba(102, 126, 234, 0.15),
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at bottom left,
+      rgba(118, 75, 162, 0.15),
+      transparent 50%
+    );
+}
+
+.dark .gradient-bg-radial {
+  background: radial-gradient(
+      circle at top right,
+      rgba(76, 81, 191, 0.2),
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at bottom left,
+      rgba(85, 60, 154, 0.2),
+      transparent 50%
+    );
+}
+
+.gradient-bg-mesh {
+  background: linear-gradient(
+    135deg,
+    #667eea 0%,
+    #764ba2 25%,
+    #f093fb 50%,
+    #f5576c 75%,
+    #4facfe 100%
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+.dark .gradient-bg-mesh {
+  background: linear-gradient(
+    135deg,
+    #4c51bf 0%,
+    #553c9a 25%,
+    #c471ed 50%,
+    #c94b4b 75%,
+    #3b82f6 100%
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Gradient Page Backgrounds - Enhanced visibility */
+.gradient-page-bg {
+  background: linear-gradient(135deg, 
+    rgba(102, 126, 234, 0.12) 0%, 
+    rgba(240, 242, 255, 0.8) 25%,
+    rgba(255, 240, 245, 0.8) 50%,
+    rgba(245, 240, 255, 0.8) 75%,
+    rgba(118, 75, 162, 0.12) 100%
+  );
+  min-height: 100vh;
+}
+
+.dark .gradient-page-bg {
+  background: linear-gradient(135deg, 
+    rgba(76, 81, 191, 0.25) 0%, 
+    rgba(30, 30, 45, 0.95) 25%,
+    rgba(40, 30, 45, 0.95) 50%,
+    rgba(35, 30, 50, 0.95) 75%,
+    rgba(85, 60, 154, 0.25) 100%
+  );
+  min-height: 100vh;
+}
+
+/* Gradient Borders */
+.gradient-border {
+  position: relative;
+  border: 2px solid transparent;
+  background: linear-gradient(var(--background), var(--background)) padding-box,
+    linear-gradient(135deg, #667eea, #764ba2) border-box;
+}
+
+.dark .gradient-border {
+  background: linear-gradient(var(--background), var(--background)) padding-box,
+    linear-gradient(135deg, #4c51bf, #553c9a) border-box;
+}
+
+.gradient-border-animated {
+  position: relative;
+  border: 2px solid transparent;
+  background: linear-gradient(var(--background), var(--background)) padding-box,
+    linear-gradient(135deg, #667eea, #764ba2, #f093fb, #667eea) border-box;
+  background-size: 300% 300%;
+  animation: gradientBorder 4s ease infinite;
+}
+
+.dark .gradient-border-animated {
+  background: linear-gradient(var(--background), var(--background)) padding-box,
+    linear-gradient(135deg, #4c51bf, #553c9a, #c471ed, #4c51bf) border-box;
+  background-size: 300% 300%;
+  animation: gradientBorder 4s ease infinite;
+}
+
+@keyframes gradientBorder {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Gradient Text */
+.gradient-text-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-secondary {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-accent {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Gradient Overlays */
+.gradient-overlay {
+  position: relative;
+}
+
+.gradient-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.1),
+    rgba(118, 75, 162, 0.1)
+  );
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.dark .gradient-overlay::before {
+  background: linear-gradient(
+    135deg,
+    rgba(76, 81, 191, 0.15),
+    rgba(85, 60, 154, 0.15)
+  );
+}
+
+/* Gradient Shine Effect */
+.gradient-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.gradient-shine::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%) translateY(-100%);
+  transition: transform 0.6s;
+}
+
+.gradient-shine:hover::after {
+  transform: translateX(100%) translateY(100%);
+}
+
+.dark .gradient-shine::after {
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 70%
+  );
+}
+
+/* Enhanced Card Gradients */
+.gradient-card {
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.05) 0%,
+    rgba(118, 75, 162, 0.05) 100%
+  );
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  transition: all 0.3s ease;
+}
+
+.gradient-card:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.1) 0%,
+    rgba(118, 75, 162, 0.1) 100%
+  );
+  border-color: rgba(102, 126, 234, 0.4);
+  box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
+}
+
+.dark .gradient-card {
+  background: linear-gradient(
+    135deg,
+    rgba(76, 81, 191, 0.1) 0%,
+    rgba(85, 60, 154, 0.1) 100%
+  );
+  border-color: rgba(76, 81, 191, 0.3);
+}
+
+.dark .gradient-card:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(76, 81, 191, 0.15) 0%,
+    rgba(85, 60, 154, 0.15) 100%
+  );
+  border-color: rgba(76, 81, 191, 0.5);
+  box-shadow: 0 10px 40px rgba(76, 81, 191, 0.3);
+}

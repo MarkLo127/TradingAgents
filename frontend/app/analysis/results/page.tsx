@@ -129,12 +129,14 @@ export default function AnalysisResultsPage() {
   const currentReport = getNestedValue(analysisResult.reports, currentAnalyst?.reportKey || "");
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 animate-fade-in">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 animate-fade-in relative">
+          <div className="absolute inset-0 gradient-bg-radial opacity-30 -z-10 rounded-lg" />
           <div>
-            <h1 className="text-4xl font-bold mb-2">
+            <h1 className="text-4xl font-bold mb-2 gradient-text-primary">
               {analysisResult.ticker} 詳細分析結果
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
@@ -178,7 +180,7 @@ export default function AnalysisResultsPage() {
                 )}
 
                 {/* 分析師報告 */}
-                <Card className="animate-scale-up hover-lift">
+                <Card className="animate-scale-up hover-lift gradient-card gradient-shine">
                   <CardHeader>
                     <CardTitle>{analyst.label} 報告</CardTitle>
                     <CardDescription>
@@ -219,6 +221,7 @@ export default function AnalysisResultsPage() {
             reports={analysisResult.reports}
           />
         )}
+        </div>
       </div>
     </div>
   );

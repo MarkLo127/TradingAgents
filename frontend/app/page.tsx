@@ -11,10 +11,12 @@ import {
 
 export default function HomePage() {
   return (
-    <div className="container mx-auto px-4 py-12">
-      {/* Hero Section */}
-      <div className="text-center mb-16 animate-fade-in">
-        <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
+      <div className="container mx-auto px-4 py-12">
+        {/* Hero Section */}
+      <div className="text-center mb-16 animate-fade-in relative py-8">
+        <div className="absolute inset-0 gradient-bg-radial -z-10" />
+        <h1 className="text-5xl md:text-6xl font-bold mb-6 gradient-text-primary leading-tight">
           TradingAgentsX
         </h1>
         <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
@@ -24,7 +26,7 @@ export default function HomePage() {
           <Link href="/analysis">
             <Button
               size="lg"
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-shadow"
             >
               開始分析
             </Button>
@@ -324,19 +326,21 @@ export default function HomePage() {
       </div>
 
       {/* Call to Action Section */}
-      <div className="text-center py-16">
-        <h2 className="text-3xl font-bold mb-4">準備好開始智能交易分析了嗎？</h2>
+      <div className="text-center py-16 relative">
+        <div className="absolute inset-0 gradient-bg-radial opacity-60 -z-10" />
+        <h2 className="text-3xl font-bold mb-4 gradient-text-primary">準備好開始智能交易分析了嗎？</h2>
         <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
           立即體驗 12 位專業 AI 代理協同工作，為您提供全方位的股票分析報告
         </p>
         <Link href="/analysis">
           <Button
             size="lg"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg px-8 py-6"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg px-8 py-6 shadow-lg hover:shadow-2xl transition-all"
           >
             開始分析 →
           </Button>
         </Link>
+      </div>
       </div>
     </div>
   );
@@ -352,7 +356,7 @@ function FeatureCard({
   icon: string;
 }) {
   return (
-    <Card className="hover-lift animate-slide-up">
+    <Card className="hover-lift animate-slide-up gradient-shine gradient-card">
       <CardHeader>
         <div className="text-4xl mb-2">{icon}</div>
         <CardTitle className="text-lg">{title}</CardTitle>
@@ -376,7 +380,7 @@ function AgentCard({
   responsibilities: string[];
 }) {
   return (
-    <Card className="hover-lift animate-scale-up">
+    <Card className="hover-lift animate-scale-up gradient-card">
       <CardHeader>
         <CardTitle className="text-base">{name}</CardTitle>
         <CardDescription className="text-xs">{role}</CardDescription>
@@ -417,7 +421,7 @@ function LLMProviderCard({
   const logoSrc = logoMap[name];
 
   return (
-    <Card className="hover-lift animate-slide-up animate-delay-100">
+    <Card className="hover-lift animate-slide-up animate-delay-100 gradient-card gradient-shine">
       <CardHeader>
         <div className="flex items-center gap-3">
           {logoSrc ? (
@@ -458,7 +462,7 @@ function TechnicalCard({
   features: string[];
 }) {
   return (
-    <Card className="hover-lift animate-slide-up animate-delay-300">
+    <Card className="hover-lift animate-slide-up animate-delay-300 gradient-card">
       <CardHeader>
         <CardTitle className="text-lg">{title}</CardTitle>
       </CardHeader>
