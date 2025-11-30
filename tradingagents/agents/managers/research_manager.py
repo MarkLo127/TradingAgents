@@ -2,6 +2,7 @@
 import time
 import json
 import logging
+import random
 from tenacity import (
     retry,
     stop_after_attempt,
@@ -112,17 +113,28 @@ def create_research_manager(llm, memory):
 請提供專業且可執行的投資決策報告。"""
         
         # 定義帶重試機制的 LLM 調用函數
-        # 只針對 Anthropic OverloadedError (529) 進行重試
-        # 配置：最多 3 次重試，指數退避（2、4、8 秒）
+        # 基於 Cursor IDE 博客建議的最佳實踐：
+        # 1. 使用指數退避策略（exponential backoff）
+        # 2. 添加隨機因子（jitter）避免多個客戶端同步重試
+        # 3. 增加重試次數和最大延遲時間
+        import random
+        
         @retry(
             retry=retry_if_exception_type(OverloadedError),
-            wait=wait_exponential(multiplier=1, min=2, max=10),
-            stop=stop_after_attempt(3),
+            wait=wait_exponential(multiplier=1, min=2, max=60),  # 增加最大延遲到 60 秒
+            stop=stop_after_attempt(5),  # 增加重試次數到 5 次
             before_sleep=before_sleep_log(logger, logging.WARNING)
         )
         def invoke_llm_with_retry(llm_instance, prompt_text):
             """
             調用 LLM 並在遇到 529 錯誤時自動重試。
+            
+            使用指數退避策略加隨機因子（jitter）：
+            - 第 1 次重試：等待 2-4 秒（2 * 2^0 + jitter）
+            - 第 2 次重試：等待 4-8 秒（2 * 2^1 + jitter）
+            - 第 3 次重試：等待 8-16 秒（2 * 2^2 + jitter）
+            - 第 4 次重試：等待 16-32 秒（2 * 2^3 + jitter）
+            - 第 5 次重試：等待 32-60 秒（2 * 2^4 + jitter，最大 60 秒）
             
             Args:
                 llm_instance: LLM 實例
@@ -132,8 +144,13 @@ def create_research_manager(llm, memory):
                 LLM 的回應
             
             Raises:
-                OverloadedError: 如果 3 次重試後仍然失敗
+                OverloadedError: 如果 5 次重試後仍然失敗
             """
+            # 添加小量隨機延遲（jitter）避免同步重試
+            jitter = random.uniform(0, 0.5)
+            if jitter > 0:
+                time.sleep(jitter)
+            
             logger.info("正在調用 Research Manager LLM...")
             return llm_instance.invoke(prompt_text)
         
