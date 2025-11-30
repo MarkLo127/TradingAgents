@@ -97,11 +97,15 @@ class TradingAgentsXGraph:
         def _create_llm(model: str, base_url: str, api_key: str):
             # Determine provider based on Base URL
             if "anthropic.com" in base_url:
+                # Claude 4.5 API restriction: cannot use both temperature and top_p
+                # Only use temperature, set top_p to None explicitly
                 return ChatAnthropic(
                     model=model, 
                     base_url=base_url, 
                     api_key=api_key,
-                    max_tokens=16000  # Prevent report truncation
+                    max_tokens=16000,  # Prevent report truncation
+                    temperature=0.7,   # Use temperature for randomness control
+                    top_p=None         # Explicitly set to None to avoid conflict
                 )
             else:
                 # Default to ChatOpenAI for OpenAI, Grok, DeepSeek, Qwen, and other OpenAI-compatible APIs
