@@ -172,7 +172,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                                       onCheckedChange={(checked) => {
                                         return checked
                                           ? field.onChange([
-                                              ...field.value,
+                                              ...(field.value ?? []),
                                               analyst.value,
                                             ])
                                           : field.onChange(
@@ -246,7 +246,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                         onValueChange={(value) =>
                           field.onChange(parseInt(value))
                         }
-                        defaultValue={field.value.toString()}
+                        defaultValue={field.value?.toString() ?? "3"}
                       >
                         <FormControl>
                           <SelectTrigger>
