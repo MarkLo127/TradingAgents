@@ -102,8 +102,6 @@ TradingAgentsX 支援業界領先的多家 LLM 提供商，並為每個模型配
 
 - 私有化部署的 LLM 服務
 - 第三方 OpenAI 兼容代理
-- 本地運行的 LLM（如 Ollama、LocalAI）
-- 企業內部 AI Gateway
 
 **配置方式：**
 
