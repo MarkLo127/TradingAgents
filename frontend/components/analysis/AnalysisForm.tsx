@@ -308,10 +308,10 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                           </SelectItem>
 
                           {/* Anthropic */}
-                          <SelectItem value="claude-haiku-4-5-20251001">
+                          <SelectItem value="claude-haiku-4-5">
                             Anthropic: Claude Haiku 4.5
                           </SelectItem>
-                          <SelectItem value="claude-sonnet-4-5-20250929">
+                          <SelectItem value="claude-sonnet-4-5">
                             Anthropic: Claude Sonnet 4.5
                           </SelectItem>
                           <SelectItem value="claude-sonnet-4-0">
@@ -419,10 +419,10 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                           </SelectItem>
 
                           {/* Anthropic */}
-                          <SelectItem value="claude-haiku-4-5-20251001">
+                          <SelectItem value="claude-haiku-4-5">
                             Anthropic: Claude Haiku 4.5
                           </SelectItem>
-                          <SelectItem value="claude-sonnet-4-5-20250929">
+                          <SelectItem value="claude-sonnet-4-5">
                             Anthropic: Claude Sonnet 4.5
                           </SelectItem>
                           <SelectItem value="claude-sonnet-4-0">

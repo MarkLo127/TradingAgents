@@ -482,7 +482,7 @@ docker compose down -v
    快速思維 Base URL: https://api.openai.com/v1
    快速思維 API Key: sk-your-openai-key
 
-   深層思維模型: claude-sonnet-4-5-20250929
+   深層思維模型: claude-sonnet-4-5
    深層思維 Base URL: https://api.anthropic.com/v1
    深層思維 API Key: sk-ant-your-claude-key
 
@@ -567,7 +567,7 @@ curl -X POST http://localhost:8000/api/analyze \
     "ticker": "NVDA",
     "analysis_date": "2024-01-15",
     "research_depth": 2,
-    "deep_think_llm": "claude-sonnet-4-5-20250929",
+    "deep_think_llm": "claude-sonnet-4-5",
     "quick_think_llm": "gpt-5-mini-2025-08-07",
     "analysts": ["market", "sentiment", "news", "fundamental"],
     "quick_think_base_url": "https://api.openai.com/v1",

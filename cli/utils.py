@@ -195,8 +195,8 @@ def select_shallow_thinking_agent(provider=None) -> str:
             ("o4-mini", "o4-mini-2025-04-16"),
         ],
         "Anthropic": [
-            ("Claude Haiku 4.5", "claude-haiku-4-5-20251001"),
-            ("Claude Sonnet 4.5", "claude-sonnet-4-5-20250929"),
+            ("Claude Haiku 4.5", "claude-haiku-4-5"),
+            ("Claude Sonnet 4.5", "claude-sonnet-4-5"),
             ("Claude Sonnet 4", "claude-sonnet-4-0"),
             ("Claude Haiku 3.5", "claude-3-5-haiku-20241022"),
             ("Claude Haiku 3", "claude-3-haiku-20240307"),
@@ -319,8 +319,8 @@ def select_deep_thinking_agent(provider=None) -> str:
             ("o4-mini", "o4-mini-2025-04-16"),
         ],
         "Anthropic": [
-            ("Claude Haiku 4.5", "claude-haiku-4-5-20251001"),
-            ("Claude Sonnet 4.5", "claude-sonnet-4-5-20250929"),
+            ("Claude Haiku 4.5", "claude-haiku-4-5"),
+            ("Claude Sonnet 4.5", "claude-sonnet-4-5"),
             ("Claude Sonnet 4", "claude-sonnet-4-0"),
             ("Claude Haiku 3.5", "claude-3-5-haiku-20241022"),
             ("Claude Haiku 3", "claude-3-haiku-20240307"),
