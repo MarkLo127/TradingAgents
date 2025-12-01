@@ -122,7 +122,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
   }
 
   return (
-    <Card className="shadow-lg">
+    <Card className="shadow-lg gradient-card gradient-shine hover-lift animate-scale-up">
       <CardContent className="pt-6">
         <Form {...form}>
           <form

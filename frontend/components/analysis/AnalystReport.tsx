@@ -35,7 +35,7 @@ export function AnalystReport({ reports }: AnalystReportProps) {
   }
 
   return (
-    <Card className="shadow-lg">
+    <Card className="shadow-lg gradient-card gradient-shine hover-lift animate-scale-up">
       <CardHeader>
         <CardTitle>分析報告</CardTitle>
         <CardDescription>來自所有代理團隊的詳細報告</CardDescription>
@@ -125,7 +125,7 @@ export function AnalystReport({ reports }: AnalystReportProps) {
 
 function ReportSection({ title, content }: { title: string; content: string }) {
   return (
-    <div className="border rounded-lg p-4">
+    <div className="border rounded-lg p-4 bg-gradient-to-br from-blue-50/50 to-purple-50/50 dark:from-blue-900/10 dark:to-purple-900/10 hover:shadow-md transition-shadow">
       <h3 className="font-semibold text-lg mb-2">{title}</h3>
       <div className="prose prose-sm dark:prose-invert max-w-none">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>

@@ -6,15 +6,12 @@ import {
   Line,
   BarChart,
   Bar,
-  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
-  ComposedChart,
-  Area,
+  Rectangle,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -40,8 +37,14 @@ export function PriceChart({ priceData, priceStats, ticker }: PriceChartProps) {
     return `${date.getMonth() + 1}/${date.getDate()}`;
   };
 
+  // 計算價格範圍用於標準化
+  const priceValues = priceData.flatMap(d => [d.High, d.Low]);
+  const minPrice = Math.min(...priceValues);
+  const maxPrice = Math.max(...priceValues);
+  const priceRange = maxPrice - minPrice;
+
   return (
-    <Card className="w-full">
+    <Card className="w-full gradient-card gradient-shine hover-lift animate-scale-up">
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle className="text-2xl">{ticker} 價格走勢</CardTitle>
@@ -55,22 +58,22 @@ export function PriceChart({ priceData, priceStats, ticker }: PriceChartProps) {
 
         {/* 統計資訊 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-          <div className="bg-muted p-4 rounded-lg">
+          <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
             <p className="text-sm text-muted-foreground">增長率</p>
             <p className={`text-2xl font-bold ${priceStats.growth_rate >= 0 ? 'text-green-600' : 'text-red-600'}`}>
               {priceStats.growth_rate >= 0 ? '+' : ''}{priceStats.growth_rate}%
             </p>
           </div>
-          <div className="bg-muted p-4 rounded-lg">
+          <div className="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
             <p className="text-sm text-muted-foreground">時長</p>
             <p className="text-2xl font-bold">{priceStats.duration_days} 天</p>
           </div>
-          <div className="bg-muted p-4 rounded-lg">
+          <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-4 rounded-lg border border-purple-200 dark:border-purple-800">
             <p className="text-sm text-muted-foreground">起始價格</p>
             <p className="text-lg font-semibold">${formatNumber(priceStats.start_price)}</p>
             <p className="text-xs text-muted-foreground">{priceStats.start_date}</p>
           </div>
-          <div className="bg-muted p-4 rounded-lg">
+          <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 p-4 rounded-lg border border-orange-200 dark:border-orange-800">
             <p className="text-sm text-muted-foreground">結束價格</p>
             <p className="text-lg font-semibold">${formatNumber(priceStats.end_price)}</p>
             <p className="text-xs text-muted-foreground">{priceStats.end_date}</p>
@@ -99,19 +102,18 @@ export function PriceChart({ priceData, priceStats, ticker }: PriceChartProps) {
                   formatter={(value: number) => [`$${formatNumber(value)}`, '收盤價']}
                   labelFormatter={(label) => `日期: ${label}`}
                 />
-                <Legend />
                 <Line 
                   type="monotone" 
                   dataKey="Close" 
-                  stroke="#2563eb" 
+                  stroke="#93c5fd" 
                   strokeWidth={2}
                   name="收盤價" 
                   dot={false}
                 />
               </LineChart>
             ) : (
-              // K線圖：簡化版實現
-              <BarChart data={priceData}>
+              // K線圖：真正的蠟燭圖實現
+              <BarChart data={priceData} barCategoryGap="20%">
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                   dataKey="Date" 
@@ -119,7 +121,7 @@ export function PriceChart({ priceData, priceStats, ticker }: PriceChartProps) {
                   minTickGap={30}
                 />
                 <YAxis 
-                  domain={['auto', 'auto']}
+                  domain={[minPrice * 0.98, maxPrice * 1.02]}
                   tickFormatter={(value) => `$${value.toFixed(0)}`}
                 />
                 <Tooltip 
@@ -149,18 +151,11 @@ export function PriceChart({ priceData, priceStats, ticker }: PriceChartProps) {
                     return null;
                   }}
                 />
-                {/* 使用 Bar 顯示收盤價，顏色根據漲跌決定 */}
+                {/* 使用自定義 shape 來繪製蠟燭 */}
                 <Bar 
-                  dataKey="Close" 
-                  name="收盤價"
-                >
-                  {priceData.map((entry: any, index: number) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={entry.Close >= entry.Open ? '#22c55e' : '#ef4444'} 
-                    />
-                  ))}
-                </Bar>
+                  dataKey="High"
+                  shape={(props: any) => <CandlestickShape {...props} minPrice={minPrice} maxPrice={maxPrice} />}
+                />
               </BarChart>
             )}
           </ResponsiveContainer>
@@ -188,7 +183,7 @@ export function PriceChart({ priceData, priceStats, ticker }: PriceChartProps) {
                 formatter={(value: number) => [value.toLocaleString(), '交易量']}
                 labelFormatter={(label) => `日期: ${label}`}
               />
-              <Bar dataKey="Volume" fill="#10b981" name="交易量" />
+              <Bar dataKey="Volume" fill="#93c5fd" name="交易量" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -196,3 +191,97 @@ export function PriceChart({ priceData, priceStats, ticker }: PriceChartProps) {
     </Card>
   );
 }
+
+// 自定義蠟燭圖形狀組件
+interface CandlestickShapeProps {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  payload?: PriceData;
+  minPrice: number;
+  maxPrice: number;
+}
+
+const CandlestickShape: React.FC<CandlestickShapeProps> = (props) => {
+  const { x = 0, y = 0, width = 0, height = 0, payload, minPrice, maxPrice } = props;
+  
+  if (!payload) return null;
+  
+  const { Open, Close, High, Low } = payload;
+  const isUp = Close >= Open;
+  
+  // 粉綠色（上漲）和粉紅色（下跌）
+  const fillColor = isUp ? '#86efac' : '#fca5a5'; // soft pastel green / soft pastel pink
+  const strokeColor = isUp ? '#22c55e' : '#ef4444'; // darker green / darker red
+  
+  // 計算實際的 Y 坐標位置
+  const priceRange = maxPrice - minPrice;
+  // The height prop passed to shape is the full height of the chart area for the Y-axis.
+  // We need to calculate the actual chart drawing height based on the Y-axis domain.
+  // The Y-axis in recharts is typically inverted, so higher values are lower Y coordinates.
+  // The 'y' prop passed to shape is the y-coordinate of the data point (High in this case).
+  // We need to adjust calculations based on the actual Y-axis scale.
+
+  // Recharts Y-axis is inverted: higher price -> lower Y coordinate.
+  // The 'y' prop for the Bar is typically the y-coordinate of the dataKey (High).
+  // The 'height' prop for the Bar is the height of the bar if it were a standard bar chart.
+  // For a candlestick, we need to map prices to the chart's pixel height.
+
+  // Let's assume 'y' is the top of the plotting area and 'y + height' is the bottom.
+  // The total pixel height available for the price range is 'height'.
+  // We need to map minPrice to y + height and maxPrice to y.
+
+  // Calculate the pixel value per price unit
+  const pixelsPerPriceUnit = height / priceRange;
+
+  // Calculate Y coordinates for Open, Close, High, Low
+  // Note: Y-axis is inverted, so (maxPrice - price) gives distance from top.
+  const highY = y + (maxPrice - High) * pixelsPerPriceUnit;
+  const lowY = y + (maxPrice - Low) * pixelsPerPriceUnit;
+  const openY = y + (maxPrice - Open) * pixelsPerPriceUnit;
+  const closeY = y + (maxPrice - Close) * pixelsPerPriceUnit;
+  
+  // 蠟燭主體
+  const bodyTop = Math.min(openY, closeY);
+  const bodyBottom = Math.max(openY, closeY);
+  const bodyHeight = Math.max(bodyBottom - bodyTop, 1); // 至少 1px
+  
+  // 蠟燭寬度和影線位置
+  const candleWidth = width * 0.6; // 蠟燭佔 60% 寬度
+  const candleX = x + (width - candleWidth) / 2;
+  const wickX = x + width / 2; // 影線在中間
+  
+  return (
+    <g>
+      {/* 上影線（從最高價到蠟燭頂部） */}
+      <line
+        x1={wickX}
+        y1={highY}
+        x2={wickX}
+        y2={bodyTop}
+        stroke={strokeColor}
+        strokeWidth={1.5}
+      />
+      {/* 下影線（從蠟燭底部到最低價） */}
+      <line
+        x1={wickX}
+        y1={bodyBottom}
+        x2={wickX}
+        y2={lowY}
+        stroke={strokeColor}
+        strokeWidth={1.5}
+      />
+      {/* 蠟燭主體 */}
+      <rect
+        x={candleX}
+        y={bodyTop}
+        width={candleWidth}
+        height={bodyHeight}
+        fill={fillColor}
+        stroke={strokeColor}
+        strokeWidth={1}
+      />
+    </g>
+  );
+};

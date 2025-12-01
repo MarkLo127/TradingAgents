@@ -41,7 +41,7 @@ export function TradingDecision({ result }: TradingDecisionProps) {
   };
 
   return (
-    <Card className="shadow-lg border-2 border-blue-500">
+    <Card className="shadow-lg border-2 border-blue-500 gradient-card gradient-shine hover-lift animate-scale-up">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>交易決策</CardTitle>
