@@ -690,7 +690,7 @@ TradingAgentsX 模擬真實交易公司的組織架構，每個代理都有其�
 
 展示 TradingAgentsX 的核心功能與多代理協作工作流程
 
-![首頁](web_screenshot/homepage.png)
+![首頁](web_screenshot/1.png)
 
 ---
 
@@ -811,17 +811,25 @@ TradingAgentsX 模擬真實交易公司的組織架構，每個代理都有其�
 
 ---
 
+### 中立分析師報告
+
+中立平衡策略的分析與風險評估
+
+![中立分析師報告](web_screenshot/16.png)
+
+---
+
 ### 風險經理報告
 
 風險管理團隊的綜合決策與最終交易建議
 
-![風險經理報告](web_screenshot/16.png)
+![風險經理報告](web_screenshot/17.png)
 
 ---
 
 ### 下載報告
 
-![下載報告](web_screenshot/17.png)
+![下載報告](web_screenshot/18.png)
 
 ---
 
