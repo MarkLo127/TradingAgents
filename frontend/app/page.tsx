@@ -248,7 +248,7 @@ export default function HomePage() {
         <p className="text-center text-gray-600 dark:text-gray-400 mb-8 max-w-3xl mx-auto">
           TradingAgentsX 模擬真實交易公司，配備專業化的 LLM 代理
         </p>
-        <Card className="shadow-lg">
+        <Card className="shadow-lg gradient-card gradient-shine hover-lift">
           <CardContent className="pt-6">
             <div className="space-y-4">
               <WorkflowStep

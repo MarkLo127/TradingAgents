@@ -6,6 +6,7 @@ import {
   Line,
   BarChart,
   Bar,
+  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -44,7 +45,7 @@ export function PriceChart({ priceData, priceStats, ticker }: PriceChartProps) {
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle className="text-2xl">{ticker} 價格走勢</CardTitle>
-          <Tabs value={chartType} onValueChange={(v) => setChartType(v as "line" | "candlestick")}>
+          <Tabs value={chartType} onValueChange={(v: string) => setChartType(v as "line" | "candlestick")}>
             <TabsList>
               <TabsTrigger value="line">折線圖</TabsTrigger>
               <TabsTrigger value="candlestick">K線圖</TabsTrigger>
@@ -109,8 +110,8 @@ export function PriceChart({ priceData, priceStats, ticker }: PriceChartProps) {
                 />
               </LineChart>
             ) : (
-              // 真正的K線圖（蠟燭圖）
-              <ComposedChart data={priceData}>
+              // K線圖：簡化版實現
+              <BarChart data={priceData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                   dataKey="Date" 
@@ -125,14 +126,22 @@ export function PriceChart({ priceData, priceStats, ticker }: PriceChartProps) {
                   content={({ active, payload }) => {
                     if (active && payload && payload.length) {
                       const data = payload[0].payload;
+                      const isUp = data.Close >= data.Open;
                       return (
                         <div className="bg-background border border-border p-3 rounded-lg shadow-lg">
                           <p className="text-sm font-semibold mb-2">日期: {data.Date}</p>
                           <div className="space-y-1 text-sm">
-                            <p className="text-green-600">開: ${formatNumber(data.Open)}</p>
-                            <p className="text-red-600">收: ${formatNumber(data.Close)}</p>
+                            <p className={isUp ? 'text-green-600' : 'text-red-600'}>
+                              開: ${formatNumber(data.Open)}
+                            </p>
+                            <p className={isUp ? 'text-green-600' : 'text-red-600'}>
+                              收: ${formatNumber(data.Close)}
+                            </p>
                             <p className="text-blue-600">高: ${formatNumber(data.High)}</p>
                             <p className="text-orange-600">低: ${formatNumber(data.Low)}</p>
+                            <p className="text-sm text-muted-foreground mt-2">
+                              {isUp ? '↑ 上漲' : '↓ 下跌'} ${formatNumber(Math.abs(data.Close - data.Open))}
+                            </p>
                           </div>
                         </div>
                       );
@@ -140,73 +149,19 @@ export function PriceChart({ priceData, priceStats, ticker }: PriceChartProps) {
                     return null;
                   }}
                 />
-                <Bar
-                  dataKey="Close"
-                  shape={(props: any) => {
-                    const { x, y, width, payload } = props;
-                    const { Open, Close, High, Low } = payload;
-                    
-                    // 計算Y軸的比例尺
-                    const yAxis = props.yAxis;
-                    const yScale = (value: number) => {
-                      const { domain, height } = yAxis;
-                      const [min, max] = domain;
-                      return height - ((value - min) / (max - min)) * height;
-                    };
-
-                    const openY = yScale(Open);
-                    const closeY = yScale(Close);
-                    const highY = yScale(High);
-                    const lowY = yScale(Low);
-                    
-                    // 判斷漲跌
-                    const isUp = Close >= Open;
-                    const color = isUp ? '#22c55e' : '#ef4444'; // 綠色上漲，紅色下跌
-                    const fillColor = isUp ? '#22c55e' : '#ef4444';
-                    
-                    // K線寬度
-                    const candleWidth = Math.min(width * 0.6, 8);
-                    const centerX = x + width / 2;
-                    
-                    // 實體高度
-                    const bodyHeight = Math.abs(closeY - openY);
-                    const bodyY = Math.min(openY, closeY);
-                    
-                    return (
-                      <g>
-                        {/* 上影線 */}
-                        <line
-                          x1={centerX}
-                          y1={highY}
-                          x2={centerX}
-                          y2={Math.min(openY, closeY)}
-                          stroke={color}
-                          strokeWidth={1}
-                        />
-                        {/* 下影線 */}
-                        <line
-                          x1={centerX}
-                          y1={Math.max(openY, closeY)}
-                          x2={centerX}
-                          y2={lowY}
-                          stroke={color}
-                          strokeWidth={1}
-                        />
-                        {/* K線實體 */}
-                        <rect
-                          x={centerX - candleWidth / 2}
-                          y={bodyY}
-                          width={candleWidth}
-                          height={bodyHeight || 1} // 至少1px高度避免十字星消失
-                          fill={fillColor}
-                          stroke={color}
-                          strokeWidth={1}
-                        />
-                      </g>
-                    );
-                  }}
-                />
-              </ComposedChart>
+                {/* 使用 Bar 顯示收盤價，顏色根據漲跌決定 */}
+                <Bar 
+                  dataKey="Close" 
+                  name="收盤價"
+                >
+                  {priceData.map((entry: any, index: number) => (
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={entry.Close >= entry.Open ? '#22c55e' : '#ef4444'} 
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
             )}
           </ResponsiveContainer>
         </div>
