@@ -5,11 +5,12 @@
 "use client";
 
 import { useState } from "react";
-import { Download, FileDown } from "lucide-react";
+import { Download, FileDown, CheckIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 interface AnalystInfo {
   key: string;
@@ -161,30 +162,43 @@ export function DownloadReports({
         </div>
 
         {/* Analyst List */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {availableAnalysts.map(analyst => (
-            <div
-              key={analyst.key}
-              className="flex items-start space-x-2 p-3 rounded-lg border hover:bg-accent/50 transition-colors"
-            >
-              <Checkbox
-                id={`analyst-${analyst.key}`}
-                checked={selectedAnalysts.includes(analyst.key)}
-                onCheckedChange={() => handleToggleAnalyst(analyst.key)}
-              />
-              <div className="flex-1">
-                <Label
-                  htmlFor={`analyst-${analyst.key}`}
-                  className="text-sm font-medium cursor-pointer"
-                >
-                  {analyst.label}
-                </Label>
-                <p className="text-xs text-muted-foreground mt-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {availableAnalysts.map(analyst => {
+            const isSelected = selectedAnalysts.includes(analyst.key);
+            return (
+              <div
+                key={analyst.key}
+                onClick={() => handleToggleAnalyst(analyst.key)}
+                className={cn(
+                  "relative flex cursor-pointer flex-col gap-2 rounded-lg border-2 p-4 transition-all hover:bg-accent",
+                  isSelected
+                    ? "border-primary bg-primary/5 text-primary"
+                    : "border-muted-foreground/25 bg-card text-muted-foreground"
+                )}
+              >
+                <div className="flex items-start gap-3">
+                  <div
+                    className={cn(
+                      "flex h-5 w-5 shrink-0 items-center justify-center rounded-sm border transition-colors",
+                      isSelected
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-muted-foreground"
+                    )}
+                  >
+                    {isSelected && <CheckIcon className="h-3.5 w-3.5" />}
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium select-none">
+                      {analyst.label}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground pl-8">
                   {analyst.description}
                 </p>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Download Button */}
