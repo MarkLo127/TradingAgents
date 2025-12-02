@@ -10,6 +10,7 @@ import * as z from "zod";
 import { format } from "date-fns";
 
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Form,
   FormControl,
@@ -122,7 +123,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
   }
 
   return (
-    <Card className="shadow-lg gradient-card gradient-shine hover-lift animate-scale-up">
+    <Card className="shadow-lg hover-lift animate-scale-up">
       <CardContent className="pt-6">
         <Form {...form}>
           <form
@@ -225,7 +226,14 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                     <FormItem>
                       <FormLabel>分析日期</FormLabel>
                       <FormControl>
-                        <Input type="date" {...field} />
+                        <DatePicker
+                          date={field.value ? new Date(field.value) : undefined}
+                          onDateChange={(date) => {
+                            field.onChange(date ? format(date, "yyyy-MM-dd") : "")
+                          }}
+                          placeholder="選擇分析日期"
+                          className="w-full"
+                        />
                       </FormControl>
                       <FormDescription>選擇分析日期</FormDescription>
                       <FormMessage />

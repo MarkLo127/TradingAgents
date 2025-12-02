@@ -35,7 +35,7 @@ export function AnalystReport({ reports }: AnalystReportProps) {
   }
 
   return (
-    <Card className="shadow-lg gradient-card gradient-shine hover-lift animate-scale-up">
+    <Card className="shadow-lg hover-lift animate-scale-up">
       <CardHeader>
         <CardTitle>分析報告</CardTitle>
         <CardDescription>來自所有代理團隊的詳細報告</CardDescription>

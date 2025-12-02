@@ -257,13 +257,13 @@
    GRADIENT UTILITIES
    ======================================== */
 
-/* Gradient Backgrounds */
+/* Gradient Backgrounds - Purple/Pink theme */
 .gradient-bg-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #9333EA 0%, #EC4899 100%);
 }
 
 .dark .gradient-bg-primary {
-  background: linear-gradient(135deg, #4c51bf 0%, #553c9a 100%);
+  background: linear-gradient(135deg, #7C3AED 0%, #DB2777 100%);
 }
 
 .gradient-bg-secondary {
@@ -410,9 +410,9 @@
   }
 }
 
-/* Gradient Text */
+/* Gradient Text - Purple/Pink theme */
 .gradient-text-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #9333EA 0%, #EC4899 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -535,181 +535,67 @@
 }
 
 /* ========================================
-   DATE PICKER CUSTOM STYLING
+   GLASSMORPHISM UTILITIES
    ======================================== */
 
-/* Modern Date Input Styling */
-input[type="date"] {
-  position: relative;
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
-  font-weight: 500;
-  line-height: 1.5;
-  color: var(--foreground);
-  background: linear-gradient(
-    135deg,
-    rgba(102, 126, 234, 0.05) 0%,
-    rgba(118, 75, 162, 0.05) 100%
-  );
-  border: 2px solid rgba(102, 126, 234, 0.3);
-  border-radius: 0.75rem;
-  transition: all 0.3s ease;
-  cursor: pointer;
+/* Base glassmorphism style - Subtle white with hint of pink */
+.glass {
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(147, 51, 234, 0.08);
+  box-shadow: 0 2px 12px 0 rgba(147, 51, 234, 0.04);
 }
 
-input[type="date"]:hover {
+.dark .glass {
+  background: rgba(30, 20, 40, 0.95);
+  border: 1px solid rgba(147, 51, 234, 0.15);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* Enhanced glass with gradient - Very subtle pink/purple tint */
+.glass-gradient {
   background: linear-gradient(
     135deg,
-    rgba(102, 126, 234, 0.1) 0%,
-    rgba(118, 75, 162, 0.1) 100%
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(252, 248, 255, 0.98) 100%
   );
-  border-color: rgba(102, 126, 234, 0.5);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(147, 51, 234, 0.1);
+  box-shadow: 0 2px 16px 0 rgba(147, 51, 234, 0.06),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+}
+
+.dark .glass-gradient {
+  background: linear-gradient(
+    135deg,
+    rgba(30, 20, 40, 0.95) 0%,
+    rgba(40, 25, 50, 0.95) 100%
+  );
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  box-shadow: 0 2px 16px 0 rgba(147, 51, 234, 0.15),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Glass hover effect - Subtle */
+.glass-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-hover:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(147, 51, 234, 0.15);
+  box-shadow: 0 4px 20px 0 rgba(147, 51, 234, 0.1),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
   transform: translateY(-2px);
 }
 
-input[type="date"]:focus {
-  outline: none;
-  background: linear-gradient(
-    135deg,
-    rgba(102, 126, 234, 0.15) 0%,
-    rgba(118, 75, 162, 0.15) 100%
-  );
-  border-color: rgba(102, 126, 234, 0.6);
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1),
-    0 8px 16px rgba(102, 126, 234, 0.25);
-  transform: translateY(-2px);
+.dark .glass-hover:hover {
+  background: rgba(30, 20, 40, 1);
+  border-color: rgba(147, 51, 234, 0.3);
+  box-shadow: 0 4px 20px 0 rgba(147, 51, 234, 0.2),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
 }
 
-/* Dark mode date input */
-.dark input[type="date"] {
-  background: linear-gradient(
-    135deg,
-    rgba(76, 81, 191, 0.15) 0%,
-    rgba(85, 60, 154, 0.15) 100%
-  );
-  border-color: rgba(76, 81, 191, 0.4);
-}
 
-.dark input[type="date"]:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(76, 81, 191, 0.2) 0%,
-    rgba(85, 60, 154, 0.2) 100%
-  );
-  border-color: rgba(76, 81, 191, 0.6);
-  box-shadow: 0 4px 12px rgba(76, 81, 191, 0.3);
-}
-
-.dark input[type="date"]:focus {
-  background: linear-gradient(
-    135deg,
-    rgba(76, 81, 191, 0.25) 0%,
-    rgba(85, 60, 154, 0.25) 100%
-  );
-  border-color: rgba(76, 81, 191, 0.7);
-  box-shadow: 0 0 0 3px rgba(76, 81, 191, 0.15),
-    0 8px 16px rgba(76, 81, 191, 0.35);
-}
-
-/* Calendar icon styling */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  cursor: pointer;
-  opacity: 0.8;
-  padding: 0.25rem;
-  border-radius: 0.375rem;
-  transition: all 0.2s ease;
-  filter: brightness(0.9);
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator:hover {
-  opacity: 1;
-  background: rgba(102, 126, 234, 0.15);
-  transform: scale(1.1);
-  filter: brightness(1.1);
-}
-
-.dark input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1) brightness(0.9);
-}
-
-.dark input[type="date"]::-webkit-calendar-picker-indicator:hover {
-  background: rgba(76, 81, 191, 0.25);
-  filter: invert(1) brightness(1.1);
-}
-
-/* Date input inner elements (webkit) */
-input[type="date"]::-webkit-datetime-edit-fields-wrapper {
-  padding: 0;
-}
-
-input[type="date"]::-webkit-datetime-edit-text {
-  padding: 0 0.25rem;
-  opacity: 0.7;
-}
-
-input[type="date"]::-webkit-datetime-edit-month-field,
-input[type="date"]::-webkit-datetime-edit-day-field,
-input[type="date"]::-webkit-datetime-edit-year-field {
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.375rem;
-  transition: all 0.2s ease;
-}
-
-input[type="date"]::-webkit-datetime-edit-month-field:hover,
-input[type="date"]::-webkit-datetime-edit-day-field:hover,
-input[type="date"]::-webkit-datetime-edit-year-field:hover {
-  background: rgba(102, 126, 234, 0.2);
-  color: var(--foreground);
-}
-
-input[type="date"]::-webkit-datetime-edit-month-field:focus,
-input[type="date"]::-webkit-datetime-edit-day-field:focus,
-input[type="date"]::-webkit-datetime-edit-year-field:focus {
-  background: rgba(102, 126, 234, 0.25);
-  color: var(--foreground);
-  outline: none;
-}
-
-.dark input[type="date"]::-webkit-datetime-edit-month-field:hover,
-.dark input[type="date"]::-webkit-datetime-edit-day-field:hover,
-.dark input[type="date"]::-webkit-datetime-edit-year-field:hover {
-  background: rgba(76, 81, 191, 0.3);
-}
-
-.dark input[type="date"]::-webkit-datetime-edit-month-field:focus,
-.dark input[type="date"]::-webkit-datetime-edit-day-field:focus,
-.dark input[type="date"]::-webkit-datetime-edit-year-field:focus {
-  background: rgba(76, 81, 191, 0.35);
-}
-
-/* Placeholder styling when empty */
-input[type="date"]:invalid::-webkit-datetime-edit {
-  color: var(--muted-foreground);
-}
-
-/* Animation for date picker open */
-@keyframes datePickerSlide {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Additional polish */
-input[type="date"]::before {
-  content: attr(placeholder);
-  width: 100%;
-  color: var(--muted-foreground);
-}
-
-input[type="date"]:focus::before,
-input[type="date"]:valid::before {
-  display: none;
-}

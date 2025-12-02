@@ -11,7 +11,7 @@ import {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50/30 via-pink-50/20 to-purple-50/30 dark:from-gray-950 dark:via-purple-950/40 dark:to-gray-950">
       <div className="container mx-auto px-4 py-12">
         {/* Hero Section */}
       <div className="text-center mb-16 animate-fade-in relative py-8">
@@ -248,7 +248,7 @@ export default function HomePage() {
         <p className="text-center text-gray-600 dark:text-gray-400 mb-8 max-w-3xl mx-auto">
           TradingAgentsX 模擬真實交易公司，配備專業化的 LLM 代理
         </p>
-        <Card className="shadow-lg gradient-card gradient-shine hover-lift">
+        <Card className="shadow-lg hover-lift">
           <CardContent className="pt-6">
             <div className="space-y-4">
               <WorkflowStep
@@ -356,7 +356,7 @@ function FeatureCard({
   icon: string;
 }) {
   return (
-    <Card className="hover-lift animate-slide-up gradient-shine gradient-card">
+    <Card className="hover-lift animate-slide-up">
       <CardHeader>
         <div className="text-4xl mb-2">{icon}</div>
         <CardTitle className="text-lg">{title}</CardTitle>
@@ -380,7 +380,7 @@ function AgentCard({
   responsibilities: string[];
 }) {
   return (
-    <Card className="hover-lift animate-scale-up gradient-card">
+    <Card className="hover-lift animate-scale-up">
       <CardHeader>
         <CardTitle className="text-base">{name}</CardTitle>
         <CardDescription className="text-xs">{role}</CardDescription>
@@ -421,7 +421,7 @@ function LLMProviderCard({
   const logoSrc = logoMap[name];
 
   return (
-    <Card className="hover-lift animate-slide-up animate-delay-100 gradient-card gradient-shine">
+    <Card className="hover-lift animate-slide-up animate-delay-100">
       <CardHeader>
         <div className="flex items-center gap-3">
           {logoSrc ? (
@@ -462,7 +462,7 @@ function TechnicalCard({
   features: string[];
 }) {
   return (
-    <Card className="hover-lift animate-slide-up animate-delay-300 gradient-card">
+    <Card className="hover-lift animate-slide-up animate-delay-300">
       <CardHeader>
         <CardTitle className="text-lg">{title}</CardTitle>
       </CardHeader>

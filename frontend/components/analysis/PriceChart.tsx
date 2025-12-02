@@ -44,7 +44,7 @@ export function PriceChart({ priceData, priceStats, ticker }: PriceChartProps) {
   const priceRange = maxPrice - minPrice;
 
   return (
-    <Card className="w-full gradient-card gradient-shine hover-lift animate-scale-up">
+    <Card className="w-full hover-lift animate-scale-up">
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle className="text-2xl">{ticker} 價格走勢</CardTitle>

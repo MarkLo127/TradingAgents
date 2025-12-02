@@ -134,7 +134,7 @@ export function DownloadReports({
   const isAllSelected = selectedAnalysts.length === availableAnalysts.length && availableAnalysts.length > 0;
 
   return (
-    <Card className="gradient-card gradient-shine hover-lift animate-scale-up">
+    <Card className="hover-lift animate-scale-up">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <FileDown className="h-5 w-5" />
