@@ -8,6 +8,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format } from "date-fns";
+import { CheckIcon } from "lucide-react";
+
+import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/date-picker";
@@ -154,34 +157,44 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {ANALYSTS.map((analyst) => (
-                          <FormItem
-                            key={analyst.value}
-                            className="flex flex-row items-center space-x-3 space-y-0"
-                          >
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value?.includes(analyst.value)}
-                                onCheckedChange={(checked) => {
-                                  return checked
-                                    ? field.onChange([
-                                        ...(field.value ?? []),
-                                        analyst.value,
-                                      ])
-                                    : field.onChange(
-                                        field.value?.filter(
-                                          (value: string) =>
-                                            value !== analyst.value
-                                        )
-                                      );
-                                }}
-                              />
-                            </FormControl>
-                            <FormLabel className="font-normal cursor-pointer leading-none">
-                              {analyst.label}
-                            </FormLabel>
-                          </FormItem>
-                        ))}
+                        {ANALYSTS.map((analyst) => {
+                          const isSelected = field.value?.includes(analyst.value);
+                          return (
+                            <FormItem
+                              key={analyst.value}
+                              className="space-y-0"
+                            >
+                              <FormControl>
+                                <div
+                                  onClick={() => {
+                                    const newValue = isSelected
+                                      ? field.value?.filter((v: string) => v !== analyst.value)
+                                      : [...(field.value ?? []), analyst.value];
+                                    field.onChange(newValue);
+                                  }}
+                                  className={cn(
+                                    "relative flex cursor-pointer flex-row items-center gap-3 rounded-lg border-2 p-4 transition-all hover:bg-accent",
+                                    isSelected
+                                      ? "border-primary bg-primary/5 text-primary"
+                                      : "border-muted-foreground/25 bg-card text-muted-foreground"
+                                  )}
+                                >
+                                  <div
+                                    className={cn(
+                                      "flex h-5 w-5 shrink-0 items-center justify-center rounded-sm border transition-colors",
+                                      isSelected
+                                        ? "border-primary bg-primary text-primary-foreground"
+                                        : "border-muted-foreground"
+                                    )}
+                                  >
+                                    {isSelected && <CheckIcon className="h-3.5 w-3.5" />}
+                                  </div>
+                                  <span className="font-medium select-none">{analyst.label}</span>
+                                </div>
+                              </FormControl>
+                            </FormItem>
+                          );
+                        })}
                       </div>
                       <FormMessage />
                     </FormItem>
