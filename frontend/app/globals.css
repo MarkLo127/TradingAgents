@@ -184,6 +184,25 @@
   }
 }
 
+/* Heartbeat animation for buttons */
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  10% {
+    transform: scale(1.05);
+  }
+  20% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.05);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
 /* Animation utility classes */
 .animate-fade-in {
   animation: fadeIn 0.6s ease-out;
@@ -203,6 +222,11 @@
 
 .animate-scale-up {
   animation: scaleUp 0.5s ease-out;
+}
+
+/* Heartbeat animation for call-to-action buttons */
+.animate-heartbeat {
+  animation: heartbeat 2s ease-in-out infinite;
 }
 
 /* Stagger delays for sequential animations */
@@ -257,21 +281,21 @@
    GRADIENT UTILITIES
    ======================================== */
 
-/* Gradient Backgrounds - Purple/Pink theme */
+/* Gradient Backgrounds - Blue/Pink in light, Blue/Purple in dark */
 .gradient-bg-primary {
-  background: linear-gradient(135deg, #9333EA 0%, #EC4899 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #EC4899 100%);
 }
 
 .dark .gradient-bg-primary {
-  background: linear-gradient(135deg, #7C3AED 0%, #DB2777 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
 }
 
 .gradient-bg-secondary {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #60A5FA 0%, #F472B6 100%);
 }
 
 .dark .gradient-bg-secondary {
-  background: linear-gradient(135deg, #c471ed 0%, #c94b4b 100%);
+  background: linear-gradient(135deg, #60A5FA 0%, #A78BFA 100%);
 }
 
 .gradient-bg-accent {
@@ -410,16 +434,30 @@
   }
 }
 
-/* Gradient Text - Purple/Pink theme */
+/* Gradient Text - Blue/Pink in light, Blue/Purple in dark */
 .gradient-text-primary {
-  background: linear-gradient(135deg, #9333EA 0%, #EC4899 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #EC4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dark .gradient-text-primary {
+  background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .gradient-text-secondary {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #60A5FA 0%, #F472B6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dark .gradient-text-secondary {
+  background: linear-gradient(135deg, #60A5FA 0%, #A78BFA 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

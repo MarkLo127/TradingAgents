@@ -26,7 +26,7 @@ export default function HomePage() {
           <Link href="/analysis">
             <Button
               size="lg"
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-shadow"
+              className="bg-gradient-to-r from-blue-500 to-pink-500 dark:from-blue-600 dark:to-purple-600 hover:from-blue-600 hover:to-pink-600 dark:hover:from-blue-700 dark:hover:to-purple-700 shadow-lg hover:shadow-xl transition-all animate-heartbeat"
             >
               開始分析
             </Button>
@@ -335,7 +335,7 @@ export default function HomePage() {
         <Link href="/analysis">
           <Button
             size="lg"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg px-8 py-6 shadow-lg hover:shadow-2xl transition-all"
+            className="bg-gradient-to-r from-blue-500 to-pink-500 dark:from-blue-600 dark:to-purple-600 hover:from-blue-600 hover:to-pink-600 dark:hover:from-blue-700 dark:hover:to-purple-700 text-lg px-8 py-6 shadow-lg hover:shadow-2xl transition-all animate-heartbeat"
           >
             開始分析 →
           </Button>
@@ -491,7 +491,7 @@ function WorkflowStep({
 }) {
   return (
     <div className="flex gap-4 items-start">
-      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white flex items-center justify-center font-bold">
+      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-pink-500 dark:from-blue-600 dark:to-purple-600 text-white flex items-center justify-center font-bold">
         {number}
       </div>
       <div>

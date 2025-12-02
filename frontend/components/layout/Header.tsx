@@ -6,7 +6,7 @@ import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export function Header() {
   return (
-    <header className="border-b bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+    <header className="border-b bg-gradient-to-r from-blue-500 to-pink-500 dark:from-blue-600 dark:to-purple-600 text-white">
       <div className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">

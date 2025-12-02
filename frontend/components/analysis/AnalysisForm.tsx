@@ -151,47 +151,36 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                 <FormField
                   control={form.control}
                   name="analysts"
-                  render={() => (
+                  render={({ field }) => (
                     <FormItem>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         {ANALYSTS.map((analyst) => (
-                          <FormField
+                          <FormItem
                             key={analyst.value}
-                            control={form.control}
-                            name="analysts"
-                            render={({ field }) => {
-                              return (
-                                <FormItem
-                                  key={analyst.value}
-                                  className="flex flex-row items-start space-x-3 space-y-0"
-                                >
-                                  <FormControl>
-                                    <Checkbox
-                                      checked={field.value?.includes(
-                                        analyst.value
-                                      )}
-                                      onCheckedChange={(checked) => {
-                                        return checked
-                                          ? field.onChange([
-                                              ...(field.value ?? []),
-                                              analyst.value,
-                                            ])
-                                          : field.onChange(
-                                              field.value?.filter(
-                                                (value: string) =>
-                                                  value !== analyst.value
-                                              )
-                                            );
-                                      }}
-                                    />
-                                  </FormControl>
-                                  <FormLabel className="font-normal cursor-pointer">
-                                    {analyst.label}
-                                  </FormLabel>
-                                </FormItem>
-                              );
-                            }}
-                          />
+                            className="flex flex-row items-start space-x-3 space-y-0"
+                          >
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value?.includes(analyst.value)}
+                                onCheckedChange={(checked) => {
+                                  return checked
+                                    ? field.onChange([
+                                        ...(field.value ?? []),
+                                        analyst.value,
+                                      ])
+                                    : field.onChange(
+                                        field.value?.filter(
+                                          (value: string) =>
+                                            value !== analyst.value
+                                        )
+                                      );
+                                }}
+                              />
+                            </FormControl>
+                            <FormLabel className="font-normal cursor-pointer">
+                              {analyst.label}
+                            </FormLabel>
+                          </FormItem>
                         ))}
                       </div>
                       <FormMessage />
@@ -798,7 +787,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
 
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all"
+              className="w-full bg-gradient-to-r from-blue-500 to-pink-500 dark:from-blue-600 dark:to-purple-600 hover:from-blue-600 hover:to-pink-600 dark:hover:from-blue-700 dark:hover:to-purple-700 shadow-lg hover:shadow-xl transition-all animate-heartbeat"
               disabled={loading}
               size="lg"
             >
