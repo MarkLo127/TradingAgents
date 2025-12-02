@@ -157,7 +157,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                         {ANALYSTS.map((analyst) => (
                           <FormItem
                             key={analyst.value}
-                            className="flex flex-row items-start space-x-3 space-y-0"
+                            className="flex flex-row items-center space-x-3 space-y-0"
                           >
                             <FormControl>
                               <Checkbox
@@ -177,7 +177,7 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                                 }}
                               />
                             </FormControl>
-                            <FormLabel className="font-normal cursor-pointer">
+                            <FormLabel className="font-normal cursor-pointer leading-none">
                               {analyst.label}
                             </FormLabel>
                           </FormItem>
