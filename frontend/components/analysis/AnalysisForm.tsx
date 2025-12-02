@@ -58,14 +58,14 @@ const formSchema = z.object({
     .url("請輸入有效的 URL")
     .optional()
     .or(z.literal("")),
-  quick_think_api_key: z.string().optional().or(z.literal("")),
-  deep_think_api_key: z.string().optional().or(z.literal("")),
+  quick_think_api_key: z.string().min(1, "請輸入快速思維模型 API Key"),
+  deep_think_api_key: z.string().min(1, "請輸入深層思維模型 API Key"),
   embedding_base_url: z
     .string()
     .url("請輸入有效的 URL")
     .optional()
     .or(z.literal("")),
-  embedding_api_key: z.string().optional().or(z.literal("")),
+  embedding_api_key: z.string().min(1, "請輸入嵌入模型 API Key"),
   alpha_vantage_api_key: z.string().min(1, "請輸入 Alpha Vantage API Key"),
 });
 
@@ -586,12 +586,12 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                 name="quick_think_api_key"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>快速思維模型 API Key</FormLabel>
+                    <FormLabel>快速思維模型 API Key *</FormLabel>
                     <FormControl>
                       <Input type="password" placeholder="sk-..." {...field} />
                     </FormControl>
                     <FormDescription>
-                      該模型的專屬 API Key（若留空則使用預設/環境變數）
+                      該模型的專屬 API Key（必填）
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -685,12 +685,12 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                 name="deep_think_api_key"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>深層思維模型 API Key</FormLabel>
+                    <FormLabel>深層思維模型 API Key *</FormLabel>
                     <FormControl>
                       <Input type="password" placeholder="sk-..." {...field} />
                     </FormControl>
                     <FormDescription>
-                      該模型的專屬 API Key（若留空則使用預設/環境變數）
+                      該模型的專屬 API Key（必填）
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -756,13 +756,11 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
                 name="embedding_api_key"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>嵌入模型 API Key</FormLabel>
+                    <FormLabel>嵌入模型 API Key *</FormLabel>
                     <FormControl>
                       <Input type="password" placeholder="sk-..." {...field} />
                     </FormControl>
-                    <FormDescription>
-                      該端點的 API Key（若留空則使用環境變數 OPENAI_API_KEY）
-                    </FormDescription>
+                    <FormDescription>該端點的 API Key（必填）</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
