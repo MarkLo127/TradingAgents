@@ -3,6 +3,7 @@
  */
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { ApiSettingsDialog } from "@/components/settings/ApiSettingsDialog";
 
 export function Header() {
   return (
@@ -28,6 +29,7 @@ export function Header() {
             >
               分析
             </Link>
+            <ApiSettingsDialog />
             <ThemeToggle />
           </nav>
         </div>
