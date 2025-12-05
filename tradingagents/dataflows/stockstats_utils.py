@@ -1,4 +1,4 @@
-import pandas as pd
+import polars as pl
 import yfinance as yf
 from stockstats import wrap
 from typing import Annotated
@@ -9,6 +9,7 @@ from .config import get_config, DATA_DIR
 class StockstatsUtils:
     """
     一個提供股票統計功能的工具類別。
+    注意: stockstats 函式庫需要 pandas DataFrame，所以需要進行 pandas/polars 轉換。
     """
     @staticmethod
     def get_stock_stats(
@@ -31,6 +32,8 @@ class StockstatsUtils:
         Returns:
             float or str: 指標值或錯誤訊息。
         """
+        from datetime import datetime, timedelta
+        
         # 獲取設定並設定數據目錄路徑
         config = get_config()
         online = config["data_vendors"]["technical_indicators"] != "local"
@@ -40,51 +43,56 @@ class StockstatsUtils:
 
         if not online:
             try:
-                data = pd.read_csv(
+                data = pl.read_csv(
                     os.path.join(
                         DATA_DIR,
                         f"{symbol}-YFin-data-2015-01-01-2025-03-25.csv",
                     )
                 )
-                df = wrap(data)
+                # stockstats 需要 pandas DataFrame
+                data_pd = data.to_pandas()
+                df = wrap(data_pd)
             except FileNotFoundError:
                 raise Exception("Stockstats 失敗：尚未獲取 Yahoo Finance 數據！")
         else:
             # 獲取今天的日期 (YYYY-mm-dd) 以添加到快取
-            today_date = pd.Timestamp.today()
-            curr_date = pd.to_datetime(curr_date)
+            today_date = datetime.now()
+            curr_date_dt = datetime.strptime(curr_date, "%Y-%m-%d")
 
             end_date = today_date
-            start_date = today_date - pd.DateOffset(years=15)
-            start_date = start_date.strftime("%Y-%m-%d")
-            end_date = end_date.strftime("%Y-%m-%d")
+            start_date = today_date - timedelta(days=365*15)
+            start_date_str = start_date.strftime("%Y-%m-%d")
+            end_date_str = end_date.strftime("%Y-%m-%d")
 
             # 獲取設定並確保快取目錄存在
             os.makedirs(config["data_cache_dir"], exist_ok=True)
 
             data_file = os.path.join(
                 config["data_cache_dir"],
-                f"{symbol}-YFin-data-{start_date}-{end_date}.csv",
+                f"{symbol}-YFin-data-{start_date_str}-{end_date_str}.csv",
             )
 
             if os.path.exists(data_file):
-                data = pd.read_csv(data_file)
-                data["Date"] = pd.to_datetime(data["Date"])
+                data = pl.read_csv(data_file)
+                data = data.with_columns(pl.col("Date").str.to_datetime())
             else:
-                data = yf.download(
+                data_yf = yf.download(
                     symbol,
-                    start=start_date,
-                    end=end_date,
+                    start=start_date_str,
+                    end=end_date_str,
                     multi_level_index=False,
                     progress=False,
                     auto_adjust=True,
                 )
-                data = data.reset_index()
-                data.to_csv(data_file, index=False)
+                data_yf = data_yf.reset_index()
+                data_yf.to_csv(data_file, index=False)
+                data = pl.from_pandas(data_yf)
 
-            df = wrap(data)
+            # stockstats 需要 pandas DataFrame
+            data_pd = data.to_pandas()
+            df = wrap(data_pd)
             df["Date"] = df["Date"].dt.strftime("%Y-%m-%d")
-            curr_date = curr_date.strftime("%Y-%m-%d")
+            curr_date = curr_date_dt.strftime("%Y-%m-%d")
 
         df[indicator]  # 觸發 stockstats 計算指標
         matching_rows = df[df["Date"].str.startswith(curr_date)]

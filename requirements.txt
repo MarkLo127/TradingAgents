@@ -1,7 +1,8 @@
 typing-extensions
 langchain-openai
 langchain-experimental
-pandas
+polars
+pyarrow
 yfinance
 praw
 feedparser

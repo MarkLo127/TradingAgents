@@ -1,7 +1,7 @@
 """
 Price data service for loading and processing stock price data
 """
-import pandas as pd
+import polars as pl
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 import logging
@@ -13,7 +13,7 @@ class PriceService:
     """Service for loading and processing price data from data_cache"""
     
     @staticmethod
-    def load_price_data(ticker: str, data_cache_dir: str) -> Optional[pd.DataFrame]:
+    def load_price_data(ticker: str, data_cache_dir: str) -> Optional[pl.DataFrame]:
         """
         Load price data from data_cache CSV files
         
@@ -54,10 +54,10 @@ class PriceService:
             
             logger.info(f"Loading price data from {latest_file}")
             
-            df = pd.read_csv(latest_file)
-            df['Date'] = pd.to_datetime(df['Date'])
+            df = pl.read_csv(str(latest_file))
+            df = df.with_columns(pl.col("Date").str.to_datetime())
             
-            return df.sort_values('Date')
+            return df.sort("Date")
             
         except Exception as e:
             logger.error(f"Error loading price data for {ticker}: {e}")
@@ -82,7 +82,7 @@ class PriceService:
         return cache_age_hours < max_age_hours
     
     @staticmethod
-    def _fetch_and_cache_data(ticker: str, data_cache_dir: str, max_retries: int = 3) -> Optional[pd.DataFrame]:
+    def _fetch_and_cache_data(ticker: str, data_cache_dir: str, max_retries: int = 3) -> Optional[pl.DataFrame]:
         """
         Fetch data from yfinance and cache it
         
@@ -130,10 +130,10 @@ class PriceService:
                 
                 logger.info(f"成功獲取並緩存 {ticker} 數據到 {cache_file}")
                 
-                # Prepare and return DataFrame
-                df = pd.read_csv(cache_file)
-                df['Date'] = pd.to_datetime(df['Date'])
-                return df.sort_values('Date')
+                # Prepare and return DataFrame - convert to polars
+                df = pl.read_csv(str(cache_file))
+                df = df.with_columns(pl.col("Date").str.to_datetime())
+                return df.sort("Date")
                 
             except Exception as e:
                 logger.warning(f"第 {attempt} 次嘗試失敗: {e}")
@@ -149,7 +149,7 @@ class PriceService:
 
     
     @staticmethod
-    def calculate_stats(df: pd.DataFrame) -> Dict[str, Any]:
+    def calculate_stats(df: pl.DataFrame) -> Dict[str, Any]:
         """
         Calculate price statistics
         
@@ -159,22 +159,22 @@ class PriceService:
         Returns:
             Dictionary with statistics
         """
-        start_price = float(df.iloc[0]['Close'])
-        end_price = float(df.iloc[-1]['Close'])
+        start_price = float(df.row(0, named=True)["Close"])
+        end_price = float(df.row(-1, named=True)["Close"])
         growth_rate = ((end_price - start_price) / start_price) * 100
-        duration_days = (df.iloc[-1]['Date'] - df.iloc[0]['Date']).days
+        duration_days = (df.row(-1, named=True)["Date"] - df.row(0, named=True)["Date"]).days
         
         return {
             "growth_rate": round(growth_rate, 2),
             "duration_days": int(duration_days),
-            "start_date": df.iloc[0]['Date'].strftime('%Y-%m-%d'),
-            "end_date": df.iloc[-1]['Date'].strftime('%Y-%m-%d'),
+            "start_date": df.row(0, named=True)["Date"].strftime('%Y-%m-%d'),
+            "end_date": df.row(-1, named=True)["Date"].strftime('%Y-%m-%d'),
             "start_price": round(start_price, 2),
             "end_price": round(end_price, 2),
         }
     
     @staticmethod
-    def prepare_chart_data(df: pd.DataFrame, limit: int = 365) -> List[Dict[str, Any]]:
+    def prepare_chart_data(df: pl.DataFrame, limit: int = 365) -> List[Dict[str, Any]]:
         """
         Prepare price data for charting (limit to recent data)
         
@@ -188,9 +188,9 @@ class PriceService:
         # Get recent data
         recent_df = df.tail(limit)
         
-        # Convert to list of dicts
+        # Convert to list of dicts using polars to_dicts()
         data = []
-        for _, row in recent_df.iterrows():
+        for row in recent_df.iter_rows(named=True):
             data.append({
                 "Date": row['Date'].strftime('%Y-%m-%d'),
                 "Open": round(float(row['Open']), 2),

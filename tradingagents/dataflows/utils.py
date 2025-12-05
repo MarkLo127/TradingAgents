@@ -1,22 +1,22 @@
 import os
 import json
-import pandas as pd
+import polars as pl
 from datetime import date, timedelta, datetime
 from typing import Annotated
 
 SavePathType = Annotated[str, "儲存資料的檔案路徑。如果為 None，則不儲存資料。"]
 
-def save_output(data: pd.DataFrame, tag: str, save_path: SavePathType = None) -> None:
+def save_output(data: pl.DataFrame, tag: str, save_path: SavePathType = None) -> None:
     """
     將 DataFrame 儲存到 CSV 檔案。
 
     Args:
-        data (pd.DataFrame): 要儲存的 DataFrame。
+        data (pl.DataFrame): 要儲存的 DataFrame。
         tag (str): 用於在控制台中打印的標籤。
         save_path (SavePathType, optional): 儲存檔案的路徑。預設為 None。
     """
     if save_path:
-        data.to_csv(save_path)
+        data.write_csv(save_path)
         print(f"{tag} 已儲存至 {save_path}")
 
 

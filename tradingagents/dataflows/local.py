@@ -1,5 +1,5 @@
 from typing import Annotated
-import pandas as pd
+import polars as pl
 import os
 from .config import DATA_DIR
 from datetime import datetime
@@ -30,29 +30,28 @@ def get_YFin_data_window(
     start_date = before.strftime("%Y-%m-%d")
 
     # 讀取數據
-    data = pd.read_csv(
+    data = pl.read_csv(
         os.path.join(
             DATA_DIR,
             f"market_data/price_data/{symbol}-YFin-data-2015-01-01-2025-03-25.csv",
         )
     )
 
-    # 僅提取日期部分進行比較
-    data["DateOnly"] = data["Date"].str[:10]
+    # 節取日期部分
+    data = data.with_columns(
+        pl.col("Date").str.slice(0, 10).alias("DateOnly")
+    )
 
     # 過濾指定日期範圍內的數據 (包含起訖日期)
-    filtered_data = data[
-        (data["DateOnly"] >= start_date) & (data["DateOnly"] <= curr_date)
-    ]
+    filtered_data = data.filter(
+        (pl.col("DateOnly") >= start_date) & (pl.col("DateOnly") <= curr_date)
+    )
 
     # 刪除我們創建的臨時欄位
-    filtered_data = filtered_data.drop("DateOnly", axis=1)
+    filtered_data = filtered_data.drop("DateOnly")
 
-    # 設定 pandas 顯示選項以顯示完整的 DataFrame
-    with pd.option_context(
-        "display.max_rows", None, "display.max_columns", None, "display.width", None
-    ):
-        df_string = filtered_data.to_string()
+    # polars 的字串輸出
+    df_string = str(filtered_data)
 
     return (
         f"## {symbol} 從 {start_date} 到 {curr_date} 的原始市場數據：\n\n"
@@ -76,7 +75,7 @@ def get_YFin_data(
         pd.DataFrame: 包含過濾後數據的 DataFrame。
     """
     # 讀取數據
-    data = pd.read_csv(
+    data = pl.read_csv(
         os.path.join(
             DATA_DIR,
             f"market_data/price_data/{symbol}-YFin-data-2015-01-01-2025-03-25.csv",
@@ -88,19 +87,21 @@ def get_YFin_data(
             f"Get_YFin_Data：{end_date} 超出 2015-01-01 到 2025-03-25 的數據範圍"
         )
 
-    # 僅提取日期部分進行比較
-    data["DateOnly"] = data["Date"].str[:10]
+    # 節取日期部分
+    data = data.with_columns(
+        pl.col("Date").str.slice(0, 10).alias("DateOnly")
+    )
 
-    # 過濾指定日期範圍內的數據 (包含起訖日期)
-    filtered_data = data[
-        (data["DateOnly"] >= start_date) & (data["DateOnly"] <= end_date)
-    ]
+    # 過濾指定日期範圏內的數據 (包含起訖日期)
+    filtered_data = data.filter(
+        (pl.col("DateOnly") >= start_date) & (pl.col("DateOnly") <= end_date)
+    )
 
     # 刪除我們創建的臨時欄位
-    filtered_data = filtered_data.drop("DateOnly", axis=1)
+    filtered_data = filtered_data.drop("DateOnly")
 
-    # 從數據框中移除索引
-    filtered_data = filtered_data.reset_index(drop=True)
+    # 重置索引 (在 polars 中不需要，但保持一致性)
+    # filtered_data = filtered_data.with_row_count(name="index", offset=0)
 
     return filtered_data
 
@@ -280,28 +281,34 @@ def get_simfin_balance_sheet(
         "us",
         f"us-balance-{freq}.csv",
     )
-    df = pd.read_csv(data_path, sep=";")
+    df = pl.read_csv(data_path, separator=";")
 
     # 將日期字串轉換為日期時間物件並移除任何時間部分
-    df["Report Date"] = pd.to_datetime(df["Report Date"], utc=True).dt.normalize()
-    df["Publish Date"] = pd.to_datetime(df["Publish Date"], utc=True).dt.normalize()
+    df = df.with_columns(
+        pl.col("Report Date").str.to_datetime().dt.date().alias("Report Date"),
+        pl.col("Publish Date").str.to_datetime().dt.date().alias("Publish Date")
+    )
 
     # 將當前日期轉換為日期時間並標準化
-    curr_date_dt = pd.to_datetime(curr_date, utc=True).normalize()
+    from datetime import datetime as dt
+    curr_date_dt = dt.strptime(curr_date, "%Y-%m-%d").date()
 
     # 過濾 DataFrame，篩選出給定股票代碼且報告發布日期在當前日期或之前的報告
-    filtered_df = df[(df["Ticker"] == ticker) & (df["Publish Date"] <= curr_date_dt)]
+    filtered_df = df.filter(
+        (pl.col("Ticker") == ticker) & (pl.col("Publish Date") <= curr_date_dt)
+    )
 
     # 檢查是否有可用的報告；如果沒有，則返回通知
-    if filtered_df.empty:
+    if filtered_df.is_empty():
         print("在給定的當前日期之前沒有可用的資產負債表。")
         return ""
 
     # 通過選擇具有最新發布日期的行來獲取最新的資產負債表
-    latest_balance_sheet = filtered_df.loc[filtered_df["Publish Date"].idxmax()]
+    max_date_idx = filtered_df.select(pl.col("Publish Date")).arg_max()
+    latest_balance_sheet = filtered_df.row(max_date_idx, named=True)
 
     # 刪除 SimFinID 欄位
-    latest_balance_sheet = latest_balance_sheet.drop("SimFinId")
+    # latest_balance_sheet = latest_balance_sheet.drop("SimFinId")
 
     return (
         f"## {ticker} 於 {str(latest_balance_sheet['Publish Date'])[0:10]} 發布的 {freq} 資產負債表：\n"
@@ -327,25 +334,31 @@ def get_simfin_cashflow(
         "us",
         f"us-cashflow-{freq}.csv",
     )
-    df = pd.read_csv(data_path, sep=";")
+    df = pl.read_csv(data_path, separator=";")
 
     # 將日期字串轉換為日期時間物件並移除任何時間部分
-    df["Report Date"] = pd.to_datetime(df["Report Date"], utc=True).dt.normalize()
-    df["Publish Date"] = pd.to_datetime(df["Publish Date"], utc=True).dt.normalize()
+    df = df.with_columns(
+        pl.col("Report Date").str.to_datetime().dt.date().alias("Report Date"),
+        pl.col("Publish Date").str.to_datetime().dt.date().alias("Publish Date")
+    )
 
     # 將當前日期轉換為日期時間並標準化
-    curr_date_dt = pd.to_datetime(curr_date, utc=True).normalize()
+    from datetime import datetime as dt
+    curr_date_dt = dt.strptime(curr_date, "%Y-%m-%d").date()
 
     # 過濾 DataFrame，篩選出給定股票代碼且報告發布日期在當前日期或之前的報告
-    filtered_df = df[(df["Ticker"] == ticker) & (df["Publish Date"] <= curr_date_dt)]
+    filtered_df = df.filter(
+        (pl.col("Ticker") == ticker) & (pl.col("Publish Date") <= curr_date_dt)
+    )
 
     # 檢查是否有可用的報告；如果沒有，則返回通知
-    if filtered_df.empty:
+    if filtered_df.is_empty():
         print("在給定的當前日期之前沒有可用的現金流量表。")
         return ""
 
     # 通過選擇具有最新發布日期的行來獲取最新的現金流量表
-    latest_cash_flow = filtered_df.loc[filtered_df["Publish Date"].idxmax()]
+    max_date_idx = filtered_df.select(pl.col("Publish Date")).arg_max()
+    latest_cash_flow = filtered_df.row(max_date_idx, named=True)
 
     # 刪除 SimFinID 欄位
     latest_cash_flow = latest_cash_flow.drop("SimFinId")
@@ -374,25 +387,31 @@ def get_simfin_income_statements(
         "us",
         f"us-income-{freq}.csv",
     )
-    df = pd.read_csv(data_path, sep=";")
+    df = pl.read_csv(data_path, separator=";")
 
     # 將日期字串轉換為日期時間物件並移除任何時間部分
-    df["Report Date"] = pd.to_datetime(df["Report Date"], utc=True).dt.normalize()
-    df["Publish Date"] = pd.to_datetime(df["Publish Date"], utc=True).dt.normalize()
+    df = df.with_columns(
+        pl.col("Report Date").str.to_datetime().dt.date().alias("Report Date"),
+        pl.col("Publish Date").str.to_datetime().dt.date().alias("Publish Date")
+    )
 
     # 將當前日期轉換為日期時間並標準化
-    curr_date_dt = pd.to_datetime(curr_date, utc=True).normalize()
+    from datetime import datetime as dt
+    curr_date_dt = dt.strptime(curr_date, "%Y-%m-%d").date()
 
     # 過濾 DataFrame，篩選出給定股票代碼且報告發布日期在當前日期或之前的報告
-    filtered_df = df[(df["Ticker"] == ticker) & (df["Publish Date"] <= curr_date_dt)]
+    filtered_df = df.filter(
+        (pl.col("Ticker") == ticker) & (pl.col("Publish Date") <= curr_date_dt)
+    )
 
     # 檢查是否有可用的報告；如果沒有，則返回通知
-    if filtered_df.empty:
+    if filtered_df.is_empty():
         print("在給定的當前日期之前沒有可用的損益表。")
         return ""
 
     # 通過選擇具有最新發布日期的行來獲取最新的損益表
-    latest_income = filtered_df.loc[filtered_df["Publish Date"].idxmax()]
+    max_date_idx = filtered_df.select(pl.col("Publish Date")).arg_max()
+    latest_income = filtered_df.row(max_date_idx, named=True)
 
     # 刪除 SimFinID 欄位
     latest_income = latest_income.drop("SimFinId")

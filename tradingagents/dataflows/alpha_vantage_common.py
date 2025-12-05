@@ -1,6 +1,6 @@
 import os
 import requests
-import pandas as pd
+import polars as pl
 import json
 from datetime import datetime
 from io import StringIO
@@ -102,20 +102,22 @@ def _filter_csv_by_date_range(csv_data: str, start_date: str, end_date: str) -> 
 
     try:
         # 解析 CSV 數據
-        df = pd.read_csv(StringIO(csv_data))
+        df = pl.read_csv(StringIO(csv_data))
 
         # 假設第一欄是日期欄 (時間戳)
         date_col = df.columns[0]
-        df[date_col] = pd.to_datetime(df[date_col])
+        df = df.with_columns(pl.col(date_col).str.to_datetime())
 
         # 按日期範圍過濾
-        start_dt = pd.to_datetime(start_date)
-        end_dt = pd.to_datetime(end_date)
+        start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+        end_dt = datetime.strptime(end_date, "%Y-%m-%d")
 
-        filtered_df = df[(df[date_col] >= start_dt) & (df[date_col] <= end_dt)]
+        filtered_df = df.filter(
+            (pl.col(date_col) >= start_dt) & (pl.col(date_col) <= end_dt)
+        )
 
         # 轉換回 CSV 字串
-        return filtered_df.to_csv(index=False)
+        return filtered_df.write_csv()
 
     except Exception as e:
         # 如果過濾失敗，返回原始數據並附帶警告

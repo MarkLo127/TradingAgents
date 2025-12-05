@@ -16,7 +16,8 @@ python-dotenv==1.0.0
 typing-extensions
 langchain-openai
 langchain-experimental
-pandas
+polars
+pyarrow
 yfinance
 praw
 feedparser

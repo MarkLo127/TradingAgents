@@ -229,6 +229,7 @@ def _get_stock_stats_bulk(
     返回將日期字串映射到指標值的字典。
     """
     from .config import get_config
+    import polars as pl
     import pandas as pd
     from stockstats import wrap
     import os
@@ -239,22 +240,25 @@ def _get_stock_stats_bulk(
     if not online:
         # 本地數據路徑
         try:
-            data = pd.read_csv(
+            data = pl.read_csv(
                 os.path.join(
                     config.get("data_cache_dir", "data"),
                     f"{symbol}-YFin-data-2015-01-01-2025-03-25.csv",
                 )
             )
-            df = wrap(data)
+            # stockstats 需要 pandas DataFrame
+            data_pd = data.to_pandas()
+            df = wrap(data_pd)
         except FileNotFoundError:
             raise Exception("Stockstats 失敗：尚未獲取 Yahoo Finance 數據！")
     else:
         # 帶有快取的線上數據獲取
-        today_date = pd.Timestamp.today()
-        curr_date_dt = pd.to_datetime(curr_date)
+        from datetime import datetime as dt, timedelta
+        today_date = dt.now()
+        curr_date_dt = dt.strptime(curr_date, "%Y-%m-%d")
         
         end_date = today_date
-        start_date = today_date - pd.DateOffset(years=15)
+        start_date = today_date - timedelta(days=365*15)
         start_date_str = start_date.strftime("%Y-%m-%d")
         end_date_str = end_date.strftime("%Y-%m-%d")
         
@@ -279,8 +283,10 @@ def _get_stock_stats_bulk(
                 logger.info(f"{symbol} 緩存過期（年齡：{cache_age_hours:.1f} 小時），將重新下載")
         
         if cache_valid:
-            data = pd.read_csv(data_file)
-            data["Date"] = pd.to_datetime(data["Date"])
+            data_pl = pl.read_csv(data_file)
+            data_pl = data_pl.with_columns(pl.col("Date").str.to_datetime())
+            # stockstats 需要 pandas DataFrame
+            data = data_pl.to_pandas()
         else:
             # 使用重試機制下載數據
             @retry(max_attempts=3, backoff=2.0)
@@ -305,8 +311,9 @@ def _get_stock_stats_bulk(
                 # 如果下載失敗但有舊緩存，使用舊緩存
                 if os.path.exists(data_file):
                     logger.warning(f"使用過期緩存作為備援")
-                    data = pd.read_csv(data_file)
-                    data["Date"] = pd.to_datetime(data["Date"])
+                    data_pl = pl.read_csv(data_file)
+                    data_pl = data_pl.with_columns(pl.col("Date").str.to_datetime())
+                    data = data_pl.to_pandas()
                 else:
                     raise
         

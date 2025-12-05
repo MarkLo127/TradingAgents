@@ -2,8 +2,7 @@
 
 import yfinance as yf
 from typing import Annotated, Callable, Any, Optional
-from pandas import DataFrame
-import pandas as pd
+import polars as pl
 from functools import wraps
 
 from .utils import save_output, SavePathType, decorate_all_methods
@@ -35,15 +34,18 @@ class YFinanceUtils:
             str, "檢索股價數據的結束日期，格式為 YYYY-mm-dd"
         ],
         save_path: SavePathType = None,
-    ) -> DataFrame:
+    ) -> pl.DataFrame:
         """檢索指定股票代碼的股價數據"""
+        from datetime import datetime, timedelta
         ticker = symbol
         # 將結束日期加一天，使數據範圍包含結束日期
-        end_date = pd.to_datetime(end_date) + pd.DateOffset(days=1)
-        end_date = end_date.strftime("%Y-%m-%d")
+        end_date_dt = datetime.strptime(end_date, "%Y-%m-%d") + timedelta(days=1)
+        end_date = end_date_dt.strftime("%Y-%m-%d")
         stock_data = ticker.history(start=start_date, end=end_date)
-        # save_output(stock_data, f"{ticker.ticker} 的股票數據", save_path)
-        return stock_data
+        # 轉換為 polars DataFrame
+        stock_data_pl = pl.from_pandas(stock_data.reset_index())
+        # save_output(stock_data_pl, f"{ticker.ticker} 的股票數據", save_path)
+        return stock_data_pl
 
     def get_stock_info(
         symbol: Annotated[str, "股票代碼"],
@@ -56,7 +58,7 @@ class YFinanceUtils:
     def get_company_info(
         symbol: Annotated[str, "股票代碼"],
         save_path: Optional[str] = None,
-    ) -> DataFrame:
+    ) -> pl.DataFrame:
         """獲取並以 DataFrame 形式返回公司資訊。"""
         ticker = symbol
         info = ticker.info
@@ -67,41 +69,42 @@ class YFinanceUtils:
             "國家": info.get("country", "N/A"),
             "網站": info.get("website", "N/A"),
         }
-        company_info_df = DataFrame([company_info])
+        company_info_df = pl.DataFrame([company_info])
         if save_path:
-            company_info_df.to_csv(save_path)
+            company_info_df.write_csv(save_path)
             print(f"{ticker.ticker} 的公司資訊已儲存至 {save_path}")
         return company_info_df
 
     def get_stock_dividends(
         symbol: Annotated[str, "股票代碼"],
         save_path: Optional[str] = None,
-    ) -> DataFrame:
+    ) -> pl.DataFrame:
         """獲取並以 DataFrame 形式返回最新的股息數據。"""
         ticker = symbol
         dividends = ticker.dividends
+        dividends_pl = pl.from_pandas(dividends.reset_index())
         if save_path:
-            dividends.to_csv(save_path)
+            dividends_pl.write_csv(save_path)
             print(f"{ticker.ticker} 的股息已儲存至 {save_path}")
-        return dividends
+        return dividends_pl
 
-    def get_income_stmt(symbol: Annotated[str, "股票代碼"]) -> DataFrame:
+    def get_income_stmt(symbol: Annotated[str, "股票代碼"]) -> pl.DataFrame:
         """獲取並以 DataFrame 形式返回公司最新的損益表。"""
         ticker = symbol
         income_stmt = ticker.financials
-        return income_stmt
+        return pl.from_pandas(income_stmt.reset_index())
 
-    def get_balance_sheet(symbol: Annotated[str, "股票代碼"]) -> DataFrame:
+    def get_balance_sheet(symbol: Annotated[str, "股票代碼"]) -> pl.DataFrame:
         """獲取並以 DataFrame 形式返回公司最新的資產負債表。"""
         ticker = symbol
         balance_sheet = ticker.balance_sheet
-        return balance_sheet
+        return pl.from_pandas(balance_sheet.reset_index())
 
-    def get_cash_flow(symbol: Annotated[str, "股票代碼"]) -> DataFrame:
+    def get_cash_flow(symbol: Annotated[str, "股票代碼"]) -> pl.DataFrame:
         """獲取並以 DataFrame 形式返回公司最新的現金流量表。"""
         ticker = symbol
         cash_flow = ticker.cashflow
-        return cash_flow
+        return pl.from_pandas(cash_flow.reset_index())
 
     def get_analyst_recommendations(symbol: Annotated[str, "股票代碼"]) -> tuple:
         """獲取最新的分析師建議，並返回最常見的建議及其計數。"""
