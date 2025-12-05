@@ -13,6 +13,10 @@ export interface ApiSettings {
   grok_api_key: string;
   deepseek_api_key: string;
   qwen_api_key: string;
+  
+  // Custom endpoint
+  custom_base_url: string;
+  custom_api_key: string;
 }
 
 const STORAGE_KEY = "tradingagents_api_settings";
@@ -25,6 +29,8 @@ export const DEFAULT_API_SETTINGS: ApiSettings = {
   grok_api_key: "",
   deepseek_api_key: "",
   qwen_api_key: "",
+  custom_base_url: "",
+  custom_api_key: "",
 };
 
 /**

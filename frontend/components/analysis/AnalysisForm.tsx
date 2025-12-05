@@ -113,15 +113,15 @@ export function AnalysisForm({ onSubmit, loading = false }: AnalysisFormProps) {
     const quickThinkLlm = form.getValues("quick_think_llm");
     const deepThinkLlm = form.getValues("deep_think_llm");
 
-    // Set base URLs based on selected models
-    form.setValue("quick_think_base_url", getBaseUrlForModel(quickThinkLlm));
-    form.setValue("deep_think_base_url", getBaseUrlForModel(deepThinkLlm));
-    form.setValue("embedding_base_url", "https://api.openai.com/v1");
+    // Set base URLs based on selected models (custom URL takes precedence)
+    form.setValue("quick_think_base_url", getBaseUrlForModel(quickThinkLlm, savedSettings.custom_base_url));
+    form.setValue("deep_think_base_url", getBaseUrlForModel(deepThinkLlm, savedSettings.custom_base_url));
+    form.setValue("embedding_base_url", savedSettings.custom_base_url || "https://api.openai.com/v1");
 
     // Set API keys based on selected models
     form.setValue("quick_think_api_key", getApiKeyForModel(quickThinkLlm, savedSettings));
     form.setValue("deep_think_api_key", getApiKeyForModel(deepThinkLlm, savedSettings));
-    form.setValue("embedding_api_key", savedSettings.openai_api_key);
+    form.setValue("embedding_api_key", savedSettings.custom_api_key || savedSettings.openai_api_key);
     form.setValue("alpha_vantage_api_key", savedSettings.alpha_vantage_api_key);
   }, [form, form.watch("quick_think_llm"), form.watch("deep_think_llm")]);
 

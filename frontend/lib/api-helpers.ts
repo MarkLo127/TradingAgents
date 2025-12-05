@@ -6,8 +6,14 @@ import { ApiSettings } from "./storage";
 
 /**
  * Get the base URL for a given LLM model
+ * If custom_base_url is set, it takes precedence
  */
-export function getBaseUrlForModel(model: string): string {
+export function getBaseUrlForModel(model: string, customBaseUrl?: string): string {
+  // If custom base URL is provided, use it
+  if (customBaseUrl && customBaseUrl.trim() !== "") {
+    return customBaseUrl;
+  }
+
   // OpenAI models
   if (
     model.startsWith("gpt-") ||
@@ -48,11 +54,19 @@ export function getBaseUrlForModel(model: string): string {
 
 /**
  * Get the API key for a given LLM model from saved settings
+ * If custom_base_url is set and custom_api_key exists, use custom key
  */
 export function getApiKeyForModel(
   model: string,
   settings: ApiSettings
 ): string {
+  // If custom base URL is configured and has a key, use the custom key
+  if (settings.custom_base_url && settings.custom_base_url.trim() !== "") {
+    if (settings.custom_api_key && settings.custom_api_key.trim() !== "") {
+      return settings.custom_api_key;
+    }
+  }
+
   // OpenAI models
   if (
     model.startsWith("gpt-") ||

@@ -47,6 +47,10 @@ const formSchema = z.object({
   grok_api_key: z.string().optional().or(z.literal("")),
   deepseek_api_key: z.string().optional().or(z.literal("")),
   qwen_api_key: z.string().optional().or(z.literal("")),
+  
+  // Custom endpoint
+  custom_base_url: z.string().optional().or(z.literal("")),
+  custom_api_key: z.string().optional().or(z.literal("")),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -90,6 +94,7 @@ export function ApiSettingsDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
+      {/* @ts-ignore - React 19 type compatibility issue with Radix UI */}
       <DialogTrigger asChild>
         <Button
           variant="ghost"
@@ -236,6 +241,57 @@ export function ApiSettingsDialog() {
                       <Input type="password" placeholder="sk-..." {...field} />
                     </FormControl>
                     <FormDescription>用於 Qwen 模型</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Custom Endpoint Section */}
+            <div className="space-y-4 border-t pt-4">
+              <h3 className="text-lg font-semibold text-muted-foreground">
+                自訂端點（進階選項）
+              </h3>
+
+              {/* Custom Base URL */}
+              <FormField
+                control={form.control}
+                name="custom_base_url"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>自訂 Base URL</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="https://your-custom-endpoint.com/v1"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      若設定此項，將覆蓋所有模型的預設端點
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Custom API Key */}
+              <FormField
+                control={form.control}
+                name="custom_api_key"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>自訂端點 API Key</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="輸入自訂端點的 API Key"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      配合自訂 Base URL 使用的 API Key
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
